@@ -25,11 +25,46 @@ class Tokenizer {
         keywordRegex: /^(if|else|while|ifelse|leaveloop|skip|input|output)$/,
         // Regular expression for special characters (e.g., #)
         specialCharacterRegex: /^#$/,
+
     }
+    static replaceWithSpace(Input) {
+        let result = "";
+        for (let i = 0; i < Input.length; i++) {
+            let bool1 = Input[i].match(Tokenizer.RegEx.arithmeticOperatorRegex);
+            let bool2 = Input[i].match(Tokenizer.RegEx.logicalOperatorRegex);
+            let bool3 = Input[i].match(Tokenizer.RegEx.comparisonOperatorRegex);
+            let bool4 = Input[i].match(Tokenizer.RegEx.assignmentOperatorRegex);
+            let bool5 = Input[i].match(Tokenizer.RegEx.punctuationRegex);
+            if (bool1 || bool2 || bool3 || bool4 || bool5) {
+                if (i == 0 && Input[1] != " ") {
+                    result = result + Input[i] + " ";
+                }
+                else if (i == Input.length - 1 && Input.length - 2 != " ") {
+                    result = result + " " + Input[i];
+                }
+                else {
+                    if (Input[i - 1] != " " && Input[i + 1] != " ")
+                        result = result + " " + Input[i] + " ";
+                    else if (Input[i - 1] != " " && Input[i + 1] == " ")
+                        result = result + " " + Input[i];
+                    else if (Input[i - 1] == " " && Input[i + 1] != " ")
+                        result = result + Input[i] + " ";
+                    else
+                        result = result + Input[i];
+                }
+            }
+            else {
+                result = result + Input[i];
+            }
+        }
+        return result;
+    }
+
     // Method to tokenize the input string
     // This method takes an input string, splits it into words, and classifies each word based on the defined regular expressions
 
     static tokenize(input) {
+        input = this.replaceWithSpace(input);
         let lines = input.split("\n");
         let tokens = [];
         let lineNumber = 1;
@@ -37,7 +72,6 @@ class Tokenizer {
         for (let line of lines) {
             let words = line.split(/(?<=^[^"]*|"[^"]*")\s+(?=[^"]*$|(?:(?:[^"]*"[^"]*")*[^"]*$))/), word;
             words = words.filter(word => word !== ""); // Remove empty strings from the array
-            console.log(words);
             for (word of words) {
                 if (Tokenizer.RegEx.intNumberRegex.test(word)) {
                     tokens[lineNumber].push("integer");
@@ -82,8 +116,8 @@ class Tokenizer {
             lineNumber++;
             tokens[lineNumber] = [];
         }
-        //console.log(words);
-        //console.log(input);
+        //console.log(tokens);
+        console.log(input);
         return tokens;
     }
 }
