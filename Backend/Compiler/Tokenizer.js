@@ -1,4 +1,70 @@
 class Tokenizer {
+    // Define token types as static properties of the Tokenizer class
+    // Each token type is associated with a specific regular expression pattern or a set of characters
+    //
+    static TokenType = {
+        arithmeticOperator:{
+            "+" : "PLUS",
+            "-" : "MINUS",
+            "*" : "MULTIPLY",
+            "/" : "DIVIDE",
+            "%" : "MODULO",
+            "^" : "POWER"
+        },
+        logicalOperator:{
+            "&" : "AND",
+            "|" : "OR",
+            "!" : "NOT"
+        },
+        comparisonOperator:{
+            "==" : "EQUAL",
+            "!=" : "NOT_EQUAL",
+            "<" : "LESS_THAN",
+            ">" : "GREATER_THAN",
+            "<=" : "LESS_EQUAL",
+            ">=" : "GREATER_EQUAL"
+        },
+        assignmentOperator:{
+            "=" : "ASSIGN"
+        },
+        intNumber:{
+            "/^\d+$/" : "INTEGER" 
+        },
+        floatNumber:{
+            "/^\d+\.\d+$/" : "FLOAT"
+        }, 
+        identifier:{
+            "/^[a-zA-Z][a-zA-Z0-9_-]*$/" : "IDENTIFIER"
+        },
+        constant:{
+            "true" : "TRUE",
+            "false" : "FALSE"
+        },
+        literal:{
+            "/^\".*\"$/" : "LITERAL" 
+        },
+        punctuation:{
+            "(" : "LEFT_PAREN",
+            ")" : "RIGHT_PAREN",
+            "{" : "LEFT_BRACE",
+            "}" : "RIGHT_BRACE",
+            "," : "COMMA",
+            "." : "DOT"
+        }, 
+        keyword:{
+            "if" : "IF",
+            "else" : "ELSE",
+            "while" : "WHILE",
+            "ifelse" : "IFELSE",
+            "leaveloop" : "LEAVELOOP",
+            "skip" : "SKIP",
+            "input" : "INPUT",
+            "output" : "OUTPUT"
+        },
+        specialCharacter:{
+            "#" : "HASH"
+        }
+    }
     // Regular expressions for different token types
     static RegEx = {
         // Regular expression for integer numbers (e.g., 123)
