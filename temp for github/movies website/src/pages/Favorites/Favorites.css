@@ -1,0 +1,22 @@
+.home-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #1E1E30;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.movies-list {
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    max-width: 100%;
+    margin: 20px #0B0F1A;
+    height: 100%;
+}
+
