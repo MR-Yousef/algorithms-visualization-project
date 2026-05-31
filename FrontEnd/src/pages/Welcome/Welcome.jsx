@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import './Welcome.css';
 
+
 const Welcome = () => {
   const canvasContainerRef = useRef(null);
   const rafRef = useRef(null);
@@ -233,14 +234,6 @@ const Welcome = () => {
       <div className="canvas-background" ref={canvasContainerRef}></div>
 
       <div className="content-overlay">
-        <nav className="navbar">
-          <div className="logo">
-            <span className="logo-icon">✦</span>
-            <span className="logo-text">AlgoHub</span>
-          </div>
-          <button className="btn-primary" onClick={() => window.location.href = '/Login'}> Get Started</button>
-        </nav>
-
         <div className="hero">
           <h1 className="hero-title">
             Welcome to <br />
