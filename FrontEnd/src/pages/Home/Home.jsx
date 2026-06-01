@@ -1,87 +1,53 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import { IconProfile, IconAdd, IconShow, IconHelp, IconArrow, IconSparkle } from "../../assets/Component/Icons/Icon";
-import Header from "../../assets/Component/Header/Header";
-
-
-
-// ─── Node Network SVG ─────────────────────────────────────────
-const NodeNetwork = () => (
-    <svg className="node-network" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <defs>
-            <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#00f5e4" stopOpacity="1" />
-                <stop offset="100%" stopColor="#00f5e4" stopOpacity="0" />
-            </radialGradient>
-        </defs>
-        {[
-            [80, 600, 220, 520], [220, 520, 380, 570], [380, 570, 520, 490],
-            [520, 490, 700, 540], [700, 540, 860, 480], [860, 480, 1000, 560],
-            [1000, 560, 1180, 500], [220, 520, 300, 420], [300, 420, 500, 380],
-            [500, 380, 700, 540], [700, 540, 900, 360], [900, 360, 1100, 420],
-            [300, 420, 480, 300], [480, 300, 640, 340], [640, 340, 900, 360],
-            [80, 600, 160, 480], [160, 480, 300, 420],
-        ].map(([x1, y1, x2, y2], i) => (
-            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
-                stroke="rgba(0,245,228,0.2)" strokeWidth="1"
-            />
-        ))}
-        {[
-            [80, 600], [220, 520], [380, 570], [520, 490], [700, 540],
-            [860, 480], [1000, 560], [1180, 500], [300, 420], [500, 380],
-            [900, 360], [1100, 420], [480, 300], [640, 340], [160, 480],
-        ].map(([cx, cy], i) => (
-            <g key={i}>
-                <circle cx={cx} cy={cy} r="10" fill="rgba(0,245,228,0.04)" />
-                <circle cx={cx} cy={cy} r="4" fill="rgba(0,245,228,0.5)" />
-                <circle cx={cx} cy={cy} r="2" fill="#00f5e4" />
-            </g>
-        ))}
-    </svg>
-);
+import { ProfileIcon, AddIcon, ShowIcon, HelpIcon, ArrowIcon, SparkleIcon } from "../../assets/Icons/Icon";
+import Header from "../../Component/Header/Header";
+import { NodesNetworkImg, BarChartImg, GraphImg, PlotChartImg, CubeOutlineImg } from "../../assets/Images/Images"
 
 // ─── Main Component ───────────────────────────────────────────
 export default function Home() {
+    // Navigation and hover state management
     const navigate = useNavigate();
     const [hoveredCard, setHoveredCard] = useState(null);
-
+    // Menu items configuration for the home page
     const menuItems = [
-        {
-            id: 1,
-            title: "Profile",
-            description: "Manage your account settings and preferences",
-            icon: <IconProfile />,
-            path: "/profile",
-            color: "#00d4ff",
-            stats: "View Profile"
+        // {   // profile card
+        //     id: 1,
+        //     title: "Profile",
+        //     description: "Manage your account settings and preferences",
+        //     icon: <ProfileIcon />,
+        //     path: "/profile",
+        //     color: "#00d4ff",
+        //     stats: "View Profile"
+        // },
+        {   // instructions card
+            id:2,
+            title: "Help & Info",
+            description: "Get help and learn about AlgoVisual",
+            icon: <HelpIcon />,
+            path: "/help",
+            color: "#f59e0b",
+            stats: "Learn More"
+            
         },
-        {
-            id: 2,
-            title: "Add Algorithm",
-            description: "Create and upload new algorithms",
-            icon: <IconAdd />,
-            path: "/add-algorithm",
-            color: "#00f5a0",
-            stats: "New Algorithm"
-        },
-        {
+        {   // show build-in algorithms
             id: 3,
             title: "Show Algorithms",
-            description: "Browse and visualize existing algorithms",
-            icon: <IconShow />,
+            description: "Browse and view many existing algorithms",
+            icon: <ShowIcon />,
             path: "/algorithms",
             color: "#8b5cf6",
             stats: "View All"
         },
-        {
+        {   // algorithm builder card
             id: 4,
-            title: "Help & Info",
-            description: "Get help and learn about AlgoVisual",
-            icon: <IconHelp />,
-            path: "/help",
-            color: "#f59e0b",
-            stats: "Learn More"
+            title: "Add Algorithm",
+            description: "Build ,Test and upload new algorithms",
+            icon: <AddIcon />,
+            path: "/add-algorithm",
+            color: "#00f5a0",
+            stats: "New Algorithm"
         },
     ];
 
@@ -90,7 +56,7 @@ export default function Home() {
             {/* ── Animated Background ── */}
             <div className="home-canvas">
                 <div className="mesh-wave" />
-                <NodeNetwork />
+                <NodesNetworkImg />
                 <div className="center-glow" />
                 <div className="floating-particles">
                     {[...Array(20)].map((_, i) => (
@@ -103,24 +69,25 @@ export default function Home() {
                     ))}
                 </div>
             </div>
-            {/* ── Header ── */}
+            {/*end of animated background*/}
             <Header />
             {/* ── Main Content ── */}
             <main className="home-main">
                 {/* Welcome Section */}
                 <div className="welcome-section">
                     <h1 className="welcome-title">
-                        <span className="title-icon"><IconSparkle /></span>
+                        <span className="title-icon"><SparkleIcon /></span>
                         Welcome to <span className="gradient-text">AlgoVisual</span>
                     </h1>
                     <p className="welcome-subtitle">
-                        Your platform for algorithm visualization and learning
+                        Your platform for algorithm learning and visualization
                     </p>
                 </div>
-
+                {/*end of welcome section*/}
                 {/* Menu Cards Grid */}
                 <div className="menu-grid">
                     {menuItems.map((item) => (
+                        // Each menu card with hover effects and navigation
                         <div
                             key={item.id}
                             className={`menu-card ${hoveredCard === item.id ? 'hovered' : ''}`}
@@ -133,7 +100,7 @@ export default function Home() {
                             <span className="card-border card-border-tr" />
                             <span className="card-border card-border-bl" />
                             <span className="card-border card-border-br" />
-
+                            {/* Card content */}
                             <div className="card-content">
                                 <div className="card-icon" style={{ color: item.color }}>
                                     {item.icon}
@@ -142,7 +109,7 @@ export default function Home() {
                                 <p className="card-description">{item.description}</p>
                                 <div className="card-footer">
                                     <span className="card-stats">{item.stats}</span>
-                                    <span className="card-arrow"><IconArrow /></span>
+                                    <span className="card-arrow"><ArrowIcon /></span>
                                 </div>
                             </div>
                         </div>
@@ -168,6 +135,7 @@ export default function Home() {
                         <span className="stat-label">Support</span>
                     </div>
                 </div>
+                {/*end of quick stats section*/}
             </main>
         </div>
     );

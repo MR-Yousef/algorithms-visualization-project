@@ -2,7 +2,7 @@
 import React from "react";
 import "./App.css" ;
 import { RouterProvider } from "react-router-dom";
-import myRouter from './assets/myRouter'
+import myRouter from './routes/myRouter'
 function App() {
   return (
     <>
