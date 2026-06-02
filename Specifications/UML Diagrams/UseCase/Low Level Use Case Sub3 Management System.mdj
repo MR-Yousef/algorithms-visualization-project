@@ -2029,7 +2029,7 @@
 											"top": 1174,
 											"width": 159.8984375,
 											"height": 22,
-											"text": "super-admin"
+											"text": "super_admin"
 										},
 										{
 											"_type": "LabelView",
@@ -7664,7 +7664,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGd938U8K7sV9w="
 							},
-							"name": "super-admin",
+							"name": "super_admin",
 							"ownedElements": [
 								{
 									"_type": "UMLAssociation",
