@@ -53,9 +53,9 @@
 											"font": "Arial;13;0",
 											"parentStyle": false,
 											"left": 728,
-											"top": 72,
-											"width": 1144,
-											"height": 720
+											"top": 24,
+											"width": 1168,
+											"height": 768
 										},
 										{
 											"_type": "UMLFrameView",
