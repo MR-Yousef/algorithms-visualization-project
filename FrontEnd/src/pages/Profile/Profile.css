@@ -1,0 +1,726 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg-deep: #020d18;
+    --bg-mid: #041825;
+    --teal-bright: #00f5e4;
+    --teal-mid: #00c9b8;
+    --teal-dim: #007a72;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ─── Canvas Background ─── */
+.profile-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+}
+
+.mesh-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background:
+        radial-gradient(ellipse 80% 40% at 20% 90%, rgba(0, 102, 204, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 30% at 80% 95%, rgba(0, 245, 228, 0.08) 0%, transparent 60%);
+    overflow: hidden;
+}
+
+.mesh-wave::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 245, 228, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 228, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 100% 80% at 50% 100%, black 30%, transparent 80%);
+    animation: gridShift 8s linear infinite;
+}
+
+@keyframes gridShift {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(60px);
+    }
+}
+
+.node-network {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.25;
+}
+
+.center-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 245, 228, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    animation: orb 6s ease-in-out infinite;
+}
+
+@keyframes orb {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+/* ========== Main Content ========== */
+.profile-main {
+    position: relative;
+    z-index: 10;
+    padding: 6rem 2rem 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ========== Profile Header Card ========== */
+.profile-header-card {
+    position: relative;
+    background: rgba(4, 28, 48, 0.5);
+    border: 1px solid rgba(0, 245, 228, 0.15);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Neon borders */
+.neon-border {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    box-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+    opacity: 0;
+    animation: neonPulse 2s ease-in-out infinite;
+}
+
+.neon-tl {
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1.5px;
+    animation-delay: 0s;
+}
+
+.neon-tr {
+    top: 20px;
+    right: 0;
+    bottom: 20px;
+    width: 1.5px;
+    background: linear-gradient(180deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    animation-delay: 0.5s;
+}
+
+.neon-bl {
+    top: 20px;
+    left: 0;
+    bottom: 20px;
+    width: 1.5px;
+    background: linear-gradient(180deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    animation-delay: 1s;
+}
+
+.neon-br {
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1.5px;
+    animation-delay: 1.5s;
+}
+
+@keyframes neonPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Corner dots */
+.corner-dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #00e5ff;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00d4ff, 0 0 16px #00d4ff;
+    animation: dotGlow 2s ease-in-out infinite;
+}
+
+.dot-tl {
+    top: -2px;
+    left: -2px;
+    animation-delay: 0s;
+}
+
+.dot-tr {
+    top: -2px;
+    right: -2px;
+    animation-delay: 0.5s;
+}
+
+.dot-bl {
+    bottom: -2px;
+    left: -2px;
+    animation-delay: 1s;
+}
+
+.dot-br {
+    bottom: -2px;
+    right: -2px;
+    animation-delay: 1.5s;
+}
+
+@keyframes dotGlow {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+}
+
+/* Avatar Section */
+.profile-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    background: rgba(0, 245, 228, 0.1);
+    border: 2px solid rgba(0, 245, 228, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.avatar:hover {
+    border-color: #00f5e4;
+    box-shadow: 0 0 30px rgba(0, 245, 228, 0.2);
+    transform: scale(1.05);
+}
+
+.avatar svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #00f5e4;
+}
+
+.avatar-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.profile-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(224, 247, 245, 0.6);
+    font-size: 0.85rem;
+}
+
+.meta-item svg {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+.meta-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(0, 245, 160, 0.15);
+    border: 1px solid rgba(0, 245, 160, 0.3);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #00f5a0;
+}
+
+.meta-badge svg {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.edit-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 245, 228, 0.1);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    color: #00f5e4;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.edit-toggle-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.edit-toggle-btn:hover {
+    background: rgba(0, 245, 228, 0.2);
+    border-color: #00f5e4;
+    box-shadow: 0 0 20px rgba(0, 245, 228, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ========== Profile Grid ========== */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.profile-card {
+    position: relative;
+    background: rgba(4, 28, 48, 0.4);
+    border: 1px solid rgba(0, 245, 228, 0.12);
+    border-radius: 16px;
+    padding: 1.8rem;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.profile-card:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.profile-card:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.profile-card:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.profile-card:nth-child(4) {
+    animation-delay: 0.5s;
+}
+
+/* Card neon borders */
+.card-neon {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-neon-top {
+    top: 0;
+    left: 15px;
+    right: 15px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+}
+
+.card-neon-right {
+    top: 15px;
+    right: 0;
+    bottom: 15px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, #00d4ff, transparent);
+}
+
+.card-neon-bottom {
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+}
+
+.card-neon-left {
+    top: 15px;
+    left: 0;
+    bottom: 15px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, #00d4ff, transparent);
+}
+
+.profile-card:hover .card-neon {
+    opacity: 0.6;
+}
+
+.profile-card:hover {
+    border-color: rgba(0, 245, 228, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 245, 228, 0.08);
+}
+
+/* Card Heading */
+.card-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card-heading svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #00f5e4;
+}
+
+/* ========== Info Card ========== */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(224, 247, 245, 0.5);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-label svg {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+.info-value {
+    color: #e0f7f5;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    background: rgba(0, 245, 228, 0.04);
+    border: 1px solid rgba(0, 245, 228, 0.1);
+    border-radius: 8px;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: rgba(0, 245, 228, 0.05);
+    border: 1px solid rgba(0, 245, 228, 0.25);
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.edit-input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.edit-textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.name-input {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.save-btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+}
+
+/* ========== Stats Card ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 1.2rem;
+    background: rgba(0, 245, 228, 0.03);
+    border: 1px solid rgba(0, 245, 228, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    border-color: rgba(0, 245, 228, 0.2);
+    background: rgba(0, 245, 228, 0.06);
+}
+
+.stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00f5e4, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.stat-value svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: #00f5e4;
+    -webkit-text-fill-color: #00f5e4;
+}
+
+.stat-desc {
+    color: rgba(224, 247, 245, 0.4);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+/* ========== Badges Card ========== */
+.badges-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 1;
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    background: rgba(0, 245, 228, 0.03);
+    border: 1px solid rgba(0, 245, 228, 0.08);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.badge-item:hover {
+    border-color: rgba(0, 245, 228, 0.2);
+    background: rgba(0, 245, 228, 0.06);
+    transform: translateX(5px);
+}
+
+.badge-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 245, 160, 0.15);
+    border: 1px solid rgba(0, 245, 160, 0.3);
+    border-radius: 50%;
+}
+
+.badge-icon svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: #00f5a0;
+}
+
+.badge-name {
+    font-weight: 500;
+    color: #e0f7f5;
+}
+
+/* ========== Actions Card ========== */
+.actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 1;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    background: rgba(0, 245, 228, 0.05);
+    border: 1px solid rgba(0, 245, 228, 0.15);
+    border-radius: 8px;
+    color: #e0f7f5;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn svg {
+    width: 1rem;
+    height: 1rem;
+    color: #00f5e4;
+}
+
+.action-btn:hover {
+    background: rgba(0, 245, 228, 0.12);
+    border-color: rgba(0, 245, 228, 0.35);
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(0, 245, 228, 0.1);
+}
+
+/* ========== Animations ========== */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+    .profile-header-card {
+        padding: 1.5rem;
+    }
+
+    .profile-avatar-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profile-meta {
+        justify-content: center;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-name {
+        font-size: 1.4rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-main {
+        padding: 5rem 1rem 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
