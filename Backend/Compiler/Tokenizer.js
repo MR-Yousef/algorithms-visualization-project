@@ -1,7 +1,6 @@
 class Tokenizer {
     // Define token types as static properties of the Tokenizer class
     // Each token type is associated with a specific regular expression pattern or a set of characters
-    //
     static TokenType = {
         arithmeticOperator:{
             "+" : "PLUS",
