@@ -1,0 +1,15 @@
+<h1>Admin Dashboard</h1>
+
+{% for r in requests %}
+
+<div>
+    <h3>{{ r.title }}</h3>
+    <p>{{ r.description }}</p>
+
+    <a href="/algorithms/admin/approve/{{ r.id }}/">Approve</a>
+    <a href="/algorithms/admin/reject/{{ r.id }}/">Reject</a>
+</div>
+
+<hr>
+
+{% endfor %}

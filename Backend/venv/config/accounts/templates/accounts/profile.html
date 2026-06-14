@@ -1,0 +1,35 @@
+<h1>Profile</h1>
+
+<img src="{{ user.avatar.url }}" width="120" />
+
+<h2>{{ user.username }}</h2>
+<p>{{ user.email }}</p>
+<p>{{ user.role }}</p>
+
+<p>{{ user.bio }}</p>
+
+<hr>
+
+<h3>Saved Algorithms</h3>
+<h3>Saved Algorithms</h3>
+
+{% for s in saved_algorithms %}
+    <p>
+        {{ s.algorithm.title }}
+        <a href="/algorithms/unsave/{{ s.algorithm.id }}/">Remove</a>
+    </p>
+{% endfor %}
+
+<hr>
+
+<h3>Created Algorithms</h3>
+{% for a in created_algorithms %}
+    <p>{{ a.title }}</p>
+{% endfor %}
+
+<hr>
+
+<h3>My Requests</h3>
+{% for r in requests %}
+    <p>{{ r.title }} - {{ r.status }}</p>
+{% endfor %}

@@ -1,0 +1,40 @@
+<h1>My Requests</h1>
+
+<table border="1">
+
+    <tr>
+        <th>Title</th>
+        <th>Request Type</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>View Count</th>
+        <th>is_Archeved</th>
+    </tr>
+
+    {% for request_item in requests %}
+
+    <tr>
+        <td>{{ request_item.title }}</td>
+
+        <td>{{ request_item.request_type }}</td>
+
+        <td>{{ request_item.status }}</td>
+
+        <td>{{ request_item.created_at }}</td>
+
+        <td>{{ request_item.views_count }}</td>
+
+        <td>{{ request_item.is_archived }}</td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="4">
+            No Requests Yet
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>

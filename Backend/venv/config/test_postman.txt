@@ -1,0 +1,915 @@
+====================================================
+ALGORITHM VISUALIZATION PLATFORM
+POSTMAN TESTING GUIDE
+====================================================
+
+BASE URL
+
+http://localhost:8000/api/v1/
+
+====================================================
+PHASE 1 - AUTHENTICATION
+====================================================
+
+------------------------------------
+1) REGISTER USER
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/register/
+
+BODY (JSON):
+
+{
+    "username": "user1",
+    "email": "user1@test.com",
+    "password": "123456"
+}
+
+EXPECTED:
+201 Created
+
+------------------------------------
+2) LOGIN USER
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/login/
+
+BODY:
+
+{
+    "email": "user1@test.com",
+    "password": "123456"
+}
+
+SAVE:
+
+access_token
+refresh_token
+
+------------------------------------
+3) GET CURRENT USER
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/accounts/me/
+
+HEADER:
+
+Authorization: Bearer ACCESS_TOKEN
+
+EXPECTED:
+
+role = USER
+
+====================================================
+PHASE 2 - PROMOTION REQUEST
+====================================================
+
+------------------------------------
+4) CREATE PROMOTION REQUEST
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/promotion/create/
+
+HEADER:
+
+Authorization: Bearer ACCESS_TOKEN
+
+BODY:
+
+{
+    "requested_role": "CONTRIBUTOR",
+    "reason": "I want to contribute algorithms"
+}
+
+EXPECTED:
+201 Created
+
+------------------------------------
+5) MY PROMOTION REQUESTS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/accounts/promotion/my/
+
+HEADER:
+
+Authorization: Bearer ACCESS_TOKEN
+
+EXPECTED:
+Request appears in list
+
+====================================================
+PHASE 3 - ADMIN APPROVAL
+====================================================
+
+LOGIN AS ADMIN
+
+SAVE:
+
+ADMIN_ACCESS_TOKEN
+
+------------------------------------
+6) PENDING PROMOTION REQUESTS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/accounts/promotion/admin/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Promotion request visible
+
+------------------------------------
+7) APPROVE PROMOTION
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/promotion/admin/1/approve/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Promotion approved
+
+------------------------------------
+8) LOGIN AGAIN AS USER
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/login/
+
+EXPECTED:
+
+role = CONTRIBUTOR
+
+====================================================
+PHASE 4 - TOPICS
+====================================================
+
+------------------------------------
+9) CREATE TOPIC
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/topics/create/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+BODY:
+
+{
+    "name": "Searching"
+}
+
+EXPECTED:
+Topic created
+
+------------------------------------
+10) LIST TOPICS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/topics/
+
+EXPECTED:
+Searching topic appears
+
+------------------------------------
+11) UPDATE TOPIC
+------------------------------------
+
+METHOD:
+PUT
+
+URL:
+http://localhost:8000/api/v1/algorithms/topics/1/update/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+BODY:
+
+{
+    "name": "Searching Algorithms"
+}
+
+EXPECTED:
+Topic updated
+
+------------------------------------
+12) DELETE TOPIC
+------------------------------------
+
+METHOD:
+DELETE
+
+URL:
+http://localhost:8000/api/v1/algorithms/topics/1/delete/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Topic deleted
+
+====================================================
+PHASE 5 - ALGORITHM REQUESTS
+====================================================
+
+------------------------------------
+13) CREATE TOPIC AGAIN
+------------------------------------
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/topics/create/
+
+BODY:
+
+{
+    "name": "Searching"
+}
+
+------------------------------------
+14) CREATE ALGORITHM REQUEST
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/requests/create/
+
+HEADER:
+
+Authorization: Bearer CONTRIBUTOR_ACCESS_TOKEN
+
+BODY:
+
+{
+    "request_type": "CREATE",
+    "title": "Binary Search",
+    "description": "Binary Search Algorithm",
+    "code": "print('hello')",
+    "topic": 1
+}
+
+EXPECTED:
+Request created
+
+------------------------------------
+15) MY REQUESTS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/requests/my/
+
+EXPECTED:
+Request visible
+
+------------------------------------
+16) REQUEST DETAILS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/requests/1/
+
+EXPECTED:
+Request details returned
+
+====================================================
+PHASE 6 - REQUEST APPROVAL
+====================================================
+
+------------------------------------
+17) LIST PENDING REQUESTS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/admin/pending-requests/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Pending request visible
+
+------------------------------------
+18) APPROVE REQUEST
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/admin/requests/1/approve/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Request approved
+
+====================================================
+PHASE 7 - ALGORITHMS
+====================================================
+
+------------------------------------
+19) LIST ALGORITHMS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/
+
+HEADER:
+
+Authorization: Bearer ACCESS_TOKEN
+
+EXPECTED:
+Binary Search appears
+
+------------------------------------
+20) SEARCH ALGORITHM
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+
+http://localhost:8000/api/v1/algorithms/?search=binary
+
+EXPECTED:
+Binary Search returned
+
+------------------------------------
+21) ALGORITHM DETAILS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/1/
+
+EXPECTED:
+view_count increases
+
+====================================================
+PHASE 8 - SAVED ALGORITHMS
+====================================================
+
+------------------------------------
+22) SAVE ALGORITHM
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/1/save/
+
+HEADER:
+
+Authorization: Bearer ACCESS_TOKEN
+
+EXPECTED:
+Saved successfully
+
+------------------------------------
+23) MY SAVED ALGORITHMS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/saved/
+
+EXPECTED:
+Algorithm appears
+
+------------------------------------
+24) UNSAVE ALGORITHM
+------------------------------------
+
+METHOD:
+DELETE
+
+URL:
+http://localhost:8000/api/v1/algorithms/1/unsave/
+
+EXPECTED:
+Removed successfully
+
+====================================================
+PHASE 9 - DOCUMENTATION
+====================================================
+
+------------------------------------
+25) CREATE DOCUMENTATION
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/algorithms/documentation/create/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+BODY:
+
+{
+    "title": "Binary Search",
+    "content": "Explanation of Binary Search"
+}
+
+EXPECTED:
+Documentation created
+
+------------------------------------
+26) LIST DOCUMENTATION
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/documentation/
+
+EXPECTED:
+Documentation visible
+
+------------------------------------
+27) DOCUMENTATION DETAILS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/algorithms/documentation/1/
+
+EXPECTED:
+view_count increases
+------------------------------------
+28) UPDATE DOCUMENTATION
+------------------------------------
+
+METHOD:
+PUT
+
+URL:
+http://localhost:8000/api/v1/algorithms/documentation/1/update/
+
+BODY:
+
+{
+    "content": "Updated content"
+}
+
+EXPECTED:
+Documentation updated
+
+------------------------------------
+29) DELETE DOCUMENTATION
+------------------------------------
+
+METHOD:
+DELETE
+
+URL:
+http://localhost:8000/api/v1/algorithms/documentation/1/delete/
+
+EXPECTED:
+Documentation deleted
+
+====================================================
+PHASE 10 - USER MANAGEMENT
+====================================================
+
+------------------------------------
+30) USERS LIST
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/accounts/users/
+
+HEADER:
+
+Authorization: Bearer ADMIN_ACCESS_TOKEN
+
+EXPECTED:
+Users returned
+
+------------------------------------
+31) FILTER USERS
+------------------------------------
+
+METHOD:
+GET
+
+URL:
+http://localhost:8000/api/v1/accounts/users/?role=USER
+
+EXPECTED:
+Only USER roles returned
+
+------------------------------------
+32) PROMOTE USER
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/users/2/promote/
+
+EXPECTED:
+Promoted to CONTRIBUTOR
+
+------------------------------------
+33) DEMOTE USER
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/users/2/demote/
+
+EXPECTED:
+Demoted to USER
+
+====================================================
+PHASE 11 - SUPER ADMIN
+====================================================
+
+LOGIN AS SUPER_ADMIN
+
+SAVE:
+
+SUPER_ADMIN_TOKEN
+
+------------------------------------
+34) PROMOTE TO ADMIN
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/admin/2/promote/
+
+EXPECTED:
+User becomes ADMIN
+
+------------------------------------
+35) DEMOTE ADMIN
+------------------------------------
+
+METHOD:
+POST
+
+URL:
+http://localhost:8000/api/v1/accounts/admin/2/demote/
+
+EXPECTED:
+User becomes CONTRIBUTOR
+
+------------------------------------
+36) DELETE USER
+------------------------------------
+
+METHOD:
+DELETE
+
+URL:
+http://localhost:8000/api/v1/accounts/users/2/delete/
+
+EXPECTED:
+User deleted
+
+====================================================
+FINAL CHECKLIST
+====================================================
+
+[ ] Register
+[ ] Login
+[ ] Me
+[ ] Promotion Request
+[ ] Approve Promotion
+[ ] Topics CRUD
+[ ] Algorithm Request
+[ ] Approve Request
+[ ] Algorithms List
+[ ] Search
+[ ] Save Algorithm
+[ ] Unsave Algorithm
+[ ] Documentation CRUD
+[ ] Users List
+[ ] Promote User
+[ ] Demote User
+[ ] Promote Admin
+[ ] Demote Admin
+[ ] Delete User
+
+IF ALL ITEMS PASS:
+BACKEND IS READY FOR REACT INTEGRATION
+
+
+
+----------------------------------------------------
+
+
+========================================
+        ACCOUNTS API TEST GUIDE
+========================================
+
+BASE URL:
+http://127.0.0.1:8000/api/v1/accounts/
+
+AUTH:
+Bearer Token (JWT access token)
+========================================
+
+
+========================================
+1. REGISTER API
+========================================
+
+POST /register/
+
+Body (JSON):
+{
+    "username": "user1",
+    "email": "user1@test.com",
+    "password": "123456"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "Account created successfully"
+}
+
+
+========================================
+2. LOGIN API
+========================================
+
+POST /login/
+
+Body:
+{
+    "login": "user1 OR user1@test.com",
+    "password": "123456"
+}
+
+Response:
+{
+    "status": "success",
+    "data": {
+        "access": "...",
+        "refresh": "...",
+        "user": {
+            "id": 1,
+            "username": "user1",
+            "email": "user1@test.com",
+            "role": "USER"
+        }
+    }
+}
+
+
+========================================
+3. ME API
+========================================
+
+GET /me/
+
+Headers:
+Authorization: Bearer <access>
+
+Response:
+User profile data
+
+
+========================================
+4. LOGOUT API (single device)
+========================================
+
+POST /logout/
+
+Headers:
+Authorization: Bearer <access>
+
+Body:
+{
+    "refresh": "<refresh_token>"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "Logged out successfully"
+}
+
+
+========================================
+5. LOGOUT ALL DEVICES API
+========================================
+
+POST /logout-all/
+
+Headers:
+Authorization: Bearer <access>
+
+Body: NONE
+
+Response:
+{
+    "status": "success",
+    "message": "Logged out from all devices"
+}
+
+
+========================================
+6. CHANGE PASSWORD (LOGIN REQUIRED)
+========================================
+
+POST /change-password/
+
+Headers:
+Authorization: Bearer <access>
+
+Body:
+{
+    "old_password": "123456",
+    "new_password": "new123",
+    "new_password2": "new123"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "Password changed successfully"
+}
+
+
+========================================
+7. FORGOT PASSWORD (SEND OTP)
+========================================
+
+POST /forgot-password/
+
+Body:
+{
+    "email": "user1@test.com"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "OTP sent successfully"
+}
+
+
+========================================
+8. VERIFY OTP
+========================================
+
+POST /verify-otp/
+
+Body:
+{
+    "email": "user1@test.com",
+    "code": "123456"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "OTP verified"
+}
+
+
+========================================
+9. RESET PASSWORD
+========================================
+
+POST /reset-password/
+
+Body:
+{
+    "email": "user1@test.com",
+    "code": "123456",
+    "new_password": "new123"
+}
+
+Response:
+{
+    "status": "success",
+    "message": "Password changed successfully"
+}
+
+
+========================================
+ERROR RESPONSES FORMAT
+========================================
+
+400:
+{
+    "status": "error",
+    "message": "Invalid request"
+}
+
+401:
+{
+    "detail": "Authentication credentials were not provided"
+}
+
+403:
+{
+    "status": "error",
+    "message": "Forbidden"
+}
+
+
+========================================
+JWT NOTES
+========================================
+
+ACCESS TOKEN:
+- expires fast (minutes)
+
+REFRESH TOKEN:
+- used to generate new access token
+
+IMPORTANT:
+- After logout, refresh token becomes invalid (blacklisted)
+========================================
