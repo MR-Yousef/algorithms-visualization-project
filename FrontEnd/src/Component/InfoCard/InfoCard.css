@@ -1,0 +1,116 @@
+.card-border {
+    position: absolute;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.card-border-tl {
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    box-shadow: 0 0 10px #00d4ff;
+}
+
+.card-border-tr {
+    top: 20px;
+    right: 0;
+    bottom: 20px;
+    width: 1.5px;
+    background: linear-gradient(180deg, transparent, #00d4ff, transparent);
+    box-shadow: 0 0 10px #00d4ff;
+}
+
+.card-border-bl {
+    top: 20px;
+    left: 0;
+    bottom: 20px;
+    width: 1.5px;
+    background: linear-gradient(180deg, transparent, #00d4ff, transparent);
+    box-shadow: 0 0 10px #00d4ff;
+}
+
+.card-border-br {
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    box-shadow: 0 0 10px #00d4ff;
+}
+
+.menu-card:hover .card-border {
+    opacity: 1;
+}
+
+/* Card Content */
+.card-content {
+    position: relative;
+    z-index: 1;
+}
+
+.card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 245, 228, 0.08);
+    border: 1px solid rgba(0, 245, 228, 0.2);
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.card-icon svg {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.menu-card:hover .card-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 245, 228, 0.2);
+}
+
+.card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.card-description {
+    color: rgba(224, 247, 245, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-stats {
+    color: var(--teal-mid);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.card-arrow {
+    color: rgba(0, 245, 228, 0.5);
+    transition: all 0.3s ease;
+}
+
+.card-arrow svg {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.menu-card:hover .card-arrow {
+    color: #00f5e4;
+    transform: translateX(5px);
+}

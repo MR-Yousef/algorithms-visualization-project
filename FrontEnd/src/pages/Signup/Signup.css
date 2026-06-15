@@ -43,6 +43,37 @@ body {
     z-index: 0;
 }
 
+/* ========== api style ========== */
+/* API Messages */
+.api-error {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: #ff4444;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.api-success {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    color: #44ff44;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Disable button state */
+.btn-signup:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ========== Decorative Elements ========== */
 /* ─── Animated mesh wave ─── */
 .mesh-wave {
     position: absolute;
