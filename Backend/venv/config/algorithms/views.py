@@ -40,7 +40,6 @@ def create_request_page(request):
 
         algorithm = None
 
-        # 🔥 فقط للـ UPDATE / DELETE
         if request_type in ['UPDATE', 'DELETE']:
             algorithm = Algorithm.objects.get(id=request.POST['algorithm_id'])
 

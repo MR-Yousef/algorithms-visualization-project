@@ -59,9 +59,6 @@ def approve_request(request, id):
 
     req = get_object_or_404(AlgorithmRequest, id=id)
 
-    # =========================
-    # 1. CREATE REQUEST
-    # =========================
     if req.request_type == "CREATE":
 
         algorithm = Algorithm.objects.create(
@@ -72,12 +69,9 @@ def approve_request(request, id):
             owner=req.requested_by
         )
 
-    # =========================
-    # 2. UPDATE REQUEST
-    # =========================
     elif req.request_type == "UPDATE":
 
-        algorithm = req.algorithm  # الخوارزمية الأصلية
+        algorithm = req.algorithm 
 
         algorithm.title = req.title
         algorithm.description = req.description
@@ -85,18 +79,12 @@ def approve_request(request, id):
         algorithm.topic = req.topic
         algorithm.save()
 
-    # =========================
-    # 3. DELETE REQUEST
-    # =========================
     elif req.request_type == "DELETE":
 
         algorithm = req.algorithm
         algorithm.is_archived = True
         algorithm.save()
 
-    # =========================
-    # تحديث الطلب
-    # =========================
     req.status = "APPROVED"
     req.reviewed_by = request.user
     req.save()

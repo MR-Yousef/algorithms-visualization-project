@@ -95,7 +95,7 @@ urlpatterns = [
         DeleteTopicAPI.as_view()
     ),
     path(
-    'documentation/',
+        'documentation/',
         DocumentationListAPI.as_view()
     ),
 
