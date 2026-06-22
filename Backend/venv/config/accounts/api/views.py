@@ -572,7 +572,7 @@ class ChangePasswordAPI(APIView):
 
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
-        new_password2 = request.data.get("new_password2")
+        confirm_password = request.data.get("confirm_password")
 
         user = request.user
 
@@ -582,7 +582,7 @@ class ChangePasswordAPI(APIView):
                 status=400
             )
 
-        if new_password != new_password2:
+        if new_password != confirm_password:
             return api_error(
                 message="Passwords do not match",
                 status=400
