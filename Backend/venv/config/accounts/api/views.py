@@ -530,7 +530,7 @@ class ResetPasswordAPI(APIView):
         email = request.data.get("email")
         code = request.data.get("code")
         new_password = request.data.get("new_password")
-        new_password2 = request.data.get("new_password2")
+        confirm_password = request.data.get("confirm_password")
 
         user = User.objects.filter(email=email).first()
 
@@ -547,7 +547,7 @@ class ResetPasswordAPI(APIView):
             return api_error("Invalid code", 400)
 
         # update password
-        if new_password != new_password2:
+        if new_password != confirm_password:
             return api_error(
                 message="Password do not match",
                 status=400
