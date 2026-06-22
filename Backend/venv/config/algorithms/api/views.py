@@ -1,7 +1,7 @@
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from algorithms.models import Algorithm
+from algorithms.models import Algorithm, AlgorithmExecution
 from .serializers import AlgorithmSerializer, AlgorithmRequestSerializer, SavedAlgorithmSerializer , TopicSerializer, DocumentationSection, DocumentationSerializer 
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -12,11 +12,12 @@ from django.utils import timezone
 from algorithms.models import SavedAlgorithm
 from algorithms.models import Topic
 
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
 from core.api_response import api_success, api_error
+
+from django.db import transaction
 
 
 class AlgorithmListAPI(APIView):
@@ -517,4 +518,24 @@ class RequestsListAPI(APIView):
 
         return Response(serializer.data)
 
+class ExecuteAlgorithmAPI(APIView):
 
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, algorithm_id):
+
+        algorithm = get_object_or_404(Algorithm, id=algorithm_id)
+
+        with transaction.atomic():
+
+            AlgorithmExecution.objects.create(
+                user=request.user,
+                algorithm=algorithm
+            )
+
+            algorithm.execution_count = algorithm.execution_count + 1
+            algorithm.save(update_fields=['execution_count'])
+
+        return api_success(
+            message="Execution recorded successfully"
+        )

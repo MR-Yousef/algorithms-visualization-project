@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import User
 
+
 class Topic(models.Model):
 
     name = models.CharField(
@@ -27,6 +28,8 @@ class Algorithm(models.Model):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+
+    execution_count = models.PositiveBigIntegerField(default=0)
 
     views_count = models.BigIntegerField(default=0)
     is_archived = models.BooleanField(default=False)
@@ -135,3 +138,28 @@ class DocumentationSection(models.Model):
 
     def str(self):
         return self.title
+    
+
+
+class AlgorithmExecution(models.Model):
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='algorithm_executions'
+    )
+
+    algorithm = models.ForeignKey(
+        Algorithm,
+        on_delete=models.CASCADE,
+        related_name='executions'
+    )
+
+    executed_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['-executed_at']
+    def __str__(self):
+        return f"{self.user.username} -> {self.algorithm.title}"

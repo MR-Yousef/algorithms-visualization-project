@@ -21,7 +21,8 @@ from .views import (
     CreateDocumentationAPI,
     UpdateDocumentationAPI,
     DeleteDocumentationAPI,
-    RequestsListAPI
+    RequestsListAPI,
+    ExecuteAlgorithmAPI
 )
 
 urlpatterns = [
@@ -118,5 +119,6 @@ urlpatterns = [
         'documentation/<int:id>/delete/',
         DeleteDocumentationAPI.as_view()
     ),
-    path('requests/', RequestsListAPI.as_view())
+    path('requests/', RequestsListAPI.as_view()),
+    path('<int:algorithm_id>/execute/',ExecuteAlgorithmAPI.as_view())
 ]
