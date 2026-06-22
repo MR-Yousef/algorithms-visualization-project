@@ -56,7 +56,6 @@ class AlgorithmRequest(models.Model):
 
     request_type = models.CharField(max_length=10, choices=REQUEST_TYPES)
 
-    # 🔥 مهم: ربط الخوارزمية (للـ UPDATE / DELETE فقط)
     algorithm = models.ForeignKey(
         'Algorithm',
         null=True,
@@ -136,7 +135,7 @@ class DocumentationSection(models.Model):
 
     updated_at = models.DateTimeField(null=True, blank=True)
 
-    def str(self):
+    def __str__(self):
         return self.title
     
 
