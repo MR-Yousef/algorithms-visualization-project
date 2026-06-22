@@ -1,58 +1,68 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import AuthService from '../services/auth.service';
 
-// eslint-disable-next-line react-refresh/only-export-components
+// Create the authentication context
 export const AuthContext = createContext(null);
 
+/**
+ * Provides authentication state and actions to the entire application.
+ * Manages user data, tokens (access & refresh), and login/logout flows.
+ */
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Get storage type based on remember me
-    const getStorage = () => {
+    // ---------- Stable storage helpers ----------
+
+    /** Returns localStorage if "remember me" is true, otherwise sessionStorage. */
+    const getStorage = useCallback(() => {
         const rememberMe = localStorage.getItem('remember_me') === 'true';
         return rememberMe ? localStorage : sessionStorage;
-    };
+    }, []);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const getAccessToken = useCallback(() => getStorage().getItem('access_token'));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const getRefreshToken = useCallback(() => getStorage().getItem('refresh_token'));
+    /** Retrieves the access token from the appropriate storage. */
+    const getAccessToken = useCallback(
+        () => getStorage().getItem('access_token'),
+        [getStorage]
+    );
 
-    // Save tokens with rememberMe option
-    const setTokens = (access, refresh, rememberMe = false) => {
-        // Save remember preference
+    /** Retrieves the refresh token from the appropriate storage. */
+    const getRefreshToken = useCallback(
+        () => getStorage().getItem('refresh_token'),
+        [getStorage]
+    );
+
+    /**
+     * Stores access and refresh tokens, and persists the "remember me" preference.
+     * @param {string} access - Access token
+     * @param {string} refresh - Refresh token
+     * @param {boolean} rememberMe - Whether to persist tokens across browser sessions
+     */
+    const setTokens = useCallback((access, refresh, rememberMe = false) => {
         localStorage.setItem('remember_me', rememberMe ? 'true' : 'false');
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('access_token', access);
+        storage.setItem('refresh_token', refresh);
+    }, []);
 
-        if (rememberMe) {
-            // Remember Me = localStorage (persists)
-            localStorage.setItem('access_token', access);
-            localStorage.setItem('refresh_token', refresh);
-        } else {
-            // No Remember Me = sessionStorage (cleared when browser closes)
-            sessionStorage.setItem('access_token', access);
-            sessionStorage.setItem('refresh_token', refresh);
-        }
-    };
-
-    // Clear tokens from BOTH storages
-    const clearTokens = () => {
+    /** Removes all stored tokens and remembered settings from both storages. */
+    const clearTokens = useCallback(() => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('remember_me');
         localStorage.removeItem('remembered_email');
         sessionStorage.removeItem('access_token');
         sessionStorage.removeItem('refresh_token');
-    };
+    }, []);
 
-    const isAuthenticated = !!getAccessToken();
+    // ---------- Initial user loading (runs once on mount) ----------
 
-    // Load user on app start
     useEffect(() => {
+        let cancelled = false; // Prevents state update if component unmounts
+
         const loadUser = async () => {
             const token = getAccessToken();
-
             if (!token) {
                 setLoading(false);
                 return;
@@ -60,100 +70,111 @@ export function AuthProvider({ children }) {
 
             try {
                 const userData = await AuthService.getCurrentUser(token);
-                setUser(userData);
-                // eslint-disable-next-line no-unused-vars
+                if (!cancelled) setUser(userData);
             } catch (error) {
+                // Token may be expired – attempt to refresh it
                 const refreshToken = getRefreshToken();
-                if (refreshToken) {
+                if (refreshToken && !cancelled) {
                     try {
                         const data = await AuthService.refreshToken(refreshToken);
-                        // Save new access token to the same storage
+                        // Store the new access token in the same storage type
                         const storage = getStorage();
                         storage.setItem('access_token', data.access);
                         const userData = await AuthService.getCurrentUser(data.access);
-                        setUser(userData);
-                        // eslint-disable-next-line no-unused-vars
+                        if (!cancelled) setUser(userData);
                     } catch (refreshError) {
+                        // Refresh failed – clear everything
+                        if (!cancelled) {
+                            clearTokens();
+                            setUser(null);
+                        }
+                    }
+                } else {
+                    // No refresh token available
+                    if (!cancelled) {
                         clearTokens();
                         setUser(null);
                     }
-                } else {
-                    clearTokens();
-                    setUser(null);
                 }
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
 
         loadUser();
-    }, [getAccessToken, getRefreshToken]);
 
-    // Login now accepts rememberMe parameter
-    const login = useCallback(async (email, password, rememberMe = false) => {
+        return () => {
+            cancelled = true;
+        };
+    }, []); // Runs only once on mount (empty dependency array)
+
+    // ---------- Auth actions ----------
+
+    /**
+     * Authenticates the user, stores tokens, fetches the full user profile,
+     * and updates the context state.
+     */
+    const login = useCallback(async (login, password, rememberMe = false) => {
         setError(null);
         try {
-            const data = await AuthService.login(email, password);
-            setTokens(data.access, data.refresh, rememberMe);
-            const userData = await AuthService.getCurrentUser(data.access);
-            setUser(userData);
-            return { success: true };
-        } catch (error) {
-            setError(error.message);
-            return { success: false, error: error.message };
-        }
-    }, []);
+            const response = await AuthService.login(login, password);
+            const { access, refresh, user } = response.data;
+            setTokens(access, refresh, rememberMe);
 
+            // Fetch the complete user profile (includes bio, avatar, etc.)
+            const fullUser = await AuthService.getCurrentUser(access);
+            setUser(fullUser);
+
+            return { success: true };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        }
+    }, [setTokens]);
+
+    /** Registers a new user. */
     const register = useCallback(async (username, email, password) => {
         setError(null);
         try {
             await AuthService.register(username, email, password);
             return { success: true };
-        } catch (error) {
-            setError(error.message);
-            return { success: false, error: error.message };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
         }
     }, []);
 
+    /** Logs out the user, clears tokens, and resets user state. */
     const logout = useCallback(async () => {
         const accessToken = getAccessToken();
         const refreshToken = getRefreshToken();
-
         if (accessToken && refreshToken) {
             try {
                 await AuthService.logout(accessToken, refreshToken);
-            } catch (error) {
-                console.error('Logout error:', error);
+            } catch (err) {
+                console.error('Logout error:', err);
             }
         }
-
         clearTokens();
         setUser(null);
-    }, [getAccessToken, getRefreshToken]);
+    }, [getAccessToken, getRefreshToken, clearTokens]);
 
-    const deleteAccount = useCallback(async (password) => {
-        const accessToken = getAccessToken();
+    /** Partially updates the current user object (e.g., after profile edit). */
+    const updateUser = useCallback((updatedFields) => {
+        setUser(prev => prev ? { ...prev, ...updatedFields } : null);
+    }, []);
 
-        try {
-            await AuthService.deleteAccount(accessToken, password);
-            clearTokens();
-            setUser(null);
-            return { success: true };
-        } catch (error) {
-            return { success: false, error: error.message };
-        }
-    }, [getAccessToken]);
-
+    // Expose everything through the context value
     const value = {
         user,
         loading,
         error,
-        isAuthenticated,
+        isAuthenticated: !!user,
         login,
         register,
         logout,
         getAccessToken,
-        deleteAccount,
+        updateUser,
     };
 
     return (

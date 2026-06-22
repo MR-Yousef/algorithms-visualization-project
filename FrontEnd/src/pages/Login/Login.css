@@ -667,6 +667,7 @@ body {
 .forgot-link:hover {
   opacity: 1;
   text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  cursor: pointer;
 }
 
 /* ========== Login Button ========== */

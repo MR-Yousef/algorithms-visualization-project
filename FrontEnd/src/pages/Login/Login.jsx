@@ -8,7 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 // ─── Main Component ───────────────────────────────────────────
 export default function Login() {
-    const [email, setEmail] = useState("");
+    const [ID, setID] = useState("");
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(false);
     const [remember, setRemember] = useState(false);
@@ -22,10 +22,9 @@ export default function Login() {
 
     // Load saved email on mount
     useEffect(() => {
-        const savedEmail = localStorage.getItem('remembered_email');
-        if (savedEmail) {
-            setEmail(savedEmail);
-            setRemember(true);
+        const savedID = localStorage.getItem('remembered_ID');
+        if (savedID) {
+            setID(savedID);
         }
     }, []);
 
@@ -38,8 +37,7 @@ export default function Login() {
 
     const validate = () => {
         const e = {};
-        if (!email) e.email = "IDENTIFIER REQUIRED";
-        else if (!/\S+@\S+\.\S+/.test(email)) e.email = "INVALID FORMAT";
+        if (!ID) e.ID = "IDENTIFIER REQUIRED";
         if (!password) e.password = "ACCESS KEY REQUIRED";
         else if (password.length < 6) e.password = "MINIMUM 6 CHARACTERS";
         return e;
@@ -59,14 +57,14 @@ export default function Login() {
         setLoading(true);
 
         // Pass remember to login
-        const result = await login(email, password, remember);
+        const result = await login(ID, password, remember);
 
         if (result.success) {
-            // Save email for auto-fill if Remember Me checked
+            // Save ID for auto-fill if Remember Me checked
             if (remember) {
-                localStorage.setItem('remembered_email', email);
+                localStorage.setItem('remembered_ID', ID);
             } else {
-                localStorage.removeItem('remembered_email');
+                localStorage.removeItem('remembered_ID');
             }
         } else {
             setLoading(false);
@@ -99,24 +97,24 @@ export default function Login() {
                 <form className="login-form" onSubmit={handleSubmit} noValidate>
                     {apiError && <div className="api-error">{apiError}</div>}
 
-                    {/* Email */}
+                    {/* ID */}
                     <div className="field-group">
                         <label className="field-label">
                             <span className="field-label-icon" />
-                            Email
+                            Enter Username or Email
                         </label>
                         <div className="field-wrapper">
                             <input
-                                type="email"
+                                type="text"
                                 className="field-input"
-                                placeholder="user@gmail.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="username or email"
+                                value={ID}
+                                onChange={(e) => setID(e.target.value)}
                                 autoComplete="email"
                             />
                             <span className="field-icon"><UserIcon /></span>
                         </div>
-                        {errors.email && <span className="error-msg">⚠ {errors.email}</span>}
+                        {errors.ID && <span className="error-msg">⚠ {errors.ID}</span>}
                     </div>
 
                     {/* Password */}
@@ -160,7 +158,7 @@ export default function Login() {
                             </span>
                             Remember Me
                         </label>
-                        <a href="#" className="forgot-link">Reset Password →</a>
+                        <a onClick={() => navigate('/ForgetPassword')} className="forgot-link">Forget Password →</a>
                     </div>
 
                     {/* Submit */}

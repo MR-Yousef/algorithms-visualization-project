@@ -1,6 +1,16 @@
+// src/services/auth.service.js
+// Centralized HTTP requests for authentication endpoints.
 import { ENDPOINTS } from '../config/api.config';
 
 class AuthService {
+
+    /**
+     * Registers a new user.
+     * @param {string} username
+     * @param {string} email
+     * @param {string} password
+     * @returns {Promise<object>} Response data on success
+     */
     static async register(username, email, password) {
         const response = await fetch(ENDPOINTS.REGISTER, {
             method: 'POST',
@@ -8,17 +18,14 @@ class AuthService {
             body: JSON.stringify({ username, email, password }),
         });
 
-        // 👇 Check if response is OK before parsing JSON
-        const text = await response.text(); // Get raw text first
-        console.log("Register response:", text); // Debug
+        const text = await response.text();
+        console.log("Register response:", text);
 
         try {
-            const data = JSON.parse(text); // Try to parse as JSON
-
+            const data = JSON.parse(text);
             if (!response.ok) {
                 throw new Error(data.message || data.detail || 'Registration failed');
             }
-
             return data;
         } catch (error) {
             if (error.message.includes('JSON')) {
@@ -28,26 +35,30 @@ class AuthService {
         }
     }
 
-    static async login(email, password) {
-        console.log("Logging in with:", { email }); // Debug
+    /**
+     * Authenticates a user.
+     * @param {string} login - username or email
+     * @param {string} password
+     * @returns {Promise<object>} Object containing access, refresh tokens and user data
+     */
+    static async login(login, password) {
+        console.log("Logging in with:", { login });
 
         const response = await fetch(ENDPOINTS.LOGIN, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ login, password }),
         });
 
         const text = await response.text();
-        console.log("Login response:", text); // Debug
+        console.log("Login response:", text);
 
         try {
             const data = JSON.parse(text);
-
             if (!response.ok) {
                 throw new Error(data.message || data.detail || 'Invalid credentials');
             }
-
-            return data; // { access, refresh }
+            return data;
         } catch (error) {
             if (error.message.includes('JSON')) {
                 throw new Error(`Server error: ${response.status} ${response.statusText}`);
@@ -56,6 +67,11 @@ class AuthService {
         }
     }
 
+    /**
+     * Fetches the currently authenticated user's profile.
+     * @param {string} accessToken
+     * @returns {Promise<object>} User profile data
+     */
     static async getCurrentUser(accessToken) {
         const response = await fetch(ENDPOINTS.ME, {
             method: 'GET',
@@ -73,14 +89,17 @@ class AuthService {
         }
 
         const data = JSON.parse(text);
-
         if (!response.ok) {
             throw new Error(data.message || 'Failed to fetch user');
         }
-
         return data;
     }
 
+    /**
+     * Obtains a new access token using a refresh token.
+     * @param {string} refreshToken
+     * @returns {Promise<object>} New access token data
+     */
     static async refreshToken(refreshToken) {
         const response = await fetch(ENDPOINTS.REFRESH, {
             method: 'POST',
@@ -90,14 +109,18 @@ class AuthService {
 
         const text = await response.text();
         const data = JSON.parse(text);
-
         if (!response.ok) {
             throw new Error('Token refresh failed');
         }
-
         return data;
     }
 
+    /**
+     * Logs out the user by invalidating the refresh token.
+     * @param {string} accessToken
+     * @param {string} refreshToken
+     * @returns {Promise<object>} Logout confirmation
+     */
     static async logout(accessToken, refreshToken) {
         const response = await fetch(ENDPOINTS.LOGOUT, {
             method: 'POST',
@@ -110,40 +133,6 @@ class AuthService {
 
         const text = await response.text();
         return JSON.parse(text);
-    }
-    static async deleteAccount(accessToken, password) {
-        const response = await fetch(ENDPOINTS.DELETE_ACCOUNT, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ password }),
-        });
-
-        const text = await response.text();
-
-        if (!response.ok) {
-            try {
-                const data = JSON.parse(text);
-                throw new Error(data.message || data.detail || 'Failed to delete account');
-            } catch (e) {
-                if (text) {
-                    throw new Error(`Failed to delete account: ${text.substring(0, 100)}`);
-                }
-                throw new Error('Failed to delete account');
-            }
-        }
-
-        if (!text) {
-            return { status: 'success', message: 'Account deleted successfully' };
-        }
-
-        try {
-            return JSON.parse(text);
-        } catch (e) {
-            return { status: 'success', message: 'Account deleted successfully' };
-        }
     }
 }
 
