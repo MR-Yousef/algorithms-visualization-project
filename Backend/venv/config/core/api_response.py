@@ -8,7 +8,7 @@ def api_success(data=None, message="success", status=200):
         "data": data
     }, status=status)
 
-def api_error(message="error", errors=None, status=400):
+def api_error(errors=None, message="error", status=400):
 
     return Response({
         "status": "error",

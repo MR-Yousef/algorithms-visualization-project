@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from accounts.models import User
 
-from rest_framework import serializers
-from accounts.models import User
-
 from accounts.models import PromotionRequest
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -19,7 +16,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-
         return User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -43,6 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         read_only_fields = [
             'id',
+            'username',
             'email',
             'role',
             'created_at'

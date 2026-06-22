@@ -1,6 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager
+)
 
 class UserManager(BaseUserManager):
 
@@ -15,7 +18,7 @@ class UserManager(BaseUserManager):
             username=username,
             role=role
         )
-
+        # hashing
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -47,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='USER')
 
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -62,7 +65,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
 
 class PromotionRequest(models.Model):
 
@@ -78,7 +80,7 @@ class PromotionRequest(models.Model):
     )
 
     requested_role = models.CharField(
-        max_length=20
+        choices=User.ROLE_CHOICES
     )
 
     reason = models.TextField()
@@ -91,7 +93,6 @@ class PromotionRequest(models.Model):
 
     admin_note = models.TextField(
         blank=True,
-        null=True
     )
 
     reviewed_by = models.ForeignKey(

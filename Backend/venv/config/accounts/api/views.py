@@ -22,9 +22,6 @@ from .permissions import IsSuperAdmin
 
 from core.api_response import api_success, api_error
 
-
-from rest_framework.permissions import AllowAny
-
 import random
 from django.core.mail import send_mail
 
@@ -81,54 +78,23 @@ class LoginAPI(APIView):
             "Login successful"
         )
 
-
-# class LoginAPI(APIView):
-    
-#     def post(self, request):
-
-#         user = authenticate(
-#             email=request.data['email'],
-#             password=request.data['password']
-#         )
-
-#         if not user:
-#             return api_error("Invalid credentials", status=401)
-#         if not user.is_active:
-#             return api_error(
-#                 message="Account is deactivated",
-#                 status=403
-#             )
-#         refresh = RefreshToken.for_user(user)
-
-#         return api_success({
-#             "access": str(refresh.access_token),
-#             "refresh": str(refresh),
-#             "user": {
-#                 "id": user.id,
-#                 "email": user.email,
-#                 "role": user.role
-#             }
-#         }, "Login successful")
     
 class RegisterAPI(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
-
         serializer = RegisterSerializer(data=request.data)
 
         if serializer.is_valid():
-
             serializer.save()
-
             return api_success(
                 message="Account created successfully",
                 status=status.HTTP_201_CREATED
             )
 
-        return Response(
-            serializer.errors,
-            # status = 400
-            status=status.HTTP_400_BAD_REQUEST
+        return api_error(
+            message="Validation erroe",
+            errors=serializer.errors,
+            status=400
         )
 
 class MeAPI(APIView):
@@ -136,13 +102,10 @@ class MeAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
         serializer = UserSerializer(request.user)
-
         return Response(serializer.data)
 
     def put(self, request):
-
         serializer = UserSerializer(
             request.user,
             data=request.data,
@@ -150,13 +113,12 @@ class MeAPI(APIView):
         )
 
         if serializer.is_valid():
-
             serializer.save()
-
             return Response(serializer.data)
 
-        return Response(
-            serializer.errors,
+        return api_error(
+            message="erroe data",
+            errors=serializer.errors,
             status=400
         )
     
@@ -205,7 +167,11 @@ class CreatePromotionRequestAPI(APIView):
 
         serializer = PromotionRequestSerializer(promotion)
 
-        return Response(serializer.data, status=201)
+        return api_success(
+            message="ok request",
+            data=serializer.data,
+            status=201
+        )
     
 
 class MyPromotionRequestsAPI(APIView):
@@ -223,7 +189,11 @@ class MyPromotionRequestsAPI(APIView):
             many=True
         )
 
-        return Response(serializer.data)
+        return api_success(
+                    message="success",
+                    data=serializer.data,
+                    status=200
+                )
     
 
 class PromotionRequestsAdminAPI(APIView):
@@ -241,7 +211,11 @@ class PromotionRequestsAdminAPI(APIView):
             many=True
         )
 
-        return Response(serializer.data)
+        return api_success(
+            message="success",
+            data=serializer.data,
+            status=200
+        )
     
 class ApprovePromotionAPI(APIView):
 
@@ -254,7 +228,6 @@ class ApprovePromotionAPI(APIView):
             id=id
         )
         if promotion.status != 'PENDING':
-
             return api_error(
                 message="Already processed",
                 status=400
@@ -271,14 +244,10 @@ class ApprovePromotionAPI(APIView):
             user.role = promotion.requested_role
             user.save()
 
-
-        promotion.status = 'APPROVED'
-
-        promotion.reviewed_by = request.user
-
-        promotion.reviewed_at = timezone.now()
-
-        promotion.save()
+            promotion.status = 'APPROVED'
+            promotion.reviewed_by = request.user
+            promotion.reviewed_at = timezone.now()
+            promotion.save()
 
         return api_success(
             message="Promotion approved",
@@ -387,11 +356,9 @@ class DeleteUserAPI(APIView):
 
         user = get_object_or_404(User, id=id)
 
-        # منع حذف النفس
         if request.user.id == user.id:
             return api_error("You cannot delete yourself", 400)
 
-        # 🔥 هنا أهم منطق
         if request.user.role == "ADMIN":
             if user.role in ["ADMIN", "SUPER_ADMIN"]:
                 return api_error("Admin cannot delete this user", 403)
@@ -399,7 +366,6 @@ class DeleteUserAPI(APIView):
         elif request.user.role == "SUPER_ADMIN":
             if user.role in ["SUPER_ADMIN"]:
                 return api_error("Super admin cannot delete this user", 403)
-            # superadmin يستطيع كل شيء
             pass
 
         user.delete()
@@ -504,8 +470,6 @@ class ForgotPasswordAPI(APIView):
 
         if not user:
             return api_error("User not found", 404)
-
-        # منع إرسال متعدد (اختياري احترافي)
         PasswordResetOTP.objects.filter(
             user=user,
             is_used=False
@@ -552,7 +516,6 @@ class VerifyOTPAPI(APIView):
         if not otp:
             return api_error("Invalid code", 400)
 
-        # ⏱️ expiry (10 minutes)
         if (timezone.now() - otp.created_at).seconds > 600:
             return api_error("Code expired", 400)
 
@@ -613,21 +576,18 @@ class ChangePasswordAPI(APIView):
 
         user = request.user
 
-        # تحقق من القديم
         if not user.check_password(old_password):
             return api_error(
                 message="Old password is incorrect",
                 status=400
             )
 
-        # تأكيد كلمة المرور الجديدة
         if new_password != new_password2:
             return api_error(
                 message="Passwords do not match",
                 status=400
             )
 
-        # تغيير كلمة المرور
         user.set_password(new_password)
         user.save()
 
