@@ -183,7 +183,7 @@ export default function Signup() {
                             </span>
                             I agree to Terms
                         </label>
-                        <a href="#" className="forgot-link">Privacy Policy →</a>
+                        <a onClick={() => navigate('/privacy-policy')} className="forgot-link">Privacy Policy →</a>
                     </div>
                     {errors.terms && <span className="error-msg">⚠ {errors.terms}</span>} {/* 👈 ADDED */}
 

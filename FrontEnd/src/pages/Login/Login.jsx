@@ -158,7 +158,7 @@ export default function Login() {
                             </span>
                             Remember Me
                         </label>
-                        <a onClick={() => navigate('/ForgetPassword')} className="forgot-link">Forget Password →</a>
+                        <a onClick={() => navigate('/forget-password')} className="forgot-link">Forget Password →</a>
                     </div>
 
                     {/* Submit */}

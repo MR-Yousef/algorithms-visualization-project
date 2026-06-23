@@ -1,0 +1,244 @@
+/* ============================================================
+   PRIVACY POLICY PAGE – Styles
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg-deep: #020d18;
+    --teal-bright: #00f5e4;
+    --teal-mid: #00c9b8;
+    --primary-gradient: linear-gradient(135deg, #00d4ff, #0099ff);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-deep);
+    color: #e0f7f5;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ---------- Page Layout ---------- */
+.privacy-page {
+    position: relative;
+    min-height: 100vh;
+}
+
+.privacy-main {
+    position: relative;
+    z-index: 10;
+    padding: 6rem 2rem 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ---------- Card ---------- */
+.privacy-card {
+    position: relative;
+    background: rgba(4, 28, 48, 0.5);
+    border: 1px solid rgba(0, 245, 228, 0.15);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Neon animated borders (same as other pages) */
+.neon-border {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    box-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+    opacity: 0.4;
+    animation: neonPulse 2s ease-in-out infinite;
+}
+
+.neon-tl {
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    animation-delay: 0s;
+}
+
+.neon-tr {
+    top: 24px;
+    right: 0;
+    bottom: 24px;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    animation-delay: 0.5s;
+}
+
+.neon-bl {
+    top: 24px;
+    left: 0;
+    bottom: 24px;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, #00d4ff, #00e5ff, #00d4ff, transparent);
+    animation-delay: 1s;
+}
+
+.neon-br {
+    bottom: 0;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    animation-delay: 1.5s;
+}
+
+@keyframes neonPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- Content ---------- */
+.privacy-content {
+    position: relative;
+    z-index: 1;
+}
+
+.privacy-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.privacy-title svg {
+    width: 2rem;
+    height: 2rem;
+    color: #00f5e4;
+}
+
+.privacy-body {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.privacy-body section {
+    margin-bottom: 2rem;
+}
+
+.privacy-body h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+    border-left: 3px solid #00f5e4;
+    padding-left: 1rem;
+}
+
+.privacy-body p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.privacy-body ul {
+    list-style: none;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.privacy-body ul li {
+    position: relative;
+    padding-left: 1.2rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.privacy-body ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #00f5e4;
+    font-weight: 700;
+}
+
+.privacy-body strong {
+    color: #e0f7f5;
+}
+
+/* ---------- Footer / Back button ---------- */
+.privacy-footer {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 245, 228, 0.1);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    color: #00f5e4;
+    padding: 0.7rem 1.8rem;
+    border-radius: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn svg {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.back-btn:hover {
+    background: rgba(0, 245, 228, 0.2);
+    border-color: #00f5e4;
+    box-shadow: 0 0 20px rgba(0, 245, 228, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .privacy-main {
+        padding: 5rem 1rem 2rem;
+    }
+
+    .privacy-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .privacy-title {
+        font-size: 1.5rem;
+    }
+}

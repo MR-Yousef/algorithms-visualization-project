@@ -1,4 +1,3 @@
-// src/router.js
 import { createBrowserRouter } from "react-router-dom";
 import Welcome from "../pages/Welcome/Welcome";
 import Help from "../pages/Help/Help";
@@ -7,6 +6,7 @@ import Signup from "../pages/Signup/Signup";
 import Login from "../pages/Login/Login";
 import Profile from "../pages/Profile/Profile";
 import ForgetPassword from "../pages/ForgetPassword/ForgetPassword";
+import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -33,8 +33,12 @@ const myRouter = createBrowserRouter([
         element: <Profile />
     },
     {
-        path: '/ForgetPassword',
+        path: '/forget-password',
         element: <ForgetPassword />
+    },
+    {
+        path: '/privacy-policy',
+        element: <PrivacyPolicy />
     }
 ]);
 
