@@ -313,7 +313,7 @@ export default function Profile() {
                     },
                     body: JSON.stringify({
                         password: deletePassword,
-                        password2: deletePassword,
+                        confirm_password: deletePassword,
                     }),
                 });
 
@@ -325,7 +325,7 @@ export default function Profile() {
                 const msg =
                     data?.detail ||
                     data?.password?.[0] ||
-                    data?.password2?.[0] ||
+                    data?.confirm_password?.[0] ||
                     'Failed to delete account.';
                 return { success: false, error: msg };
             };
