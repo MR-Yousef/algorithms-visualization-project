@@ -115,6 +115,14 @@ class DocumentationSection(models.Model):
 
     content = models.TextField()
 
+    TYPE_CHOICES = [
+        ("LANGUAGE", "Language Guide"),
+        ("FLOWCHART", "Flowchart Guide"),
+        ("INPUT", "Input Method"),
+    ]
+
+    type_documintation = models.CharField(max_length=20, choices=TYPE_CHOICES)
+
     view_count = models.PositiveIntegerField(default=0)
 
     created_by = models.ForeignKey(

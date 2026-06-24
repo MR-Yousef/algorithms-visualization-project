@@ -420,7 +420,9 @@ class DocumentationDetailAPI(APIView):
 
         serializer = DocumentationSerializer(doc)
 
-        return Response(serializer.data)
+        return api_success(
+            data=serializer.data
+        )
     
 
 class CreateDocumentationAPI(APIView):
@@ -440,13 +442,13 @@ class CreateDocumentationAPI(APIView):
                 updated_by=None
             )
 
-            return Response(
-                serializer.data,
+            return api_success(
+                data=serializer.data,
                 status=201
             )
 
-        return Response(
-            serializer.errors,
+        return api_error(
+            message=serializer.errors,
             status=400
         )
     
@@ -475,10 +477,12 @@ class UpdateDocumentationAPI(APIView):
                 updated_by=request.user
             )
 
-            return Response(serializer.data)
+            return api_success(
+                data=serializer.data
+            )
 
-        return Response(
-            serializer.errors,
+        return api_error(
+            message=serializer.errors,
             status=400
         )
     
@@ -496,7 +500,7 @@ class DeleteDocumentationAPI(APIView):
 
         doc.delete()
 
-        return api_error(
+        return api_success(
             message="Documentation deleted",
         )
     
