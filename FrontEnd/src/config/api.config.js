@@ -13,6 +13,7 @@ export const ENDPOINTS = {
     VERIFY_OTP: `${API_BASE_URL}/accounts/verify-otp/`,
     RESET_PASSWORD: `${API_BASE_URL}/accounts/reset-password/`,
     ALGORITHMS: `${API_BASE_URL}/algorithms/`,
+    DOCUMENTATION: `${API_BASE_URL}/algorithms/documentation/`,
 
 };
 export default API_BASE_URL;

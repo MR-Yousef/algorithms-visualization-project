@@ -291,3 +291,106 @@ body {
 .documentation-body td {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+.admin-actions {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.4rem;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 0.3rem;
+}
+
+.icon-btn:hover {
+    color: #00f5e4;
+}
+
+/* تجميع الأقسام */
+.type-section {
+    margin-bottom: 2.5rem;
+}
+
+.type-heading {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid #00f5e4;
+}
+
+/* أزرار الإدارة */
+.admin-actions {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.4rem;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+}
+
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 0.3rem;
+}
+
+.icon-btn:hover {
+    color: #00f5e4;
+}

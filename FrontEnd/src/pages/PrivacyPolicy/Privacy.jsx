@@ -133,7 +133,7 @@ export default function Privacy() {
 
                         {/* Back to Home */}
                         <div className="privacy-footer">
-                            <button className="back-btn" onClick={() => navigate('/')}>
+                            <button className="back-btn" onClick={() => navigate('/signup')}>
                                 <BackIcon />
                                 Back to Home
                             </button>
