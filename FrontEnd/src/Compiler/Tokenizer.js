@@ -40,6 +40,44 @@ export class Tokenizer {
         Tokenizer.splitText = Tokenizer.formatedText.split("\n");
         Tokenizer.isSplit = true;
     }
+    static spiltFormatedLine(line) {
+        let inString = false;
+        let words = [];
+        let tempWord = ""
+        let letter ;
+        for (let i = 0 ;i < line.length;i++) {
+            letter = line[i];
+            if (!inString) {
+                if (letter == " ") {
+                    words.push(tempWord);
+                    tempWord = "";
+                }
+                else if (letter == "\"") {
+                    words.push(tempWord);
+                    tempWord = "\"";
+                    inString = true ;
+                }
+                else {
+                    tempWord += letter;
+                }
+            }
+            else {
+                if (letter == "\"") {
+                    tempWord += "\"";
+                    words.push(tempWord);
+                    tempWord = "";
+                    inString = false;
+                }
+                else {
+                    tempWord += letter;
+                }
+            }
+        }
+        words.push(tempWord)
+        return words ;
+    }
+
+
     static getTokensArray() {
         return Tokenizer.tokensArray;
     }
@@ -77,8 +115,8 @@ export class Tokenizer {
             if (Tokenizer.hasErrors)
                 return;
             Tokenizer.increaseLineNumber();
-            splitLine = line.split(" ").filter((word)=>{return !word==""});
-            console.log("line", Tokenizer.getLineNumber(),":", splitLine)
+            splitLine = Tokenizer.spiltFormatedLine(line).filter((t)=>{return t!=""})
+            console.log("line", Tokenizer.getLineNumber(), ":", splitLine)
             for (let word of splitLine) {
                 if (RegEx.getType(word) == "unknown") {
                     console.log(word, "is from unknown type")

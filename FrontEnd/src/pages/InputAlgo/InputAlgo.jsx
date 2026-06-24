@@ -79,6 +79,7 @@ function InputAlgo() {
             changeStatusColor(stateColors.red)
             setInputState(Tokenizer.getLexicalError().getErrorType()+" error")
             setInputStateDescription(Tokenizer.getLexicalError().getErrorMesssage())
+            
         }
         else{
             changeStatusColor(stateColors.green)

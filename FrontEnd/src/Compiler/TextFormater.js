@@ -19,9 +19,19 @@ export class TextFormater {
     // The function iterates through each character in the input text .
     // checks if it matches any of the defined operator or punctuation patterns.
     static format() {
+        let inString = false ;
         let tempFormatedText = "";
         let text = TextFormater.text;
         for (let i = 0; i < text.length; i++) {
+            if(text[i]=="\""){
+                inString = !inString ;
+                tempFormatedText +="\""
+                continue
+            }
+            if(inString){
+                tempFormatedText+=text[i];
+                continue ;
+            }
             let bool1 = RegEx.checkType(text[i], "arithmeticOperator");
             let bool2 = RegEx.checkType(text[i], "logicalOperator");
             let bool3 = RegEx.checkType(text[i], "comparisonOperator");
