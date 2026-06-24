@@ -1,11 +1,11 @@
 import "./Background.css";
 import { NodesNetworkImg } from "../../assets/Images/Images";
-function Background() {return ( 
+function Background({noAnimation}) {return ( 
     <div className="home-canvas">
         <div className="mesh-wave" />
         <NodesNetworkImg />
         <div className="center-glow" />
-        <div className="floating-particles">
+        {!noAnimation?<div className="floating-particles">
             {[...Array(20)].map((_, i) => (
                 <div key={i} className="particle" style={{
                     left: `${Math.random() * 100}%`,
@@ -14,7 +14,7 @@ function Background() {return (
                     animationDuration: `${3 + Math.random() * 4}s`
                 }} />
             ))}
-        </div>
+        </div>:<></>}
     </div>
     );}
 export default Background;

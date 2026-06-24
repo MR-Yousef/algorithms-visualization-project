@@ -17,7 +17,7 @@ The sections are displayed in a grid layout for easy navigation and readability.
  */
 export default function Help() {
     return (<>
-        <Background />
+        
         <Header />
         <div className="help-main">
             <div className="help-title-section">
@@ -26,7 +26,7 @@ export default function Help() {
                     Help & Documentation
                 </h1>
                 <p className="help-subtitle">
-                    Select your role to view relevant help guides
+                    learn more about our system  
                 </p>
             </div>
             <div className="info-cards-grid">

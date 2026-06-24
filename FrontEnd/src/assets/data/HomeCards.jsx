@@ -9,14 +9,15 @@ export const menuItems = [
         //     color: "#00d4ff",
         //     stats: "View Profile"
         // },
-        {   // instructions card
-            id:2,
-            title: "Help & Info",
-            description: "Get help and learn about AlgoVisual",
-            icon: <HelpIcon />,
-            path: "/help",
-            color: "#f59e0b",
-            stats: "Learn More",
+        
+        {   // algorithm builder card
+            id: 2,
+            title: "Add Algorithm",
+            description: "Build ,Test and upload new algorithms",
+            icon: <AddIcon />,
+            path: "/InputAlgo",
+            color: "#00f5a0",
+            stats: "New Algorithm",
         },
         {   // show build-in algorithms
             id: 3,
@@ -27,14 +28,14 @@ export const menuItems = [
             color: "#8b5cf6",
             stats: "View All",
         },
-        {   // algorithm builder card
-            id: 4,
-            title: "Add Algorithm",
-            description: "Build ,Test and upload new algorithms",
-            icon: <AddIcon />,
-            path: "/add-algorithm",
-            color: "#00f5a0",
-            stats: "New Algorithm",
-
-        },
+        {   // instructions card
+            id:4,
+            title: "Help & Info",
+            description: "Get help and learn about AlgoVisual",
+            icon: <HelpIcon />,
+            path: "/help",
+            color: "#f59e0b",
+            stats: "Learn More",
+        }
     ];
+    

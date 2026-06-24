@@ -18,7 +18,7 @@ function Header() {
             <div className="header-right">
                 <button className="header-btn" onClick={() => navigate("/profile")}>
                     <ProfileIcon />
-                    <span>Profile</span>
+                    <span className='profile-text'>Profile</span>
                     <Link to="/profile"></Link>
                 </button>
             </div>

@@ -22,8 +22,8 @@ export default function Home() {
                 {/* Welcome Section */}
                 <div className="welcome-section">
                     <h1 className="welcome-title">
-                        <span className="title-icon"><SparkleIcon /></span>
-                        Welcome to <span className="gradient-text">AlgoVisual</span>
+                        <span className="title-icon"><SparkleIcon />Welcome to</span>
+                         <span className="gradient-text">AlgoVisual</span>
                     </h1>
                     <p className="welcome-subtitle">
                         Your platform for algorithm learning and visualization

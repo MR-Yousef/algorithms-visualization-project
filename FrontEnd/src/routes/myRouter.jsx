@@ -6,6 +6,7 @@ import Home from "../pages/Home/Home";
 import Signup from "../pages/Signup/Signup";
 import Login from "../pages/Login/Login";
 import Profile from "../pages/Profile/Profile";
+import InputAlgo from "../pages/InputAlgo/InputAlgo";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -30,6 +31,10 @@ const myRouter = createBrowserRouter([
     {
         path:'/profile',
         element:<Profile/>
+    },
+    {
+        path :'/InputAlgo',
+        element :<InputAlgo/>
     }
 ]);
 

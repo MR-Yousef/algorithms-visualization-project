@@ -6,5 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     historyApiFallback: true,
+    host:"0.0.0.0",
+    port:5173
   },
 });

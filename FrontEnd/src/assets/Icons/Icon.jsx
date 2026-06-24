@@ -1,5 +1,5 @@
 // ─── SVG Icons ───────────────────────────────────────────────
-export const ProfileIcon = ({color = "currentColor"}) => (
+export const ProfileIcon = ({ color = "currentColor" }) => (
     <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
@@ -105,7 +105,7 @@ export const WelcomeArrowIcon = () => (
     </svg>
 );
 
-export const FlowchartIcon = () => ( 
+export const FlowchartIcon = () => (
     <svg width="40" height="40" viewBox="0 0 24 24"
         fill="none"
         stroke="#4FC3F7"
@@ -119,7 +119,7 @@ export const FlowchartIcon = () => (
     </svg>
 )
 
-export const InputMethod = () => ( 
+export const InputMethod = () => (
     <svg width="40" height="40" viewBox="0 0 24 24"
         fill="none"
         stroke="#4FC3F7"
@@ -133,29 +133,29 @@ export const InputMethod = () => (
     </svg>
 )
 
-export const WebsiteGuodeIcon = ()=>( 
-<svg width="40" height="40" viewBox="0 0 24 24"
-fill="none"
-stroke="#4FC3F7"
-strokeWidth="2">
-<circle cx="12" cy="12" r="10"/>
-<line x1="2" y1="12" x2="22" y2="12"/>
-<path d="M12 2C15 5 15 19 12 22"/>
-<path d="M12 2C9 5 9 19 12 22"/>
-</svg>
+export const WebsiteGuodeIcon = () => (
+    <svg width="40" height="40" viewBox="0 0 24 24"
+        fill="none"
+        stroke="#4FC3F7"
+        strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2C15 5 15 19 12 22" />
+        <path d="M12 2C9 5 9 19 12 22" />
+    </svg>
 )
 
 
-export const FAQIcon = () => ( 
-<svg width="40" height="40" viewBox="0 0 24 24"
-fill="none"
-stroke="#4FC3F7"
-strokeWidth="2"
-strokeLinecap="round">
-<circle cx="12" cy="12" r="10"/>
-<path d="M9 9a3 3 0 016 0c0 2-3 2-3 5"/>
-<circle cx="12" cy="17" r="0.5" fill="#4FC3F7"/>
-</svg>
+export const FAQIcon = () => (
+    <svg width="40" height="40" viewBox="0 0 24 24"
+        fill="none"
+        stroke="#4FC3F7"
+        strokeWidth="2"
+        strokeLinecap="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9 9a3 3 0 016 0c0 2-3 2-3 5" />
+        <circle cx="12" cy="17" r="0.5" fill="#4FC3F7" />
+    </svg>
 )
 
 export const BellIcon = () => (
@@ -217,8 +217,8 @@ export const BackIcon = () => (
     </svg>
 );
 
-export const BookIcon = ({color = "currentColor"}) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={color}  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+export const BookIcon = ({ color = "currentColor" }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
@@ -231,3 +231,4 @@ export const DatabaseIcon = () => (
         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
     </svg>
 );
+

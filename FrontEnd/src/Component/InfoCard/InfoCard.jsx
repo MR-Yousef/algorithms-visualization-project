@@ -2,14 +2,14 @@ import "./InfoCard.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ArrowIcon } from "../../assets/Icons/Icon";
-function InfoCard({ index, icon, title, description,path,stats,color }) {
+function InfoCard({ index, icon, title, description, path, stats, color }) {
     const navigate = useNavigate();
     const [hoveredCard, setHoveredCard] = useState(null);
-    return (<>
+    return (
         <div
             key={index}
             className={`menu-card ${hoveredCard === index ? 'hovered' : ''}`}
-            onMouseEnter={() => setHoveredCard(index    )}
+            onMouseEnter={() => setHoveredCard(index)}
             onMouseLeave={() => setHoveredCard(null)}
             onClick={() => navigate(path)}
         >
@@ -31,6 +31,6 @@ function InfoCard({ index, icon, title, description,path,stats,color }) {
                 </div>
             </div>
         </div>
-    </>)
+    )
 }
 export default InfoCard;

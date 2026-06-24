@@ -33,7 +33,7 @@ body {
 .home-main {
   position: relative;
   z-index: 10;
-  padding: 6rem 2rem 3rem;
+  padding-top: 10px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -60,13 +60,14 @@ body {
 .title-icon {
   display: flex;
   align-items: center;
-  color: #00f5e4;
-  animation: sparkleRotate 3s linear infinite;
+  color:white;
 }
 
 .title-icon svg {
   width: 2rem;
   height: 2rem;
+  color: #00f5e4;
+  animation: sparkleRotate 3s linear infinite;
 }
 
 @keyframes sparkleRotate {
@@ -248,12 +249,12 @@ body {
   }
 
   .stats-section {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, auto);
   }
 }
 
 @media (max-width: 480px) {
   .stats-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2,auto);
   }
 }
