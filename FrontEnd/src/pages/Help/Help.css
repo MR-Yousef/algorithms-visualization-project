@@ -1,7 +1,8 @@
-body{
+body {
     height: 100px;
 }
-.help-main { 
+
+.help-main {
     height: fit-content;
     width: 100%;
     position: absolute;
@@ -12,8 +13,9 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    
+
 }
+
 .help-title-section {
     text-align: center;
     margin-bottom: 3rem;
@@ -55,5 +57,237 @@ body{
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-    
+
+}
+
+.info-card-wrapper {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.info-card-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+
+.help-modal {
+    max-width: 650px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #041825, #061a2d);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 245, 228, 0.1);
+}
+
+.modal-icon {
+    display: flex;
+    align-items: center;
+}
+
+.modal-icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #00f5e4;
+}
+
+.modal-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    flex: 1;
+    text-align: center;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-close-btn:hover {
+    color: #ff4d4d;
+}
+
+.modal-close-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+
+.documentation-body {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.documentation-body h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00f5e4;
+    margin: 1.2rem 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.documentation-body ul {
+    list-style: none;
+    padding-left: 1.2rem;
+}
+
+.documentation-body ul li {
+    position: relative;
+    padding-left: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.documentation-body ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #00f5e4;
+    font-weight: 700;
+}
+
+.documentation-body code {
+    background: rgba(0, 245, 228, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.documentation-body pre {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    border-left: 3px solid #00f5e4;
+}
+
+.documentation-body pre code {
+    background: none;
+    padding: 0;
+}
+
+.info-card-wrapper {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.info-card-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+/* Modal specific for help */
+.help-modal {
+    max-width: 650px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #041825, #061a2d);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.modal-icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #00f5e4;
+}
+
+.modal-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    flex: 1;
+    text-align: center;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-close-btn:hover {
+    color: #ff4d4d;
+}
+
+.modal-close-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.documentation-body {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.documentation-body h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #00f5e4;
+    margin: 1.2rem 0 0.5rem;
+    font-size: 1.1rem;
+}
+
+.documentation-body ul,
+.documentation-body ol {
+    padding-left: 1.5rem;
+}
+
+.documentation-body ul li,
+.documentation-body ol li {
+    margin-bottom: 0.4rem;
+    position: relative;
+}
+
+.documentation-body ul li::before {
+    content: '›';
+    position: absolute;
+    left: -1rem;
+    color: #00f5e4;
+    font-weight: 700;
+}
+
+.documentation-body code {
+    background: rgba(0, 245, 228, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.documentation-body pre {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    border-left: 3px solid #00f5e4;
+}
+
+.documentation-body pre code {
+    background: none;
+    padding: 0;
+}
+
+.documentation-body table {
+    margin-top: 0.8rem;
+}
+
+.documentation-body th,
+.documentation-body td {
+    padding: 0.4rem 0.8rem;
+    text-align: center;
+}
+
+.documentation-body th {
+    color: #00f5e4;
+    font-weight: 600;
+}
+
+.documentation-body td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }

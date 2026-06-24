@@ -7,6 +7,7 @@ import Login from "../pages/Login/Login";
 import Profile from "../pages/Profile/Profile";
 import ForgetPassword from "../pages/ForgetPassword/ForgetPassword";
 import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
+import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -39,6 +40,10 @@ const myRouter = createBrowserRouter([
     {
         path: '/privacy-policy',
         element: <PrivacyPolicy />
+    },
+    {
+        path: '/show-algorithms',
+        element: <ShowAlgorithms />
     }
 ]);
 
