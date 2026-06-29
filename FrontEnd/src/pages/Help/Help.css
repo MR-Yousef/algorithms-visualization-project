@@ -1,5 +1,11 @@
+/* ============================================================
+   HELP PAGE – Styles
+   ============================================================ */
+
+/* ---------- Layout ---------- */
 body {
     height: 100px;
+    /* ← keeps the header space, adjust as you like */
 }
 
 .help-main {
@@ -13,7 +19,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-
 }
 
 .help-title-section {
@@ -51,13 +56,16 @@ body {
     letter-spacing: 0.5px;
 }
 
+/* ---------- Cards Grid ---------- */
 .info-cards-grid {
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-
+    flex-wrap: wrap;
+    /* in case of small screens */
+    gap: 1.5rem;
 }
 
 .info-card-wrapper {
@@ -69,6 +77,28 @@ body {
     transform: translateY(-5px);
 }
 
+/* ---------- Modals ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 
 .help-modal {
     max-width: 650px;
@@ -79,11 +109,26 @@ body {
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 245, 228, 0.1);
+    animation: slideUp 0.3s ease;
 }
 
-.modal-icon {
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
     display: flex;
     align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
 }
 
 .modal-icon svg {
@@ -118,110 +163,7 @@ body {
     height: 1.5rem;
 }
 
-
-.documentation-body {
-    color: #cbd5e1;
-    line-height: 1.7;
-}
-
-.documentation-body h3 {
-    font-family: 'Orbitron', sans-serif;
-    color: #00f5e4;
-    margin: 1.2rem 0 0.5rem;
-    font-size: 1.1rem;
-}
-
-.documentation-body ul {
-    list-style: none;
-    padding-left: 1.2rem;
-}
-
-.documentation-body ul li {
-    position: relative;
-    padding-left: 1.2rem;
-    margin-bottom: 0.4rem;
-}
-
-.documentation-body ul li::before {
-    content: '›';
-    position: absolute;
-    left: 0;
-    color: #00f5e4;
-    font-weight: 700;
-}
-
-.documentation-body code {
-    background: rgba(0, 245, 228, 0.1);
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-}
-
-.documentation-body pre {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 1rem;
-    border-radius: 8px;
-    overflow-x: auto;
-    border-left: 3px solid #00f5e4;
-}
-
-.documentation-body pre code {
-    background: none;
-    padding: 0;
-}
-
-.info-card-wrapper {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.info-card-wrapper:hover {
-    transform: translateY(-5px);
-}
-
-/* Modal specific for help */
-.help-modal {
-    max-width: 650px;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: linear-gradient(135deg, #041825, #061a2d);
-    border: 1px solid rgba(0, 245, 228, 0.3);
-    border-radius: 20px;
-    padding: 2rem;
-}
-
-.modal-icon svg {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: #00f5e4;
-}
-
-.modal-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #ffffff;
-    flex: 1;
-    text-align: center;
-}
-
-.modal-close-btn {
-    background: none;
-    border: none;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.modal-close-btn:hover {
-    color: #ff4d4d;
-}
-
-.modal-close-btn svg {
-    width: 1.5rem;
-    height: 1.5rem;
-}
-
+/* ---------- Documentation Body ---------- */
 .documentation-body {
     color: #cbd5e1;
     line-height: 1.7;
@@ -292,6 +234,43 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* ---------- Admin Controls (inside modal articles) ---------- */
+.admin-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    justify-content: flex-start;
+}
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 4px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(0, 245, 228, 0.25);
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.icon-btn:hover {
+    background: rgba(0, 245, 228, 0.15);
+    border-color: #00f5e4;
+    color: #00f5e4;
+    box-shadow: 0 0 12px rgba(0, 245, 228, 0.3);
+}
+
+.icon-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+/* ---------- Create Button (top) ---------- */
 .admin-actions {
     margin-bottom: 1.5rem;
     text-align: right;
@@ -316,81 +295,244 @@ body {
     box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
 }
 
-.modal-header-actions {
+/* ---------- Form Elements (used in Create/Edit modal) ---------- */
+.field-group {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-left: auto;
-}
-
-.icon-btn {
-    background: none;
-    border: none;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: color 0.3s;
-    padding: 0.3rem;
-}
-
-.icon-btn:hover {
-    color: #00f5e4;
-}
-
-/* تجميع الأقسام */
-.type-section {
-    margin-bottom: 2.5rem;
-}
-
-.type-heading {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
-    color: #ffffff;
+    flex-direction: column;
+    gap: 0.4rem;
     margin-bottom: 1rem;
-    padding-left: 0.5rem;
-    border-left: 3px solid #00f5e4;
 }
 
-/* أزرار الإدارة */
-.admin-actions {
-    margin-bottom: 1.5rem;
-    text-align: right;
+.field-label {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-.create-btn {
+.edit-input[type="text"],
+.edit-input[type="email"],
+.edit-input[type="password"],
+.edit-input[type="number"],
+.edit-input[type="search"],
+textarea.edit-input,
+select.edit-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 245, 228, 0.2);
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f5e4'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.2rem;
+}
+
+select.edit-input option {
+    background: #041825;
+    color: #e0f7f5;
+    padding: 0.5rem;
+}
+
+select.edit-input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+select.edit-input:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #ffffff;
+}
+
+.edit-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.save-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
     background: linear-gradient(135deg, #00d4ff, #0099ff);
     border: none;
-    border-radius: 8px;
-    padding: 0.7rem 1.4rem;
+    border-radius: 10px;
     color: #fff;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.create-btn:hover {
+.save-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
 }
 
-.modal-header-actions {
-    display: flex;
+.cancel-btn {
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
-}
-
-.icon-btn {
-    background: none;
-    border: none;
-    color: #cbd5e1;
+    padding: 0.8rem 1.5rem;
+    background: rgba(224, 247, 245, 0.05);
+    border: 1px solid rgba(224, 247, 245, 0.15);
+    border-radius: 10px;
+    color: #e0f7f5;
+    font-weight: 500;
     cursor: pointer;
-    transition: color 0.3s;
-    padding: 0.3rem;
+    transition: all 0.3s;
 }
 
-.icon-btn:hover {
+.cancel-btn:hover {
+    background: rgba(224, 247, 245, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* ---------- Messages ---------- */
+.error-msg {
+    color: #ff4d4d;
+    background: rgba(255, 50, 50, 0.1);
+    border: 1px solid rgba(255, 50, 50, 0.2);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.success-msg {
+    color: #00f5a0;
+    background: rgba(0, 245, 160, 0.1);
+    border: 1px solid rgba(0, 245, 160, 0.2);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+/* ---------- Delete Confirmation Modal ---------- */
+.delete-confirm-modal {
+    max-width: 400px;
+}
+
+.danger-description {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-cancel-btn,
+.modal-delete-btn {
+    flex: 1;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.modal-cancel-btn {
+    background: rgba(224, 247, 245, 0.05);
+    border: 1px solid rgba(224, 247, 245, 0.15);
+    color: #e0f7f5;
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(224, 247, 245, 0.1);
+}
+
+.modal-delete-btn {
+    background: rgba(255, 50, 50, 0.15);
+    border: 1px solid rgba(255, 50, 50, 0.3);
+    color: #ff4d4d;
+}
+
+.modal-delete-btn:hover:not(:disabled) {
+    background: rgba(255, 50, 50, 0.25);
+}
+
+/* ---------- Loading Indicator ---------- */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    color: rgba(0, 245, 228, 0.6);
+    font-family: 'Orbitron', sans-serif;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.articles-list {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.doc-article {
+    background: rgba(4, 28, 48, 0.5);
+    border: 1px solid rgba(0, 245, 228, 0.15);
+    border-radius: 16px;
+    padding: 1.8rem;
+    position: relative;
+}
+
+.doc-article h2 {
+    font-family: 'Orbitron', sans-serif;
     color: #00f5e4;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 245, 228, 0.1);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    color: #00f5e4;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(0, 245, 228, 0.2);
 }

@@ -8,6 +8,7 @@ import Profile from "../pages/Profile/Profile";
 import ForgetPassword from "../pages/ForgetPassword/ForgetPassword";
 import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
 import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
+import HelpDetail from "../pages/Help/HelpInfo";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -44,6 +45,10 @@ const myRouter = createBrowserRouter([
     {
         path: '/show-algorithms',
         element: <ShowAlgorithms />
+    },
+    {
+        path: '/help/:type',
+        element: <HelpDetail />
     }
 ]);
 

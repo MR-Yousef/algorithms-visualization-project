@@ -1,29 +1,31 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./Help.css";
-import InfoCard from "../../Component/InfoCard/InfoCard";
 import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
-import { sections } from "../../assets/data/InfoSectios";
 import {
-    BookIcon, BackIcon, EditIcon, DeleteIcon, AddIcon, SaveIcon, CloseIcon
+    BackIcon, EditIcon, DeleteIcon, AddIcon, SaveIcon, CloseIcon
 } from "../../assets/Icons/Icon";
 import { ENDPOINTS } from "../../config/api.config";
 import { useAuth } from "../../hooks/useAuth";
 
-export default function Help() {
-    const [selectedSection, setSelectedSection] = useState(null);
-    const [apiDocs, setApiDocs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+export default function HelpDetail() {
+    const { type } = useParams(); // e.g. 'language', 'flowchart', 'input'
+    const navigate = useNavigate();
     const { user, getAccessToken, getRefreshToken } = useAuth();
 
-    // Check if the current user has admin privileges
     const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
 
-    // ---- State for create / edit modal ----
+    const [docs, setDocs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    // Selected article for viewing in a modal
+    const [selectedDoc, setSelectedDoc] = useState(null);
+
+    // Create / Edit modal state (shared)
     const [showFormModal, setShowFormModal] = useState(false);
-    const [editingDoc, setEditingDoc] = useState(null);   // null = create mode
+    const [editingDoc, setEditingDoc] = useState(null);
     const [formData, setFormData] = useState({
         title: "",
         content: "",
@@ -32,12 +34,25 @@ export default function Help() {
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState("");
 
-    // ---- Delete confirmation ----
+    // Delete confirmation modal state
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
-    const navigate = useNavigate();
 
-    // Refresh token helper
+    // Map URL param to API type and a nice title
+    const typeMap = {
+        language: "LANGUAGE",
+        flowchart: "FLOWCHART",
+        input: "INPUT",
+    };
+    const apiType = typeMap[type] || "LANGUAGE";
+    const titleMap = {
+        language: "Language Guide",
+        flowchart: "Flowchart Guide",
+        input: "Input Methods",
+    };
+    const pageTitle = titleMap[type] || "Documentation";
+
+    // Token refresh helper
     const refreshAccessToken = async (refreshToken) => {
         const res = await fetch(ENDPOINTS.REFRESH, {
             method: "POST",
@@ -49,7 +64,7 @@ export default function Help() {
         return data.access;
     };
 
-    // ---- Fetch all documentation from the API ----
+    // Fetch all documentation and filter by the current type
     const fetchDocs = useCallback(async () => {
         try {
             let token = getAccessToken();
@@ -85,22 +100,31 @@ export default function Help() {
 
             const json = await res.json();
             const list = json.data ?? json.results ?? json;
-            setApiDocs(Array.isArray(list) ? list : []);
+            const allDocs = Array.isArray(list) ? list : [];
+            // Keep only articles of the current type
+            const filtered = allDocs.filter(
+                (doc) => (doc.type_documintation || "").toUpperCase() === apiType
+            );
+            setDocs(filtered);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    }, [getAccessToken, getRefreshToken]);
+    }, [getAccessToken, getRefreshToken, apiType]);
 
     useEffect(() => {
         fetchDocs();
     }, [fetchDocs]);
 
-    // ---- Form handlers ----
+    // ---------- Form handlers ----------
     const openCreateModal = () => {
         setEditingDoc(null);
-        setFormData({ title: "", content: "", type_documintation: "LANGUAGE" });
+        setFormData({
+            title: "",
+            content: "",
+            type_documintation: apiType,   // pre-select the current type
+        });
         setFormError("");
         setShowFormModal(true);
     };
@@ -110,7 +134,7 @@ export default function Help() {
         setFormData({
             title: doc.title || "",
             content: doc.content || "",
-            type_documintation: doc.type_documintation || "LANGUAGE",
+            type_documintation: doc.type_documintation || apiType,
         });
         setFormError("");
         setShowFormModal(true);
@@ -138,13 +162,11 @@ export default function Help() {
             });
 
             if (res.status === 401) {
-                // Attempt token refresh
                 const refresh = getRefreshToken();
                 if (refresh) {
                     const newToken = await refreshAccessToken(refresh);
                     const storage = localStorage.getItem("remember_me") === "true" ? localStorage : sessionStorage;
                     storage.setItem("access_token", newToken);
-                    // Retry with new token
                     const retryRes = await fetch(url, {
                         method,
                         headers: {
@@ -166,7 +188,8 @@ export default function Help() {
             }
 
             setShowFormModal(false);
-            fetchDocs();  // Refresh the list after successful operation
+            setSelectedDoc(null);   // close detail modal if open
+            fetchDocs();
         } catch (err) {
             setFormError(err.message);
         } finally {
@@ -174,7 +197,7 @@ export default function Help() {
         }
     };
 
-    // ---- Delete handler ----
+    // ---------- Delete handler ----------
     const handleDelete = async (id) => {
         setDeleting(true);
         try {
@@ -207,7 +230,8 @@ export default function Help() {
             }
 
             setDeleteTarget(null);
-            fetchDocs();  // Refresh list
+            setSelectedDoc(null);
+            fetchDocs();
         } catch (err) {
             alert(err.message);
         } finally {
@@ -215,164 +239,118 @@ export default function Help() {
         }
     };
 
-    // ---- Group documents by their type ----
-    const groupedDocs = {
-        LANGUAGE: [],
-        FLOWCHART: [],
-        INPUT: [],
-    };
-    apiDocs.forEach((doc) => {
-        const type = (doc.type_documintation || "").toUpperCase();
-        if (groupedDocs.hasOwnProperty(type)) {
-            groupedDocs[type].push(doc);
-        }
-    });
-
-    // ---- Merge static sections with dynamic content ----
-    const mergedSections = sections.map((section) => {
-        const typeMap = {
-            "Language Guide": "LANGUAGE",
-            "Flowchart Guide": "FLOWCHART",
-            "Input Methods": "INPUT",
-        };
-        const apiType = typeMap[section.title];
-
-        if (apiType) {
-            const docsOfType = groupedDocs[apiType] || [];
-            if (docsOfType.length > 0) {
-                return {
-                    ...section,
-                    description: `${docsOfType.length} article${docsOfType.length > 1 ? "s" : ""}`,
-                    // The modal content: each article has its own Edit/Delete buttons
-                    details: (
-                        <div>
-                            {docsOfType.map((doc) => (
-                                <article
-                                    key={doc.id}
-                                    style={{
-                                        marginBottom: "1.5rem",
-                                        paddingBottom: "1rem",
-                                        borderBottom: "1px solid rgba(0,245,228,0.1)",
-                                    }}
-                                >
-                                    <h3>{doc.title}</h3>
-                                    <p style={{ whiteSpace: "pre-wrap" }}>{doc.content}</p>
-                                    {isAdmin && (
-                                        <div
-                                            className="admin-controls"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <button
-                                                className="icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    openEditModal(doc);
-                                                }}
-                                                title="Edit"
-                                            >
-                                                <EditIcon />
-                                            </button>
-                                            <button
-                                                className="icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeleteTarget(doc.id);
-                                                }}
-                                                title="Delete"
-                                            >
-                                                <DeleteIcon />
-                                            </button>
-                                        </div>
-                                    )}
-                                </article>
-                            ))}
-                        </div>
-                    ),
-                    isApiDoc: true,
-                };
-            }
-        }
-        return { ...section, isApiDoc: false };
-    });
-
     return (
         <>
             <Background />
             <Header />
             <div className="help-main">
                 <div className="help-title-section">
-                    <h1 className="help-main-title">
-                        <span className="title-icon"><BookIcon /></span>
-                        Help & Documentation
-                    </h1>
+                    <h1 className="help-main-title">{pageTitle}</h1>
                     <p className="help-subtitle">
-                        Click on a topic to view the full guide.
+                        {docs.length} article{docs.length !== 1 ? "s" : ""}
                     </p>
                 </div>
 
-                {/* Admin: Create new documentation */}
-                {isAdmin && (
-                    <div className="admin-actions">
+                <div className="admin-actions">
+                    <button className="back-btn" onClick={() => navigate("/help")}>
+                        <BackIcon /> Back to Help
+                    </button>
+                    {isAdmin && (
                         <button className="create-btn" onClick={openCreateModal}>
                             <AddIcon /> New Document
                         </button>
-                    </div>
-                )}
+                    )}
+                </div>
 
-                {loading && <div className="loading-container">Loading documentation...</div>}
+                {loading && <div className="loading-container">Loading...</div>}
                 {error && <div className="error-msg">{error}</div>}
-                <div className="info-cards-grid">
-                    {mergedSections.map((item, index) => {
-                        const typeMap = {
-                            "Language Guide": "language",
-                            "Flowchart Guide": "flowchart",
-                            "Input Methods": "input",
-                        };
-                        const routeType = typeMap[item.title];
-                        return (
-                            <div
-                                key={item.title + index}
-                                className="info-card-wrapper"
-                                onClick={() => {
-                                    if (routeType) {
-                                        navigate(`/help/${routeType}`);
-                                    } else {
-                                        // Roles & Permissions – open modal
-                                        setSelectedSection(item);
-                                    }
-                                }}
-                            >
-                                <InfoCard
-                                    index={index}
-                                    icon={item.icon}
-                                    title={item.title}
-                                    description={item.description}
-                                />
-                            </div>
-                        );
-                    })}
+
+                {/* List of articles */}
+                <div className="articles-list">
+                    {docs.map((doc) => (
+                        <article
+                            key={doc.id}
+                            className="doc-article"
+                            onClick={() => setSelectedDoc(doc)}
+                        >
+                            <h2>{doc.title}</h2>
+                            <p style={{ whiteSpace: "pre-wrap" }}>{doc.content}</p>
+                            {isAdmin && (
+                                <div className="admin-controls">
+                                    <button
+                                        className="icon-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openEditModal(doc);
+                                        }}
+                                        title="Edit"
+                                    >
+                                        <EditIcon />
+                                    </button>
+                                    <button
+                                        className="icon-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setDeleteTarget(doc.id);
+                                        }}
+                                        title="Delete"
+                                    >
+                                        <DeleteIcon />
+                                    </button>
+                                </div>
+                            )}
+                        </article>
+                    ))}
+                    {!loading && docs.length === 0 && (
+                        <p className="no-results">No articles found for this section.</p>
+                    )}
                 </div>
             </div>
 
-            {/* Section detail modal (shows all articles of a type) */}
-            {selectedSection && (
-                <div className="modal-overlay" onClick={() => setSelectedSection(null)}>
+            {/* Article detail modal (opens when clicking an article) */}
+            {selectedDoc && (
+                <div className="modal-overlay" onClick={() => setSelectedDoc(null)}>
                     <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
-                            <span className="modal-icon">{selectedSection.icon}</span>
-                            <h2 className="modal-title">{selectedSection.title}</h2>
-                            <button className="modal-close-btn" onClick={() => setSelectedSection(null)}>
-                                <BackIcon />
+                            <h2 className="modal-title">{selectedDoc.title}</h2>
+                            <button
+                                className="modal-close-btn"
+                                onClick={() => setSelectedDoc(null)}
+                            >
+                                <CloseIcon />
                             </button>
                         </div>
                         <div className="modal-body documentation-body">
-                            {selectedSection.details}
+                            <p style={{ whiteSpace: "pre-wrap" }}>{selectedDoc.content}</p>
+                            {isAdmin && (
+                                <div className="admin-controls" style={{ marginTop: "1.5rem" }}>
+                                    <button
+                                        className="icon-btn"
+                                        onClick={() => {
+                                            openEditModal(selectedDoc);
+                                        }}
+                                        title="Edit"
+                                    >
+                                        <EditIcon />
+                                    </button>
+                                    <button
+                                        className="icon-btn"
+                                        onClick={() => {
+                                            setDeleteTarget(selectedDoc.id);
+                                            setSelectedDoc(null); // close detail modal before showing delete confirmation
+                                        }}
+                                        title="Delete"
+                                    >
+                                        <DeleteIcon />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Create/Edit modal */}
+            {/* Create/Edit modal (same as before, but now also used from inside the detail modal) */}
             {showFormModal && (
                 <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
                     <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
@@ -448,12 +426,11 @@ export default function Help() {
                             </button>
                         </div>
                         <div className="modal-body">
-                            <p className="danger-description">Are you sure you want to permanently delete this document?</p>
+                            <p className="danger-description">
+                                Are you sure you want to permanently delete this document?
+                            </p>
                             <div className="modal-actions">
-                                <button
-                                    className="modal-cancel-btn"
-                                    onClick={() => setDeleteTarget(null)}
-                                >
+                                <button className="modal-cancel-btn" onClick={() => setDeleteTarget(null)}>
                                     Cancel
                                 </button>
                                 <button
