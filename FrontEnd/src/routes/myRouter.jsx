@@ -9,6 +9,7 @@ import ForgetPassword from "../pages/ForgetPassword/ForgetPassword";
 import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
 import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
 import HelpDetail from "../pages/Help/HelpInfo";
+import InputAlgo from "../pages/InputAlgo/InputAlgo";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -49,6 +50,10 @@ const myRouter = createBrowserRouter([
     {
         path: '/help/:type',
         element: <HelpDetail />
+    },
+    {
+        path: '/InputAlgo',
+        element: <InputAlgo />
     }
 ]);
 

@@ -32,7 +32,7 @@ export const menuItems = [
         title: "Add Algorithm",
         description: "Build ,Test and upload new algorithms",
         icon: <AddIcon />,
-        path: "/add-algorithm",
+        path: "/InputAlgo",
         color: "#00f5a0",
         stats: "New Algorithm",
 
