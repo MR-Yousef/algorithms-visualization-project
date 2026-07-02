@@ -5,6 +5,12 @@ export class Token {
     // value: the actual value of the token (e.g., the specific keyword, identifier name, operator symbol, etc.)
     // lineNumber: the line number in the source code where the token was found (useful for error reporting)    
     // constructor to initialize the token with its type, value, and line number
+    /**
+     * 
+     * @param {string} type 
+     * @param {string} value 
+     * @param {number} lineNumber 
+     */
     constructor(type = "unkown", value = "noValue", lineNumber = -1) {
         this.type = type;
         this.value = value;

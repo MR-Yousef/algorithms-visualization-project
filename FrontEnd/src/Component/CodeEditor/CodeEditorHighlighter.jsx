@@ -8,7 +8,7 @@ export const CodeEditorHighlighter = StreamLanguage.define({
     token(stream) {
         if (stream.eatSpace()) return null;
         if (
-            stream.match(/^(if|else|while|input|output|skip|leaveloop)\b/)) {
+            stream.match(/^(if|else|elseif|while|input|output|skip|leaveloop)\b/)) {
             return "keyword";
         }
         if (stream.match(/^\d+(\.\d+)?/)) {
@@ -28,6 +28,8 @@ export const CodeEditorHighlighter = StreamLanguage.define({
         }
         if(stream.match(","))
             return"punctuation";
+        if(stream.match(/^[& |]+/))
+            return"logicOperator"
         stream.next();
         return null;
     }
@@ -93,5 +95,9 @@ export const CodeEditorHighlightColors = HighlightStyle.define([
     {
         tag:tags.invalid,
         color:"red"
+    },
+    {
+        tag:tags.logicOperator,
+        color :"#FF79c6"
     }
 ]);

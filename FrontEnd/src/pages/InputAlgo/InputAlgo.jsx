@@ -1,10 +1,13 @@
 import "./InputAlgo.css";
+import { FlowchartBuilder } from "../../Component/ResultManager/FlowchartBuilder";
 import CodeEditor from "../../Component/CodeEditor/CodeEditor"
-import { useState } from "react";
 import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
+import { useState } from "react";
+//import { useNavigate } from "react-router-dom";
 import {TextFormater} from "../../Compiler/TextFormater"
 import { Tokenizer } from "../../Compiler/Tokenizer";
+import { Parser } from "../../Compiler/Parser";
 
 function InputAlgo() {
     // code & compiler variables
@@ -14,6 +17,7 @@ function InputAlgo() {
         conditions: 0,
         variables : 0 
     });
+    const [ast,setAst] =useState()
     
 
     //buttons and tabs variables
@@ -34,7 +38,9 @@ function InputAlgo() {
 
     // compiler variables   
     const[isCompilling,setIsCompilling] = useState(false)
-
+    
+    // navigate variables
+    //const navigate = useNavigate();
 
     function changeStatusColor(color) {
         document.documentElement.style.setProperty("--status-color", `${color}`)
@@ -62,24 +68,28 @@ function InputAlgo() {
         console.log(inputState, inputStateDescription);
         if (!readyToGenerateFlowChart)
             return;
+        let tempGraph = new FlowchartBuilder() ;
+        console.log(tempGraph.build(ast)) ;
+        //navigate("/resaultPage");
     }
     // compile button
     function handleCompileButtonClick() {
+        console.clear() ;
         if (!readyToCompile)
             return;
         //setIsCompilling(true);
         changeStatusColor(stateColors.yellow)
         setInputState("compiling....")
         setInputStateDescription("compilling the code , this should not take long")
-        console.log(code);
-        setIsCompilling(false);
+        setIsCompilling(true);
         Tokenizer.tokenize(code);
         setIsCompilling(false)
         if(Tokenizer.hasErrors){
+            setIsCompilling(false)
             changeStatusColor(stateColors.red)
             setInputState(Tokenizer.getLexicalError().getErrorType()+" error")
             setInputStateDescription(Tokenizer.getLexicalError().getErrorMesssage())
-            
+            return ;
         }
         else{
             changeStatusColor(stateColors.green)
@@ -87,6 +97,27 @@ function InputAlgo() {
             setInputStateDescription(`found ${Tokenizer.getTokensArray().length} tokens`)
             console.log(Tokenizer.getTokensArray())
         }
+        changeStatusColor(stateColors.yellow)
+        setInputState("Parsing....")
+        setInputStateDescription("Parsing the code , this should not take long")
+        let myParser = new Parser(Tokenizer.getTokensArray())
+        myParser.parse();
+        if(myParser.hasErrors){
+            setIsCompilling(false)
+            changeStatusColor(stateColors.red)
+            setInputState(myParser.errors[0].getErrorType()+" error")
+            setInputStateDescription(myParser.errors[0].getErrorMesssage())
+            return ;
+        }
+        else{
+            changeStatusColor(stateColors.green)
+            setInputState("Compiled successfully")
+            setInputStateDescription(`you can generate flowchart now`)
+            console.log(myParser.programNode)
+            setAst( myParser.programNode) ;
+        }
+        setIsCompilling(false)
+        setReadyToGenerateFlowChart(true);
     }
 
 
@@ -105,6 +136,7 @@ function InputAlgo() {
 
     function handleTextAreaChange(value) {
         setReadyToCompile(false);
+        setReadyToGenerateFlowChart(false)
         
         setReadyToGenerateFlowChart(false)
         if (value == "") {
@@ -115,6 +147,7 @@ function InputAlgo() {
         } else {
             changeStatusColor(stateColors.green)
             setInputState("writting...");
+            changeStatusColor(stateColors.yellow)
             setInputStateDescription("writting in the text editor")
             setReadyToformat(true);
         }
@@ -124,6 +157,7 @@ function InputAlgo() {
         if (value == "") {
             changeStatusColor(stateColors.gray)
             setReadyToCompile(false);
+            setReadyToGenerateFlowChart(false)
             setInputState("Empty code");
             setInputStateDescription("Text area is empty , no action can be done")
         }

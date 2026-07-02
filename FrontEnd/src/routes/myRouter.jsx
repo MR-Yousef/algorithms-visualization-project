@@ -7,6 +7,7 @@ import Signup from "../pages/Signup/Signup";
 import Login from "../pages/Login/Login";
 import Profile from "../pages/Profile/Profile";
 import InputAlgo from "../pages/InputAlgo/InputAlgo";
+import ResultPage from "../pages/ResultPage/ResultPage";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -35,6 +36,10 @@ const myRouter = createBrowserRouter([
     {
         path :'/InputAlgo',
         element :<InputAlgo/>
+    },
+    {
+        path:'/resultPage',
+        element:<ResultPage/>
     }
 ]);
 

@@ -19,18 +19,19 @@ export class TextFormater {
     // The function iterates through each character in the input text .
     // checks if it matches any of the defined operator or punctuation patterns.
     static format() {
-        let inString = false ;
+        let inString = false;
         let tempFormatedText = "";
         let text = TextFormater.text;
         for (let i = 0; i < text.length; i++) {
-            if(text[i]=="\""){
-                inString = !inString ;
-                tempFormatedText +="\""
+            //console.log(text[i])
+            if (text[i] == "\"") {
+                inString = !inString;
+                tempFormatedText += "\""
                 continue
             }
-            if(inString){
-                tempFormatedText+=text[i];
-                continue ;
+            if (inString) {
+                tempFormatedText += text[i];
+                continue;
             }
             let bool1 = RegEx.checkType(text[i], "arithmeticOperator");
             let bool2 = RegEx.checkType(text[i], "logicalOperator");
@@ -38,19 +39,23 @@ export class TextFormater {
             let bool4 = RegEx.checkType(text[i], "assignmentOperator");
             let bool5 = RegEx.checkType(text[i], "punctuation");
             if (bool1 || bool2 || bool3 || bool4 || bool5) {
-                if (i != text.length - 1 && text[i + 1] == "="){
-                    tempFormatedText += " " + text[i] +"= "
-                    i++ ;
+                //console.log("WTF is : ",text[i])
+                if (i <= text.length - 1) {
+                    if (text[i + 1] == "=" && !bool5){
+                        tempFormatedText += ` ${text[i]}= `;
+                        i++;
+                    }
+                    else
+                        tempFormatedText += " " + text[i] + " ";
                 }
-                else if (i < text.length)
-                    tempFormatedText+= " "+text[i]+" ";
-            } else if (i != text.length - 1 && text[i]=='\\') {
-                if ( text[i + 1] == "n") {
+            }
+            else if (i != text.length - 1 && text[i] == '\\') {
+                if (text[i + 1] == "n") {
                     tempFormatedText += "\n";
                     i += 1;
                 }
-                else  
-                    tempFormatedText+="\\";
+                else
+                    tempFormatedText += "\\";
             }
             else {
                 tempFormatedText += text[i];
@@ -58,10 +63,9 @@ export class TextFormater {
 
         }
         tempFormatedText = tempFormatedText.replace(/ {2,}/g, " ").trim();
-        
         TextFormater.formatedText = tempFormatedText;
         TextFormater.isFormated = true;
-        
+
     }
     // this method :
     //  resets the text formater to its default state by setting the text to "defaultText",
