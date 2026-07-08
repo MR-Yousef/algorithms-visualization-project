@@ -1,5 +1,6 @@
 import { FlowNode } from "./FlowNode"
 import { FlowEdge } from "./FlowEdge";
+import { FlowFragment } from "./FlowFragment";
 export class FlowGraph{
     /**
      * a class to represent a flowchart graph, which contains nodes and edges
@@ -21,6 +22,18 @@ export class FlowGraph{
      */
     addEdge(tempEdge){
         this.edges.push(tempEdge)
+    }
+    /**
+     * adds a flow fragment to the graph, which contains nodes and edges
+     * @param {FlowFragment} fragment 
+     */
+    addFragment(fragment){
+        fragment.nodes.forEach((node)=>{
+            this.addNode(node);
+        })
+        fragment.edges.forEach((edge)=>{
+            this.addEdge(edge) ;
+        })
     }
 
 }

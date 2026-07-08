@@ -17,4 +17,10 @@ export class FlowNode{
         this.astNode = astNode;
         this.position = {x:0,y:0};
     }
+    /**
+     * resets the static id counter for the FlowNode class
+     */
+    static reset(){
+        FlowNode.id = 0 ;
+    }
 }

@@ -69,7 +69,11 @@ function InputAlgo() {
         if (!readyToGenerateFlowChart)
             return;
         let tempGraph = new FlowchartBuilder() ;
+        console.log("flow graph built successfully")
         console.log(tempGraph.build(ast)) ;
+        changeStatusColor(stateColors.green)
+        setInputState("Flow graph built successfully");
+        setInputStateDescription("upcoming : result page")
         //navigate("/resaultPage");
     }
     // compile button
