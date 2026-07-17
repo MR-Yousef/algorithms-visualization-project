@@ -8,6 +8,9 @@ import { useState } from "react";
 import {TextFormater} from "../../Compiler/TextFormater"
 import { Tokenizer } from "../../Compiler/Tokenizer";
 import { Parser } from "../../Compiler/Parser";
+// temp imports for testing 
+import {LayoutTreeBuilder} from "../../Component/ResultManager/LayoutTreeBuilder"
+
 
 function InputAlgo() {
     // code & compiler variables
@@ -52,6 +55,7 @@ function InputAlgo() {
     function handlFormatButtonClicking() {
         if(!readyToFormat)
             return;
+        console.clear();
         changeStatusColor(stateColors.green)
         setReadyToCompile(true);
         setInputState("Ready for compilling?");
@@ -65,15 +69,21 @@ function InputAlgo() {
     }
     // generate flowchart button
     function handleGenerateButtonClick() {
-        console.log(inputState, inputStateDescription);
+        // console.log(inputState, inputStateDescription);
         if (!readyToGenerateFlowChart)
             return;
+        console.clear();
         let tempGraph = new FlowchartBuilder() ;
+        let tempFlowGraph =tempGraph.build(ast) 
         console.log("flow graph built successfully")
-        console.log(tempGraph.build(ast)) ;
+        let tempLayoutTree = new LayoutTreeBuilder()
+        console.log(tempLayoutTree.build(tempFlowGraph))
+        console.log("layout tree built successfully")
+
         changeStatusColor(stateColors.green)
         setInputState("Flow graph built successfully");
         setInputStateDescription("upcoming : result page")
+
         //navigate("/resaultPage");
     }
     // compile button

@@ -1,18 +1,40 @@
-import { FlowEdge } from "./FlowEdge";
 import { FlowNode } from "./FlowNode";
-// a class to represent a flow fragment, which is a part of a flow graph that has an entry node and an exit node
-export class FlowFragment{
+import { FlowEdge } from "./FlowEdge";
+/*
+ * Represents a temporary fragment of the flow graph.
+ * A fragment has:
+ * - one entry node
+ * - one exit node
+ * - a collection of nodes
+ * - a collection of edges
+ * Empty fragments are allowed and use null for both
+ * entryNode and exitNode.
+ */
+export class FlowFragment {
     /**
-     * constructor for the flow fragment class
-     * @param {FlowNode} entryNode 
-     * @param {FlowNode} exitNode 
-     * @param {[FlowNode]} nodes
-     * @param {[FlowEdge]} edges
+     * @param {FlowNode|null} entryNode
+     * @param {FlowNode|null} exitNode
+     * @param {FlowNode[]} nodes
+     * @param {FlowEdge[]} edges
      */
-    constructor(entryNode,exitNode,nodes=[],edges=[]){
+    constructor(entryNode = null,exitNode = null,nodes = [],edges = []) {
         this.entryNode = entryNode;
         this.exitNode = exitNode;
-        this.nodes=nodes
-        this.edges=edges
+        this.nodes = nodes;
+        this.edges = edges;
+    }
+    /**
+     * Returns true when the fragment contains no nodes.
+     * @returns {boolean}
+     */
+    isEmpty() {
+        return this.nodes.length === 0;
+    }
+    /**
+     * Creates an empty flow fragment.
+     * @returns {FlowFragment}
+     */
+    static empty() {
+        return new FlowFragment();
     }
 }
