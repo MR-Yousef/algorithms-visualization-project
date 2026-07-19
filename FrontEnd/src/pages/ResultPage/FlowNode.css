@@ -1,0 +1,229 @@
+.flow-node {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: #172033;
+    background-color: transparent;
+    border: 3px solid #334155;
+    border-radius: 8px;
+    font-family: inherit;
+    color: #0f172a;
+}
+
+.flow-node__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.flow-node__label {
+    max-width: 100%;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.flow-node--selected {
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.flow-node__handle {
+    z-index: 3;
+    width: 10px;
+    height: 10px;
+    box-sizing: border-box;
+    background-color: #334155;
+    border: 2px solid #ffffff;
+}
+
+.flow-node--start,
+.flow-node--end {
+    border-radius: 999px;
+    background-color: #dcfce7;
+    border-color: #16a34a;
+    color: #14532d;
+    font-weight: 600;
+}
+
+.flow-node--assignment {
+    background-color: #eff6ff;
+    border-color: #2563eb;
+    color: #1e3a8a;
+    border-radius: 6px;
+}
+
+.flow-node--input,
+.flow-node--output {
+    background-color: #0f766e;
+    position: relative;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.flow-node--end {
+    background-color: #ffe4e6;
+    border-color: #e11d48;
+    color: #881337;
+}
+
+/*
+ * Outer parallelogram representing the border.
+ */
+.flow-node--input::before,
+.flow-node--output::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #0f766e;
+    clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+}
+
+/*
+ * Inner parallelogram representing the background.
+ */
+.flow-node--input::after,
+.flow-node--output::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background-color: #0f766e;
+    clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+}
+
+.flow-node--input .flow-node__content,
+.flow-node--output .flow-node__content {
+    position: relative;
+    z-index: 1;
+    padding-right: 28px;
+    padding-left: 28px;
+}
+
+.flow-node--input::before {
+    background-color: #0891b2;
+}
+
+.flow-node--input::after {
+    background-color: #ecfeff;
+}
+
+.flow-node--input {
+    color: #164e63;
+}
+
+
+.flow-node--output::before {
+    background-color: #d97706;
+}
+
+.flow-node--output::after {
+    background-color: #fffbeb;
+}
+
+.flow-node--output {
+    color: #78350f;
+}
+
+
+
+.flow-node--if,
+.flow-node--while {
+    position: relative;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+/*
+ * Outer diamond representing the border.
+ */
+.flow-node--if::before,
+.flow-node--while::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #7c3aed;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    pointer-events: none;
+}
+
+/*
+ * Inner diamond representing the background.
+ */
+.flow-node--if::after,
+.flow-node--while::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background-color: #faf5ff;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    pointer-events: none;
+}
+
+.flow-node--if .flow-node__content,
+.flow-node--while .flow-node__content {
+    position: relative;
+    z-index: 1;
+    padding-right: 36px;
+    padding-left: 36px;
+    font-weight: 600;
+}
+
+.flow-node--if::before {
+    background-color: #7c3aed;
+}
+
+.flow-node--if::after {
+    background-color: #f5f3ff;
+}
+
+.flow-node--if {
+    color: #4c1d95;
+}
+
+.flow-node--while::before {
+    background-color: #4f46e5;
+}
+
+.flow-node--while::after {
+    background-color: #eef2ff;
+}
+
+.flow-node--while {
+    color: #312e81;
+}
+
+.flow-node--junction {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+}
+
+.flow-node--junction .flow-node__content {
+    padding: 0;
+    overflow: visible;
+}
+
+.flow-node__junction-dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: #334155;
+    border-radius: 50%;
+}
+
+.flow-node__junction-dot {
+    background-color: #334155;
+}

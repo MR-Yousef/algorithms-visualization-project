@@ -1,0 +1,36 @@
+.result-page {
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+}
+
+.result-page__message,
+.result-page__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 24px;
+    text-align: center;
+}
+
+.result-page__message {
+    color: #475569;
+}
+
+.result-page__error {
+    color: #b91c1c;
+    background-color: #fef2f2;
+}
+
+.react-flow__node{
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+}
+
+.react-flow__controls{
+    color: black;
+}

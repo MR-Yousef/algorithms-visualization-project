@@ -37,6 +37,7 @@ export class LayoutTreeNode {
         // set the calculated size of this layout subtree to zero initially
         this.width = 0;
         this.height = 0;
+        this.axisX = 0;
     }
 
     /**
@@ -72,17 +73,27 @@ export class LayoutTreeNode {
     }
 
     /**
-     * Sets the calculated size of this layout subtree.
+     * Stores the calculated geometry of this layout block.
+     * axisX represents the horizontal main-flow axis,
+     * measured from the left edge of the block.
+     *
      * @param {number} width
      * @param {number} height
+     * @param {number} axisX
      */
-    setSize(width, height) {
-        // validate that width and height are finite non-negative numbers
-        if (!Number.isFinite(width) || !Number.isFinite(height) || width < 0 || height < 0)
-            throw new Error("Layout tree size must contain non-negative finite numbers.");
-        // assign the size
+    setGeometry(width, height, axisX) {
+        // validate that width , hight and axisX aree finite numbers
+        if (!Number.isFinite(width) ||!Number.isFinite(height) ||!Number.isFinite(axisX)) 
+            throw new Error("Layout tree geometry must contain finite numbers.");
+        //  validate that width and height are non-negative
+        if (width < 0 || height < 0) 
+            throw new Error("Layout tree width and height must be non-negative.");
+        // validate that axisX is within the bounds of the block width
+        if (axisX < 0 || axisX > width)
+            throw new Error(`Layout tree axisX must be between 0 and the block width ${width}.`);
         this.width = width;
         this.height = height;
+        this.axisX = axisX;
     }
 
 

@@ -1,16 +1,12 @@
 import "./InputAlgo.css";
-import { FlowchartBuilder } from "../../Component/ResultManager/FlowchartBuilder";
 import CodeEditor from "../../Component/CodeEditor/CodeEditor"
 import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
 import { useState } from "react";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {TextFormater} from "../../Compiler/TextFormater"
 import { Tokenizer } from "../../Compiler/Tokenizer";
 import { Parser } from "../../Compiler/Parser";
-// temp imports for testing 
-import {LayoutTreeBuilder} from "../../Component/ResultManager/LayoutTreeBuilder"
-
 
 function InputAlgo() {
     // code & compiler variables
@@ -43,7 +39,7 @@ function InputAlgo() {
     const[isCompilling,setIsCompilling] = useState(false)
     
     // navigate variables
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     function changeStatusColor(color) {
         document.documentElement.style.setProperty("--status-color", `${color}`)
@@ -73,18 +69,8 @@ function InputAlgo() {
         if (!readyToGenerateFlowChart)
             return;
         console.clear();
-        let tempGraph = new FlowchartBuilder() ;
-        let tempFlowGraph =tempGraph.build(ast) 
-        console.log("flow graph built successfully")
-        let tempLayoutTree = new LayoutTreeBuilder()
-        console.log(tempLayoutTree.build(tempFlowGraph))
-        console.log("layout tree built successfully")
-
-        changeStatusColor(stateColors.green)
-        setInputState("Flow graph built successfully");
-        setInputStateDescription("upcoming : result page")
-
-        //navigate("/resaultPage");
+        
+        navigate("/resultPage",{state:{ast}});
     }
     // compile button
     function handleCompileButtonClick() {
