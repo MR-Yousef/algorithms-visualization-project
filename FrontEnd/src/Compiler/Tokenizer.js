@@ -77,7 +77,10 @@ export class Tokenizer {
         return words ;
     }
 
-
+    /**
+     * method to get the array of tokens after tokenization is done
+     * @returns {[Token]}  the array of tokens after tokenization is done
+     */
     static getTokensArray() {
         return Tokenizer.tokensArray;
     }

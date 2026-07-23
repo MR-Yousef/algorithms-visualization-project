@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Background from "../../Component/Background/Background";
 import Header from "../../Component/Header/Header";
 import { SearchIcon, CodeIcon, EyeIcon, BackIcon } from "../../assets/Icons/Icon";
@@ -7,13 +8,21 @@ import { useAuth } from "../../hooks/useAuth";
 import "./ShowAlgorithms.css";
 
 export default function ShowAlgorithms() {
-    const { getAccessToken, getRefreshToken } = useAuth();
+    const { isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
+    const navigate = useNavigate();
 
     const [algorithms, setAlgorithms] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedAlgo, setSelectedAlgo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    // Redirect to login if not authenticated (after auth check completes)
+    useEffect(() => {
+        if (!authLoading && !isAuthenticated) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, authLoading, navigate]);
 
     // Simple token refresh helper
     const refreshAccessToken = async (refreshToken) => {
@@ -27,8 +36,10 @@ export default function ShowAlgorithms() {
         return data.access;
     };
 
-    // Fetch algorithms on mount
+    // Fetch algorithms only when authenticated
     useEffect(() => {
+        if (!isAuthenticated) return;
+
         const fetchAlgorithms = async () => {
             try {
                 let token = getAccessToken();
@@ -79,7 +90,7 @@ export default function ShowAlgorithms() {
         };
 
         fetchAlgorithms();
-    }, [getAccessToken, getRefreshToken]);
+    }, [isAuthenticated, getAccessToken, getRefreshToken]);
 
     // Filter by title or description
     const filtered = algorithms.filter(
@@ -88,6 +99,16 @@ export default function ShowAlgorithms() {
             (algo.description &&
                 algo.description.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+
+    // While auth is being checked, show a loader
+    if (authLoading) {
+        return <div className="loading-container">Checking authentication...</div>;
+    }
+
+    // If not authenticated, don't render anything (redirect will happen)
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <div className="show-algorithms-page">

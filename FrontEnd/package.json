@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
+    "@uiw/react-codemirror": "^4.25.11",
+    "@xyflow/react": "^12.11.2",
     "canvas": "^3.2.3",
     "framer-motion": "^12.18.1",
     "prop-types": "^15.8.1",

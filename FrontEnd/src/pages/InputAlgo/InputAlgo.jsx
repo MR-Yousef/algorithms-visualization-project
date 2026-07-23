@@ -1,13 +1,27 @@
 import "./InputAlgo.css";
 import CodeEditor from "../../Component/CodeEditor/CodeEditor"
-import { useState } from "react";
 import Header from "../../Component/Header/Header";
-import { useNavigate } from "react-router-dom";
 import Background from "../../Component/Background/Background";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextFormater } from "../../Compiler/TextFormater"
 import { Tokenizer } from "../../Compiler/Tokenizer";
+import { Parser } from "../../Compiler/Parser";
+import { useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 function InputAlgo() {
+
+    const { isAuthenticated, loading } = useAuth();
+    const navigate = useNavigate();
+
+    // Redirect to login if not authenticated (after loading finishes)
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, loading, navigate]);
+
     // code & compiler variables
     const [code, setCode] = useState("");
     const [statistics, setStatistics] = useState({
@@ -15,8 +29,8 @@ function InputAlgo() {
         conditions: 0,
         variables: 0
     });
+    const [ast, setAst] = useState()
 
-    const navigate = useNavigate();
 
     //buttons and tabs variables
     const [activeTab, setActiveTab] = useState("none");
@@ -37,6 +51,12 @@ function InputAlgo() {
     // compiler variables   
     const [isCompilling, setIsCompilling] = useState(false)
 
+    if (loading) {
+        return <div className="loading-container">Checking authentication...</div>;
+    }
+    if (!isAuthenticated) {
+        return null;
+    }
 
     function changeStatusColor(color) {
         document.documentElement.style.setProperty("--status-color", `${color}`)
@@ -48,6 +68,7 @@ function InputAlgo() {
     function handlFormatButtonClicking() {
         if (!readyToFormat)
             return;
+        console.clear();
         changeStatusColor(stateColors.green)
         setReadyToCompile(true);
         setInputState("Ready for compilling?");
@@ -61,27 +82,31 @@ function InputAlgo() {
     }
     // generate flowchart button
     function handleGenerateButtonClick() {
-        console.log(inputState, inputStateDescription);
+        // console.log(inputState, inputStateDescription);
         if (!readyToGenerateFlowChart)
             return;
+        console.clear();
+
+        navigate("/resultPage", { state: { ast } });
     }
     // compile button
     function handleCompileButtonClick() {
+        console.clear();
         if (!readyToCompile)
             return;
         //setIsCompilling(true);
         changeStatusColor(stateColors.yellow)
         setInputState("compiling....")
         setInputStateDescription("compilling the code , this should not take long")
-        console.log(code);
-        setIsCompilling(false);
+        setIsCompilling(true);
         Tokenizer.tokenize(code);
         setIsCompilling(false)
         if (Tokenizer.hasErrors) {
+            setIsCompilling(false)
             changeStatusColor(stateColors.red)
             setInputState(Tokenizer.getLexicalError().getErrorType() + " error")
             setInputStateDescription(Tokenizer.getLexicalError().getErrorMesssage())
-
+            return;
         }
         else {
             changeStatusColor(stateColors.green)
@@ -89,6 +114,27 @@ function InputAlgo() {
             setInputStateDescription(`found ${Tokenizer.getTokensArray().length} tokens`)
             console.log(Tokenizer.getTokensArray())
         }
+        changeStatusColor(stateColors.yellow)
+        setInputState("Parsing....")
+        setInputStateDescription("Parsing the code , this should not take long")
+        let myParser = new Parser(Tokenizer.getTokensArray())
+        myParser.parse();
+        if (myParser.hasErrors) {
+            setIsCompilling(false)
+            changeStatusColor(stateColors.red)
+            setInputState(myParser.errors[0].getErrorType() + " error")
+            setInputStateDescription(myParser.errors[0].getErrorMesssage())
+            return;
+        }
+        else {
+            changeStatusColor(stateColors.green)
+            setInputState("Compiled successfully")
+            setInputStateDescription(`you can generate flowchart now`)
+            console.log(myParser.programNode)
+            setAst(myParser.programNode);
+        }
+        setIsCompilling(false)
+        setReadyToGenerateFlowChart(true);
     }
 
 
@@ -107,6 +153,7 @@ function InputAlgo() {
 
     function handleTextAreaChange(value) {
         setReadyToCompile(false);
+        setReadyToGenerateFlowChart(false)
 
         setReadyToGenerateFlowChart(false)
         if (value == "") {
@@ -117,6 +164,7 @@ function InputAlgo() {
         } else {
             changeStatusColor(stateColors.green)
             setInputState("writting...");
+            changeStatusColor(stateColors.yellow)
             setInputStateDescription("writting in the text editor")
             setReadyToformat(true);
         }
@@ -126,6 +174,7 @@ function InputAlgo() {
         if (value == "") {
             changeStatusColor(stateColors.gray)
             setReadyToCompile(false);
+            setReadyToGenerateFlowChart(false)
             setInputState("Empty code");
             setInputStateDescription("Text area is empty , no action can be done")
         }

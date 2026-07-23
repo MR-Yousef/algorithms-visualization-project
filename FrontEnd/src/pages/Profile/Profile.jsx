@@ -604,8 +604,8 @@ export default function Profile() {
                         <span className="card-neon card-neon-left" />
                         <h2 className="card-heading"><BellIcon /> Quick Actions</h2>
                         <div className="actions-list">
-                            <button className="action-btn" onClick={() => navigate("/add-algorithm")}><EditIcon /> Create Algorithm</button>
-                            <button className="action-btn" onClick={() => navigate("/algorithms")}><StarIcon /> View Algorithms</button>
+                            <button className="action-btn" onClick={() => navigate("/InputAlgo")}><EditIcon /> Create Algorithm</button>
+                            <button className="action-btn" onClick={() => navigate("/show-algorithms")}><StarIcon /> View Algorithms</button>
                             <button className="action-btn" onClick={() => navigate("/help")}><ShieldIcon /> Get Help</button>
                         </div>
                     </div>

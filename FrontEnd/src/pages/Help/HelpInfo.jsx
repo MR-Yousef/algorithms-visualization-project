@@ -12,8 +12,16 @@ import { useAuth } from "../../hooks/useAuth";
 export default function HelpDetail() {
     const { type } = useParams(); // e.g. 'language', 'flowchart', 'input'
     const navigate = useNavigate();
-    const { user, getAccessToken, getRefreshToken } = useAuth();
+    const { user, isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
 
+    // ---- Protect the page – redirect to login if not authenticated ----
+    useEffect(() => {
+        if (!authLoading && !isAuthenticated) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, authLoading, navigate]);
+
+    // Admin check (only meaningful after auth)
     const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
 
     const [docs, setDocs] = useState([]);
@@ -114,8 +122,11 @@ export default function HelpDetail() {
     }, [getAccessToken, getRefreshToken, apiType]);
 
     useEffect(() => {
-        fetchDocs();
-    }, [fetchDocs]);
+        // Only fetch documentation if the user is authenticated
+        if (isAuthenticated) {
+            fetchDocs();
+        }
+    }, [fetchDocs, isAuthenticated]);
 
     // ---------- Form handlers ----------
     const openCreateModal = () => {
@@ -239,6 +250,16 @@ export default function HelpDetail() {
         }
     };
 
+    // ----- If auth is still loading, show a loader -----
+    if (authLoading) {
+        return <div className="loading-container">Checking authentication...</div>;
+    }
+
+    // ----- If not authenticated, don't render anything (will redirect) -----
+    if (!isAuthenticated) {
+        return null;
+    }
+
     return (
         <>
             <Background />
@@ -350,7 +371,7 @@ export default function HelpDetail() {
                 </div>
             )}
 
-            {/* Create/Edit modal (same as before, but now also used from inside the detail modal) */}
+            {/* Create/Edit modal (same as before) */}
             {showFormModal && (
                 <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
                     <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>

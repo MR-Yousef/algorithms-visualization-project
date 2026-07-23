@@ -14,16 +14,24 @@ import { useAuth } from "../../hooks/useAuth";
 export default function Help() {
     const [selectedSection, setSelectedSection] = useState(null);
     const [apiDocs, setApiDocs] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);         // loading docs
     const [error, setError] = useState("");
-    const { user, getAccessToken, getRefreshToken } = useAuth();
+    const { user, isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
+    const navigate = useNavigate();
 
-    // Check if the current user has admin privileges
+    // Protect the page – redirect to login if not authenticated
+    useEffect(() => {
+        if (!authLoading && !isAuthenticated) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, authLoading, navigate]);
+
+    // Check if the current user has admin privileges (only after auth)
     const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
 
     // ---- State for create / edit modal ----
     const [showFormModal, setShowFormModal] = useState(false);
-    const [editingDoc, setEditingDoc] = useState(null);   // null = create mode
+    const [editingDoc, setEditingDoc] = useState(null);
     const [formData, setFormData] = useState({
         title: "",
         content: "",
@@ -35,7 +43,6 @@ export default function Help() {
     // ---- Delete confirmation ----
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
-    const navigate = useNavigate();
 
     // Refresh token helper
     const refreshAccessToken = async (refreshToken) => {
@@ -94,8 +101,11 @@ export default function Help() {
     }, [getAccessToken, getRefreshToken]);
 
     useEffect(() => {
-        fetchDocs();
-    }, [fetchDocs]);
+        // Only fetch docs if authenticated
+        if (isAuthenticated) {
+            fetchDocs();
+        }
+    }, [fetchDocs, isAuthenticated]);
 
     // ---- Form handlers ----
     const openCreateModal = () => {
@@ -243,7 +253,6 @@ export default function Help() {
                 return {
                     ...section,
                     description: `${docsOfType.length} article${docsOfType.length > 1 ? "s" : ""}`,
-                    // The modal content: each article has its own Edit/Delete buttons
                     details: (
                         <div>
                             {docsOfType.map((doc) => (
@@ -295,6 +304,16 @@ export default function Help() {
         return { ...section, isApiDoc: false };
     });
 
+    // ----- If auth is still loading, show a loader -----
+    if (authLoading) {
+        return <div className="loading-container">Checking authentication...</div>;
+    }
+
+    // ----- If not authenticated, don't render anything (will redirect) -----
+    if (!isAuthenticated) {
+        return null;
+    }
+
     return (
         <>
             <Background />
@@ -321,6 +340,7 @@ export default function Help() {
 
                 {loading && <div className="loading-container">Loading documentation...</div>}
                 {error && <div className="error-msg">{error}</div>}
+
                 <div className="info-cards-grid">
                     {mergedSections.map((item, index) => {
                         const typeMap = {
@@ -354,7 +374,7 @@ export default function Help() {
                 </div>
             </div>
 
-            {/* Section detail modal (shows all articles of a type) */}
+            {/* Section detail modal (Roles & Permissions) */}
             {selectedSection && (
                 <div className="modal-overlay" onClick={() => setSelectedSection(null)}>
                     <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
@@ -372,7 +392,7 @@ export default function Help() {
                 </div>
             )}
 
-            {/* Create/Edit modal */}
+            {/* Create/Edit modal (same as before) */}
             {showFormModal && (
                 <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
                     <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
@@ -387,6 +407,7 @@ export default function Help() {
                         <div className="modal-body">
                             {formError && <div className="error-msg">{formError}</div>}
                             <form onSubmit={handleFormSubmit}>
+                                {/* ... form fields ... */}
                                 <div className="field-group">
                                     <label className="field-label">Title</label>
                                     <input

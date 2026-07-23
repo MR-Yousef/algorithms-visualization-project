@@ -23,9 +23,9 @@ export class RegEx {
         // Regular expression for literals (e.g., "Hello") with double quotes
         literal: /^".*"$/,
         // Regular expression for punctuation (e.g., (, ) ,{, }, ,)
-        punctuation: /^[(){},]$/,
+        punctuation: /^[[\](){},]$/,
         // Regular expression for Keywords (e.g., if, else, while, ifelse , while, leaveloop,skip,input,output)
-        keyword: /^(if|else|while|ifelse|leaveloop|skip|input|output)$/,
+        keyword: /^(if|else|while|elseif|leaveloop|skip|input|output)$/,
         // Regular expression for special characters (e.g., #)
         specialCharacter: /^#$/,
         // Regular expression for identifiers (e.g., variable names)
@@ -70,13 +70,15 @@ export class RegEx {
             "{": "LEFT_BRACE",
             "}": "RIGHT_BRACE",
             ",": "COMMA",
-            ".": "DOT"
+            ".": "DOT",
+            "[":"LEFT_SQUARE",
+            "]":"RIGHT_SQUARE"
         },
         keyword: {
             "if": "IF",
             "else": "ELSE",
             "while": "WHILE",
-            "ifelse": "IFELSE",
+            "elseif": "ELSEIF",
             "leaveloop": "LEAVELOOP",
             "skip": "SKIP",
             "input": "INPUT",

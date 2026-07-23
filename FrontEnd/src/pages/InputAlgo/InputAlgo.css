@@ -1,6 +1,6 @@
 /* page container */
 
-.prevent-clicking-screen-enabled{
+.prevent-clicking-screen-enabled {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -8,7 +8,7 @@
     background-color: transparent;
 }
 
-.prevent-clicking-screen-disabled{
+.prevent-clicking-screen-disabled {
     display: none;
 }
 
@@ -234,7 +234,7 @@
 
 
 /* text editor area */
-.default-input{
+.default-input {
     width: 100%;
     height: 100%;
     display: flex;
@@ -337,14 +337,14 @@
     font-size: 20px;
 }
 
-:root{
-    --status-color:rgb(0, 255, 8)
+:root {
+    --status-color: rgb(0, 255, 8)
 }
 
 
 .status::before {
     content: "";
-    color:var(--status-color);
+    color: var(--status-color);
     background-color: var(--status-color);
     height: 15px;
     width: 15px;
@@ -435,9 +435,9 @@
     justify-content: center;
 }
 
-.help-button:hover{
-    background: rgba(25,176,255,0.08);
-    border-color: rgba(25,176,255,0.3);
+.help-button:hover {
+    background: rgba(25, 176, 255, 0.08);
+    border-color: rgba(25, 176, 255, 0.3);
 }
 
 

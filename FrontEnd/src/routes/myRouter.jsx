@@ -10,6 +10,7 @@ import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
 import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
 import HelpDetail from "../pages/Help/HelpInfo";
 import InputAlgo from "../pages/InputAlgo/InputAlgo";
+import ResultPage from "../pages/ResultPage/ResultPage";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -54,6 +55,10 @@ const myRouter = createBrowserRouter([
     {
         path: '/InputAlgo',
         element: <InputAlgo />
+    },
+    {
+        path: '/resultPage',
+        element: <ResultPage />
     }
 ]);
 

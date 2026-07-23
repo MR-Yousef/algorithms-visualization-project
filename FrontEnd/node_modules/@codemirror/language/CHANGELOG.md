@@ -1,3 +1,9 @@
+## 6.12.4 (2026-06-25)
+
+### Bug fixes
+
+Make adding a lot of folded ranges in one transaction linear rather than quadratic in range-set-building complexity.
+
 ## 6.12.3 (2026-03-25)
 
 ### Bug fixes

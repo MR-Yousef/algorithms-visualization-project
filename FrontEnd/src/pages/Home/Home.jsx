@@ -3,12 +3,33 @@ import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
 import InfoCard from "../../Component/InfoCard/InfoCard";
 import { menuItems } from "../../assets/data/HomeCards";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 import { AddIcon, ShowIcon, HelpIcon, ArrowIcon, SparkleIcon } from "../../assets/Icons/Icon";
 import { NodesNetworkImg, BarChartImg, GraphImg, PlotChartImg, CubeOutlineImg } from "../../assets/Images/Images"
 
 // ─── Main Component ───────────────────────────────────────────
 export default function Home() {
+    const { isAuthenticated, loading } = useAuth();
+    const navigate = useNavigate();
+
+    // Redirect to login if not authenticated (after loading finishes)
+
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, loading, navigate]);
+
+    if (loading) {
+        return <div className="loading-container">Checking authentication...</div>;
+    }
+    if (!isAuthenticated) {
+        return null;
+    }
+
     // Navigation and hover state management
     // Menu items configuration for the home page
     return (
