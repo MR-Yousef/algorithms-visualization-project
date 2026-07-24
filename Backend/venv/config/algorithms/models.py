@@ -138,7 +138,7 @@ class DocumentationSection(models.Model):
         null=True,
         related_name='updated_docs'
     )
-
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(null=True, blank=True)
