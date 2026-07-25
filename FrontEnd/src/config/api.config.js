@@ -14,6 +14,8 @@ export const ENDPOINTS = {
     RESET_PASSWORD: `${API_BASE_URL}/accounts/reset-password/`,
     ALGORITHMS: `${API_BASE_URL}/algorithms/`,
     DOCUMENTATION: `${API_BASE_URL}/algorithms/documentation/`,
+    MY_PUBLISHED: `${API_BASE_URL}/algorithms/my-published/`,
+    SAVED: `${API_BASE_URL}/algorithms/saved/`,
 
 };
 export default API_BASE_URL;

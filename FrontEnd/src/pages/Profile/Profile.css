@@ -13,13 +13,6 @@
 }
 
 /* ---------- Base reset & body ---------- */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
 body {
     font-family: 'Rajdhani', sans-serif;
@@ -1110,7 +1103,7 @@ body {
    RESPONSIVE
    ========================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .profile-header-card {
         padding: 1.5rem;
     }
@@ -1154,9 +1147,7 @@ body {
     .modal-actions {
         flex-direction: column;
     }
-}
 
-@media (max-width: 480px) {
     .profile-main {
         padding: 5rem 1rem 2rem;
     }

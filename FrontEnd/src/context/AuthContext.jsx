@@ -174,6 +174,7 @@ export function AuthProvider({ children }) {
         register,
         logout,
         getAccessToken,
+        getRefreshToken,
         updateUser,
     };
 

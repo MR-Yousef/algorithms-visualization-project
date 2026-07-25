@@ -229,7 +229,7 @@ body {
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .privacy-main {
         padding: 5rem 1rem 2rem;
     }

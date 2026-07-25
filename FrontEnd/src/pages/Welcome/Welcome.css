@@ -41,6 +41,7 @@
     align-items: center;
     padding: 2rem;
 }
+
 /* ========== Hero Section ========== */
 .hero {
     position: absolute;
@@ -205,5 +206,38 @@
     .cta-button {
         padding: 0.8rem 1.8rem;
         font-size: 0.85rem;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .gradient-text {
+        font-size: 2.5rem;
+    }
+
+    .cta-button {
+        padding: 0.6rem 1.8rem;
+        font-size: 0.9rem;
+    }
+
+    .hero {
+        top: 55%;
+    }
+}
+
+@media (max-width: 380px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .gradient-text {
+        font-size: 2.2rem;
+    }
+
+    .cta-button {
+        padding: 0.7rem 1.5rem;
     }
 }

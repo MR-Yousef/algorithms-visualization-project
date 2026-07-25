@@ -25,12 +25,12 @@
     background-color: #fef2f2;
 }
 
-.react-flow__node{
+.react-flow__node {
     background-color: transparent;
     border-color: transparent;
     padding: 0;
 }
 
-.react-flow__controls{
+.react-flow__controls {
     color: black;
 }

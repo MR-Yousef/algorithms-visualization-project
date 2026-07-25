@@ -5,8 +5,8 @@ import Background from "../../Component/Background/Background";
 import Header from "../../Component/Header/Header";
 import { useAuth } from "../../hooks/useAuth";
 import {
-    LogoutIcon, DeleteIcon, WarningIcon, UserIcon, MailIcon,
-    EditIcon, SaveIcon, ShieldIcon, CheckIcon, CalendarIcon, BellIcon, StarIcon, LockIcon
+    LogoutIcon, DeleteIcon, WarningIcon, UserIcon, MailIcon, AddIcon,
+    EditIcon, SaveIcon, ShieldIcon, CheckIcon, CalendarIcon, BellIcon, StarIcon, LockIcon, CodeIcon
 } from "../../assets/Icons/Icon";
 import { ENDPOINTS } from "../../config/api.config";
 
@@ -154,7 +154,7 @@ export default function Profile() {
 
                 // Token expired – refresh and retry
                 if (response.status === 401) {
-                    const refreshToken = getRefreshToken;
+                    const refreshToken = getRefreshToken();
                     if (!refreshToken) {
                         throw new Error("Session expired. Please log in again.");
                     }
@@ -334,7 +334,7 @@ export default function Profile() {
 
             // If token expired, refresh and retry
             if (result.status === 401) {
-                const refreshToken = getRefreshToken;
+                const refreshToken = getRefreshToken();
                 if (!refreshToken) throw new Error("Session expired. Please log in again.");
                 const newToken = await refreshAccessToken(refreshToken);
                 const storage = localStorage.getItem('remember_me') === 'true' ? localStorage : sessionStorage;
@@ -604,8 +604,16 @@ export default function Profile() {
                         <span className="card-neon card-neon-left" />
                         <h2 className="card-heading"><BellIcon /> Quick Actions</h2>
                         <div className="actions-list">
-                            <button className="action-btn" onClick={() => navigate("/InputAlgo")}><EditIcon /> Create Algorithm</button>
+                            <button className="action-btn" onClick={() => navigate("/InputAlgo")}><AddIcon /> Create Algorithm</button>
                             <button className="action-btn" onClick={() => navigate("/show-algorithms")}><StarIcon /> View Algorithms</button>
+                            <button className="action-btn" onClick={() => navigate("/saved-algorithms")}>
+                                <SaveIcon /> Saved Algorithms
+                            </button>
+                            {user?.role === "Contributor" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? (
+                                <button className="action-btn" onClick={() => navigate("/myAlgo")}>
+                                    <CodeIcon /> My Algorithms
+                                </button>
+                            ) : null}
                             <button className="action-btn" onClick={() => navigate("/help")}><ShieldIcon /> Get Help</button>
                         </div>
                     </div>

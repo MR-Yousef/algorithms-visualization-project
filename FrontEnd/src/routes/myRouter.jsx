@@ -11,6 +11,8 @@ import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
 import HelpDetail from "../pages/Help/HelpInfo";
 import InputAlgo from "../pages/InputAlgo/InputAlgo";
 import ResultPage from "../pages/ResultPage/ResultPage";
+import MyAlgo from "../pages/MyAlgo/MyAlgo";
+import SavedAlgo from "../pages/SavedAlgo/SavedAlgo";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -59,6 +61,14 @@ const myRouter = createBrowserRouter([
     {
         path: '/resultPage',
         element: <ResultPage />
+    },
+    {
+        path: '/myAlgo',
+        element: <MyAlgo />
+    },
+    {
+        path: '/savedAlgo',
+        element: <SavedAlgo />
     }
 ]);
 

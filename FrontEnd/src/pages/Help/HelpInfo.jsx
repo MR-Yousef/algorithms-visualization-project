@@ -252,7 +252,7 @@ export default function HelpDetail() {
 
     // ----- If auth is still loading, show a loader -----
     if (authLoading) {
-        return <div className="loading-container">Checking authentication...</div>;
+        return <div className="help-loading-container">Checking authentication...</div>;
     }
 
     // ----- If not authenticated, don't render anything (will redirect) -----
@@ -272,34 +272,34 @@ export default function HelpDetail() {
                     </p>
                 </div>
 
-                <div className="admin-actions">
-                    <button className="back-btn" onClick={() => navigate("/help")}>
+                <div className="help-admin-actions">
+                    <button className="help-back-btn" onClick={() => navigate("/help")}>
                         <BackIcon /> Back to Help
                     </button>
                     {isAdmin && (
-                        <button className="create-btn" onClick={openCreateModal}>
+                        <button className="help-create-btn" onClick={openCreateModal}>
                             <AddIcon /> New Document
                         </button>
                     )}
                 </div>
 
-                {loading && <div className="loading-container">Loading...</div>}
-                {error && <div className="error-msg">{error}</div>}
+                {loading && <div className="help-loading-container">Loading...</div>}
+                {error && <div className="help-error-msg">{error}</div>}
 
                 {/* List of articles */}
-                <div className="articles-list">
+                <div className="help-articles-list">
                     {docs.map((doc) => (
                         <article
                             key={doc.id}
-                            className="doc-article"
+                            className="help-doc-article"
                             onClick={() => setSelectedDoc(doc)}
                         >
                             <h2>{doc.title}</h2>
                             <p style={{ whiteSpace: "pre-wrap" }}>{doc.content}</p>
                             {isAdmin && (
-                                <div className="admin-controls">
+                                <div className="help-admin-controls">
                                     <button
-                                        className="icon-btn"
+                                        className="help-icon-btn"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             openEditModal(doc);
@@ -309,7 +309,7 @@ export default function HelpDetail() {
                                         <EditIcon />
                                     </button>
                                     <button
-                                        className="icon-btn"
+                                        className="help-icon-btn"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setDeleteTarget(doc.id);
@@ -330,23 +330,23 @@ export default function HelpDetail() {
 
             {/* Article detail modal (opens when clicking an article) */}
             {selectedDoc && (
-                <div className="modal-overlay" onClick={() => setSelectedDoc(null)}>
-                    <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">{selectedDoc.title}</h2>
+                <div className="help-modal-overlay" onClick={() => setSelectedDoc(null)}>
+                    <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <h2 className="help-modal-title">{selectedDoc.title}</h2>
                             <button
-                                className="modal-close-btn"
+                                className="help-modal-close-btn"
                                 onClick={() => setSelectedDoc(null)}
                             >
                                 <CloseIcon />
                             </button>
                         </div>
-                        <div className="modal-body documentation-body">
+                        <div className="help-modal-body help-documentation-body">
                             <p style={{ whiteSpace: "pre-wrap" }}>{selectedDoc.content}</p>
                             {isAdmin && (
-                                <div className="admin-controls" style={{ marginTop: "1.5rem" }}>
+                                <div className="help-admin-controls" style={{ marginTop: "1.5rem" }}>
                                     <button
-                                        className="icon-btn"
+                                        className="help-icon-btn"
                                         onClick={() => {
                                             openEditModal(selectedDoc);
                                         }}
@@ -355,7 +355,7 @@ export default function HelpDetail() {
                                         <EditIcon />
                                     </button>
                                     <button
-                                        className="icon-btn"
+                                        className="help-icon-btn"
                                         onClick={() => {
                                             setDeleteTarget(selectedDoc.id);
                                             setSelectedDoc(null); // close detail modal before showing delete confirmation
@@ -371,45 +371,45 @@ export default function HelpDetail() {
                 </div>
             )}
 
-            {/* Create/Edit modal (same as before) */}
+            {/* Create/Edit modal */}
             {showFormModal && (
-                <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
-                    <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">
+                <div className="help-modal-overlay" onClick={() => setShowFormModal(false)}>
+                    <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <h2 className="help-modal-title">
                                 {editingDoc ? "Edit Document" : "New Document"}
                             </h2>
-                            <button className="modal-close-btn" onClick={() => setShowFormModal(false)}>
+                            <button className="help-modal-close-btn" onClick={() => setShowFormModal(false)}>
                                 <CloseIcon />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            {formError && <div className="error-msg">{formError}</div>}
+                        <div className="help-modal-body">
+                            {formError && <div className="help-error-msg">{formError}</div>}
                             <form onSubmit={handleFormSubmit}>
-                                <div className="field-group">
-                                    <label className="field-label">Title</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Title</label>
                                     <input
                                         type="text"
-                                        className="edit-input"
+                                        className="help-edit-input"
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         required
                                     />
                                 </div>
-                                <div className="field-group">
-                                    <label className="field-label">Content</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Content</label>
                                     <textarea
-                                        className="edit-input edit-textarea"
+                                        className="help-edit-input help-edit-textarea"
                                         rows="6"
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                         required
                                     />
                                 </div>
-                                <div className="field-group">
-                                    <label className="field-label">Type</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Type</label>
                                     <select
-                                        className="edit-input"
+                                        className="help-edit-input"
                                         value={formData.type_documintation}
                                         onChange={(e) => setFormData({ ...formData, type_documintation: e.target.value })}
                                     >
@@ -418,13 +418,13 @@ export default function HelpDetail() {
                                         <option value="INPUT">Input Methods</option>
                                     </select>
                                 </div>
-                                <div className="form-actions">
-                                    <button type="submit" className="save-btn" disabled={saving}>
+                                <div className="help-form-actions">
+                                    <button type="submit" className="help-save-btn" disabled={saving}>
                                         {saving ? "Saving..." : <><SaveIcon /> {editingDoc ? "Update" : "Create"}</>}
                                     </button>
                                     <button
                                         type="button"
-                                        className="cancel-btn"
+                                        className="help-cancel-btn"
                                         onClick={() => setShowFormModal(false)}
                                     >
                                         Cancel
@@ -438,24 +438,24 @@ export default function HelpDetail() {
 
             {/* Delete confirmation modal */}
             {deleteTarget && (
-                <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-                    <div className="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">Delete Document</h2>
-                            <button className="modal-close-btn" onClick={() => setDeleteTarget(null)}>
+                <div className="help-modal-overlay" onClick={() => setDeleteTarget(null)}>
+                    <div className="help-delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <h2 className="help-modal-title">Delete Document</h2>
+                            <button className="help-modal-close-btn" onClick={() => setDeleteTarget(null)}>
                                 <CloseIcon />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            <p className="danger-description">
+                        <div className="help-modal-body">
+                            <p className="help-danger-description">
                                 Are you sure you want to permanently delete this document?
                             </p>
-                            <div className="modal-actions">
-                                <button className="modal-cancel-btn" onClick={() => setDeleteTarget(null)}>
+                            <div className="help-modal-actions">
+                                <button className="help-modal-cancel-btn" onClick={() => setDeleteTarget(null)}>
                                     Cancel
                                 </button>
                                 <button
-                                    className="modal-delete-btn"
+                                    className="help-modal-delete-btn"
                                     onClick={() => handleDelete(deleteTarget)}
                                     disabled={deleting}
                                 >

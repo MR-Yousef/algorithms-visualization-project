@@ -9,8 +9,8 @@ export default defineConfig({
 
 
     allowedHosts: [
-      '936740a.r8.vip.cpolar.cn',
-      'http://192.168.1.106:5173/'
+      '725a5e72.r35.cpolar.top',
+      '192.168.1.106:5173',
     ],
 
     proxy: {

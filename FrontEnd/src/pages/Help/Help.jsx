@@ -14,22 +14,19 @@ import { useAuth } from "../../hooks/useAuth";
 export default function Help() {
     const [selectedSection, setSelectedSection] = useState(null);
     const [apiDocs, setApiDocs] = useState([]);
-    const [loading, setLoading] = useState(true);         // loading docs
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const { user, isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
     const navigate = useNavigate();
 
-    // Protect the page – redirect to login if not authenticated
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
             navigate("/login", { replace: true });
         }
     }, [isAuthenticated, authLoading, navigate]);
 
-    // Check if the current user has admin privileges (only after auth)
     const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
 
-    // ---- State for create / edit modal ----
     const [showFormModal, setShowFormModal] = useState(false);
     const [editingDoc, setEditingDoc] = useState(null);
     const [formData, setFormData] = useState({
@@ -40,11 +37,9 @@ export default function Help() {
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState("");
 
-    // ---- Delete confirmation ----
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
-    // Refresh token helper
     const refreshAccessToken = async (refreshToken) => {
         const res = await fetch(ENDPOINTS.REFRESH, {
             method: "POST",
@@ -56,7 +51,6 @@ export default function Help() {
         return data.access;
     };
 
-    // ---- Fetch all documentation from the API ----
     const fetchDocs = useCallback(async () => {
         try {
             let token = getAccessToken();
@@ -101,13 +95,11 @@ export default function Help() {
     }, [getAccessToken, getRefreshToken]);
 
     useEffect(() => {
-        // Only fetch docs if authenticated
         if (isAuthenticated) {
             fetchDocs();
         }
     }, [fetchDocs, isAuthenticated]);
 
-    // ---- Form handlers ----
     const openCreateModal = () => {
         setEditingDoc(null);
         setFormData({ title: "", content: "", type_documintation: "LANGUAGE" });
@@ -148,13 +140,11 @@ export default function Help() {
             });
 
             if (res.status === 401) {
-                // Attempt token refresh
                 const refresh = getRefreshToken();
                 if (refresh) {
                     const newToken = await refreshAccessToken(refresh);
                     const storage = localStorage.getItem("remember_me") === "true" ? localStorage : sessionStorage;
                     storage.setItem("access_token", newToken);
-                    // Retry with new token
                     const retryRes = await fetch(url, {
                         method,
                         headers: {
@@ -176,7 +166,7 @@ export default function Help() {
             }
 
             setShowFormModal(false);
-            fetchDocs();  // Refresh the list after successful operation
+            fetchDocs();
         } catch (err) {
             setFormError(err.message);
         } finally {
@@ -184,7 +174,6 @@ export default function Help() {
         }
     };
 
-    // ---- Delete handler ----
     const handleDelete = async (id) => {
         setDeleting(true);
         try {
@@ -217,7 +206,7 @@ export default function Help() {
             }
 
             setDeleteTarget(null);
-            fetchDocs();  // Refresh list
+            fetchDocs();
         } catch (err) {
             alert(err.message);
         } finally {
@@ -225,20 +214,14 @@ export default function Help() {
         }
     };
 
-    // ---- Group documents by their type ----
-    const groupedDocs = {
-        LANGUAGE: [],
-        FLOWCHART: [],
-        INPUT: [],
-    };
+    const groupedDocs = { LANGUAGE: [], FLOWCHART: [], INPUT: [] };
     apiDocs.forEach((doc) => {
         const type = (doc.type_documintation || "").toUpperCase();
-        if (groupedDocs.hasOwnProperty(type)) {
+        if (Object.prototype.hasOwnProperty.call(groupedDocs, type)) {
             groupedDocs[type].push(doc);
         }
     });
 
-    // ---- Merge static sections with dynamic content ----
     const mergedSections = sections.map((section) => {
         const typeMap = {
             "Language Guide": "LANGUAGE",
@@ -256,39 +239,15 @@ export default function Help() {
                     details: (
                         <div>
                             {docsOfType.map((doc) => (
-                                <article
-                                    key={doc.id}
-                                    style={{
-                                        marginBottom: "1.5rem",
-                                        paddingBottom: "1rem",
-                                        borderBottom: "1px solid rgba(0,245,228,0.1)",
-                                    }}
-                                >
+                                <article key={doc.id} style={{ marginBottom: "1.5rem", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,245,228,0.1)" }}>
                                     <h3>{doc.title}</h3>
                                     <p style={{ whiteSpace: "pre-wrap" }}>{doc.content}</p>
                                     {isAdmin && (
-                                        <div
-                                            className="admin-controls"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <button
-                                                className="icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    openEditModal(doc);
-                                                }}
-                                                title="Edit"
-                                            >
+                                        <div className="help-admin-controls" onClick={(e) => e.stopPropagation()}>
+                                            <button className="help-icon-btn" onClick={(e) => { e.stopPropagation(); openEditModal(doc); }} title="Edit">
                                                 <EditIcon />
                                             </button>
-                                            <button
-                                                className="icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeleteTarget(doc.id);
-                                                }}
-                                                title="Delete"
-                                            >
+                                            <button className="help-icon-btn" onClick={(e) => { e.stopPropagation(); setDeleteTarget(doc.id); }} title="Delete">
                                                 <DeleteIcon />
                                             </button>
                                         </div>
@@ -304,12 +263,10 @@ export default function Help() {
         return { ...section, isApiDoc: false };
     });
 
-    // ----- If auth is still loading, show a loader -----
     if (authLoading) {
-        return <div className="loading-container">Checking authentication...</div>;
+        return <div className="help-loading-container">Checking authentication...</div>;
     }
 
-    // ----- If not authenticated, don't render anything (will redirect) -----
     if (!isAuthenticated) {
         return null;
     }
@@ -321,7 +278,7 @@ export default function Help() {
             <div className="help-main">
                 <div className="help-title-section">
                     <h1 className="help-main-title">
-                        <span className="title-icon"><BookIcon /></span>
+                        <span className="help-title-icon"><BookIcon /></span>
                         Help & Documentation
                     </h1>
                     <p className="help-subtitle">
@@ -329,109 +286,112 @@ export default function Help() {
                     </p>
                 </div>
 
-                {/* Admin: Create new documentation */}
                 {isAdmin && (
-                    <div className="admin-actions">
-                        <button className="create-btn" onClick={openCreateModal}>
+                    <div className="help-admin-actions">
+                        <button className="help-create-btn" onClick={openCreateModal}>
                             <AddIcon /> New Document
                         </button>
                     </div>
                 )}
 
-                {loading && <div className="loading-container">Loading documentation...</div>}
-                {error && <div className="error-msg">{error}</div>}
+                {loading && <div className="help-loading-container">Loading documentation...</div>}
 
-                <div className="info-cards-grid">
-                    {mergedSections.map((item, index) => {
-                        const typeMap = {
-                            "Language Guide": "language",
-                            "Flowchart Guide": "flowchart",
-                            "Input Methods": "input",
-                        };
-                        const routeType = typeMap[item.title];
-                        return (
-                            <div
-                                key={item.title + index}
-                                className="info-card-wrapper"
-                                onClick={() => {
-                                    if (routeType) {
-                                        navigate(`/help/${routeType}`);
-                                    } else {
-                                        // Roles & Permissions – open modal
-                                        setSelectedSection(item);
-                                    }
-                                }}
-                            >
-                                <InfoCard
-                                    index={index}
-                                    icon={item.icon}
-                                    title={item.title}
-                                    description={item.description}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
+                {!loading && error && (
+                    <div className="help-error-msg">
+                        {error}
+                        <button onClick={fetchDocs} style={{ marginLeft: '1rem' }}>Retry</button>
+                    </div>
+                )}
+
+                {!loading && !error && (
+                    <div className="help-cards-grid">
+                        {mergedSections.map((item, index) => {
+                            const typeMap = {
+                                "Language Guide": "language",
+                                "Flowchart Guide": "flowchart",
+                                "Input Methods": "input",
+                            };
+                            const routeType = typeMap[item.title];
+                            return (
+                                <div
+                                    key={item.title + index}
+                                    className="help-card-wrapper"
+                                    onClick={() => {
+                                        if (routeType) {
+                                            navigate(`/help/${routeType}`);
+                                        } else {
+                                            setSelectedSection(item);
+                                        }
+                                    }}
+                                >
+                                    <InfoCard
+                                        index={index}
+                                        icon={item.icon}
+                                        title={item.title}
+                                        description={item.description}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
-            {/* Section detail modal (Roles & Permissions) */}
             {selectedSection && (
-                <div className="modal-overlay" onClick={() => setSelectedSection(null)}>
-                    <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <span className="modal-icon">{selectedSection.icon}</span>
-                            <h2 className="modal-title">{selectedSection.title}</h2>
-                            <button className="modal-close-btn" onClick={() => setSelectedSection(null)}>
+                <div className="help-modal-overlay" onClick={() => setSelectedSection(null)}>
+                    <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <span className="help-modal-icon">{selectedSection.icon}</span>
+                            <h2 className="help-modal-title">{selectedSection.title}</h2>
+                            <button className="help-modal-close-btn" onClick={() => setSelectedSection(null)}>
                                 <BackIcon />
                             </button>
                         </div>
-                        <div className="modal-body documentation-body">
+                        <div className="help-documentation-body">
                             {selectedSection.details}
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Create/Edit modal (same as before) */}
             {showFormModal && (
-                <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
-                    <div className="modal-content help-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">
+                <div className="help-modal-overlay" onClick={() => setShowFormModal(false)}>
+                    <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <h2 className="help-modal-title">
                                 {editingDoc ? "Edit Document" : "New Document"}
                             </h2>
-                            <button className="modal-close-btn" onClick={() => setShowFormModal(false)}>
+                            <button className="help-modal-close-btn" onClick={() => setShowFormModal(false)}>
                                 <CloseIcon />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            {formError && <div className="error-msg">{formError}</div>}
+                        <div className="help-modal-body">
+                            {formError && <div className="help-error-msg">{formError}</div>}
                             <form onSubmit={handleFormSubmit}>
-                                {/* ... form fields ... */}
-                                <div className="field-group">
-                                    <label className="field-label">Title</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Title</label>
                                     <input
                                         type="text"
-                                        className="edit-input"
+                                        className="help-edit-input"
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         required
                                     />
                                 </div>
-                                <div className="field-group">
-                                    <label className="field-label">Content</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Content</label>
                                     <textarea
-                                        className="edit-input edit-textarea"
+                                        className="help-edit-input help-edit-textarea"
                                         rows="6"
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                         required
                                     />
                                 </div>
-                                <div className="field-group">
-                                    <label className="field-label">Type</label>
+                                <div className="help-field-group">
+                                    <label className="help-field-label">Type</label>
                                     <select
-                                        className="edit-input"
+                                        className="help-edit-input"
                                         value={formData.type_documintation}
                                         onChange={(e) => setFormData({ ...formData, type_documintation: e.target.value })}
                                     >
@@ -440,13 +400,13 @@ export default function Help() {
                                         <option value="INPUT">Input Methods</option>
                                     </select>
                                 </div>
-                                <div className="form-actions">
-                                    <button type="submit" className="save-btn" disabled={saving}>
+                                <div className="help-form-actions">
+                                    <button type="submit" className="help-save-btn" disabled={saving}>
                                         {saving ? "Saving..." : <><SaveIcon /> {editingDoc ? "Update" : "Create"}</>}
                                     </button>
                                     <button
                                         type="button"
-                                        className="cancel-btn"
+                                        className="help-cancel-btn"
                                         onClick={() => setShowFormModal(false)}
                                     >
                                         Cancel
@@ -458,27 +418,23 @@ export default function Help() {
                 </div>
             )}
 
-            {/* Delete confirmation modal */}
             {deleteTarget && (
-                <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
-                    <div className="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h2 className="modal-title">Delete Document</h2>
-                            <button className="modal-close-btn" onClick={() => setDeleteTarget(null)}>
+                <div className="help-modal-overlay" onClick={() => setDeleteTarget(null)}>
+                    <div className="help-delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="help-modal-header">
+                            <h2 className="help-modal-title">Delete Document</h2>
+                            <button className="help-modal-close-btn" onClick={() => setDeleteTarget(null)}>
                                 <CloseIcon />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            <p className="danger-description">Are you sure you want to permanently delete this document?</p>
-                            <div className="modal-actions">
-                                <button
-                                    className="modal-cancel-btn"
-                                    onClick={() => setDeleteTarget(null)}
-                                >
+                        <div className="help-modal-body">
+                            <p className="help-danger-description">Are you sure you want to permanently delete this document?</p>
+                            <div className="help-modal-actions">
+                                <button className="help-modal-cancel-btn" onClick={() => setDeleteTarget(null)}>
                                     Cancel
                                 </button>
                                 <button
-                                    className="modal-delete-btn"
+                                    className="help-modal-delete-btn"
                                     onClick={() => handleDelete(deleteTarget)}
                                     disabled={deleting}
                                 >
