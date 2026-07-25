@@ -240,7 +240,7 @@ class RejectRequestAPI(APIView):
 
 class MyPublishedAlgorithmsAPI(ListAPIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsContributor]
     serializer_class = AlgorithmSerializer
 
     def get_queryset(self):
