@@ -606,10 +606,10 @@ export default function Profile() {
                         <div className="actions-list">
                             <button className="action-btn" onClick={() => navigate("/InputAlgo")}><AddIcon /> Create Algorithm</button>
                             <button className="action-btn" onClick={() => navigate("/show-algorithms")}><StarIcon /> View Algorithms</button>
-                            <button className="action-btn" onClick={() => navigate("/saved-algorithms")}>
+                            <button className="action-btn" onClick={() => navigate("/savedAlgo")}>
                                 <SaveIcon /> Saved Algorithms
                             </button>
-                            {user?.role === "Contributor" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? (
+                            {user?.role === "CONTRIBUTOR" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? (
                                 <button className="action-btn" onClick={() => navigate("/myAlgo")}>
                                     <CodeIcon /> My Algorithms
                                 </button>
