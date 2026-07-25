@@ -15,7 +15,7 @@ export default function MyAlgo() {
     const { user, isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
 
     // Determine if the user has the right role
-    const canManage = user?.role === "Contributor" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
+    const canManage = user?.role === "CONTRIBUTOR";
 
     // Redirect if not authenticated or lacking role
     useEffect(() => {

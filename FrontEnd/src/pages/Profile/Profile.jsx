@@ -366,6 +366,7 @@ export default function Profile() {
         if (user?.impact_score > 10) badges.push("High Impact");
         if (user?.role === "CONTRIBUTOR") badges.push("Contributor");
         if (user?.role === "ADMIN") badges.push("Admin");
+        if (user?.role === "SUPER_ADMIN") badges.push("Super Admin");
         return badges.length > 0 ? badges : ["Newcomer"];
     };
 
@@ -609,7 +610,7 @@ export default function Profile() {
                             <button className="action-btn" onClick={() => navigate("/savedAlgo")}>
                                 <SaveIcon /> Saved Algorithms
                             </button>
-                            {user?.role === "CONTRIBUTOR" || user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" ? (
+                            {user?.role === "CONTRIBUTOR" ? (
                                 <button className="action-btn" onClick={() => navigate("/myAlgo")}>
                                     <CodeIcon /> My Algorithms
                                 </button>
