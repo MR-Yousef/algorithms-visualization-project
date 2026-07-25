@@ -4,6 +4,7 @@ from .views import (
     AlgorithmListAPI,
     AlgorithmDetailAPI,
     CreateRequestAPI,
+    MyPublishedAlgorithmsAPI,
     MyRequestsAPI,
     RequestDetailAPI,
     PendingRequestsAPI,
@@ -22,7 +23,8 @@ from .views import (
     UpdateDocumentationAPI,
     DeleteDocumentationAPI,
     RequestsListAPI,
-    ExecuteAlgorithmAPI
+    ExecuteAlgorithmAPI,
+    MyPublishedAlgorithmsAPI
 )
 
 urlpatterns = [
@@ -60,11 +62,11 @@ urlpatterns = [
     ),
     path(
         'admin/requests/<int:id>/reject/',
-    RejectRequestAPI.as_view()
+        RejectRequestAPI.as_view()
     ),
     path(
         '<int:algorithm_id>/save/',
-    SaveAlgorithmAPI.as_view()
+        SaveAlgorithmAPI.as_view()
     ),
 
     path(
@@ -72,6 +74,10 @@ urlpatterns = [
         UnsaveAlgorithmAPI.as_view()
     ),
 
+    path(
+        'my-published/',
+        MyPublishedAlgorithmsAPI.as_view(),
+    ),
     path(
         'saved/',
         MySavedAlgorithmsAPI.as_view()

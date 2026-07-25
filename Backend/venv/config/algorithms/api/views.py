@@ -19,6 +19,7 @@ from core.api_response import api_success, api_error
 
 from django.db import transaction
 
+from rest_framework.generics import ListAPIView
 
 class AlgorithmListAPI(APIView):
 
@@ -57,8 +58,10 @@ class AlgorithmDetailAPI(APIView):
             algorithm
         )
 
-        return Response(serializer.data)
-    
+        return api_success(
+            data=serializer.data,
+            message="Algorithm details fetched successfully"
+        )
 
 class CreateRequestAPI(APIView):
 
@@ -102,8 +105,11 @@ class MyRequestsAPI(APIView):
             many=True
         )
 
-        return Response(serializer.data)
-    
+        return api_success(
+            data=serializer.data,
+            message="My requests fetched successfully"
+        )
+
 class RequestDetailAPI(APIView):
 
     permission_classes = [IsContributor]
@@ -230,7 +236,19 @@ class RejectRequestAPI(APIView):
         return api_error(
             message="Request reject",
         )
-    
+
+
+class MyPublishedAlgorithmsAPI(ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = AlgorithmSerializer
+
+    def get_queryset(self):
+
+        return Algorithm.objects.filter(
+            owner=self.request.user,
+            is_archived=False
+        ).order_by('-created_at')
 
 class SaveAlgorithmAPI(APIView):
 
