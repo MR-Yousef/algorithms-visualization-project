@@ -22,7 +22,7 @@ export const menuItems = [
     {   // instructions card
         id: 3,
         title: "Help & Info",
-        description: "Get help and learn about AlgoVisual",
+        description: "Get help and learn about AlgoHub",
         icon: <HelpIcon />,
         path: "/help",
         color: "#f59e0b",

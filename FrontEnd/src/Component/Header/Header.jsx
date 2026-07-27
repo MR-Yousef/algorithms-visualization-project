@@ -12,7 +12,7 @@ function Header() {
             <div className="header-left">
                 <span className="logo-icon">✦</span>
                 <span className="logo-text" onClick={handelLogoClick}>
-                    AlgoVisual
+                    AlgoHub
                 </span>
             </div>
             <div className="header-right">

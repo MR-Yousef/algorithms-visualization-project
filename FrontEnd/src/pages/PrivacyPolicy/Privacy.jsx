@@ -4,7 +4,7 @@ import "./Privacy.css";
 import { ShieldIcon, BackIcon, BookIcon } from "../../assets/Icons/Icon";
 
 /**
- * Privacy Policy page – explains how AlgoVisual handles user data.
+ * Privacy Policy page – explains how AlgoHub handles user data.
  */
 export default function Privacy() {
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function Privacy() {
                             <section>
                                 <h2>1. Information We Collect</h2>
                                 <p>
-                                    When you register for AlgoVisual, we may collect your username,
+                                    When you register for AlgoHub, we may collect your username,
                                     email address, and any profile information you choose to provide
                                     (such as a biography or avatar). If you upload or create algorithms,
                                     the code and associated metadata are stored on our servers.
@@ -52,7 +52,7 @@ export default function Privacy() {
                                 <h2>2. How We Use Your Data</h2>
                                 <p>
                                     Your personal information is used solely to provide and improve the
-                                    AlgoVisual service. This includes:
+                                    AlgoHub service. This includes:
                                 </p>
                                 <ul>
                                     <li>Managing your account and authentication</li>
@@ -71,14 +71,14 @@ export default function Privacy() {
                                 <ul>
                                     <li>With your explicit consent</li>
                                     <li>To comply with legal obligations</li>
-                                    <li>To protect the rights, property, or safety of AlgoVisual, its users, or the public</li>
+                                    <li>To protect the rights, property, or safety of AlgoHub, its users, or the public</li>
                                 </ul>
                             </section>
 
                             <section>
                                 <h2>4. Cookies</h2>
                                 <p>
-                                    AlgoVisual uses essential cookies to keep you signed in and to remember
+                                    AlgoHub uses essential cookies to keep you signed in and to remember
                                     your preferences (such as "Remember Me"). We do not use third‑party
                                     tracking cookies for advertising purposes.
                                 </p>
@@ -126,7 +126,7 @@ export default function Privacy() {
                                     practices, please contact us at:
                                 </p>
                                 <p>
-                                    <strong>Email:</strong> privacy@algovisual.com<br />
+                                    <strong>Email:</strong> privacy@algohub.com<br />
                                 </p>
                             </section>
                         </div>
