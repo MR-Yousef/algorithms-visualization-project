@@ -3,7 +3,7 @@ import CodeEditor from "../../Component/CodeEditor/CodeEditor";
 import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // ← useLocation added
 import { TextFormater } from "../../Compiler/TextFormater";
 import { Tokenizer } from "../../Compiler/Tokenizer";
 import { Parser } from "../../Compiler/Parser";
@@ -12,6 +12,7 @@ import { useAuth } from "../../hooks/useAuth";
 function InputAlgo() {
     const { isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();        // ← for receiving code from ShowAlgorithms
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -37,6 +38,15 @@ function InputAlgo() {
             // ignore if storage is full
         }
     }, [code]);
+
+    // ── Accept code passed from another page (e.g. Run button) ──
+    useEffect(() => {
+        if (location.state?.code) {
+            setCode(location.state.code);
+            // Clear the state so the code doesn't reappear after a refresh
+            navigate(".", { replace: true, state: {} });
+        }
+    }, [location.state?.code, navigate]);
 
     const [statistics, setStatistics] = useState({
         loops: 0,
@@ -293,7 +303,7 @@ function InputAlgo() {
                         <div className="input-container">
                             {activeTab === "text" && (
                                 <CodeEditor
-                                    ref={editorRef}           // 👈 pass the ref for auto‑focus
+                                    ref={editorRef}
                                     code={code}
                                     setCode={setCode}
                                     handlFocus={handleTextAreaFocus}
