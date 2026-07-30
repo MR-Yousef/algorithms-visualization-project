@@ -4,6 +4,7 @@ import { ASTnode } from "./ASTNode";
 export class Parser {
     /**
      * Creates a new instance of the Parser class.
+     * @constructor
      * @param {[Token]} tokens - An array of Token objects to be parsed.
      */
     constructor(tokens) {
@@ -102,6 +103,16 @@ export class Parser {
             return this.tokens[this.tokens.length - 1].getLineNumber();
         }
         return -1
+    }
+    /**
+     * returns the first error if there is any error during parsing otherwise it will return undefined
+     * @returns {Error | undefined}
+     */
+    getFirstError() {
+        if (this.hasErrors)
+            return this.errors[0];
+        else
+            return undefined ;
     }
     /**
      * Throws a syntax error if the current token does not match the expected type,
@@ -740,30 +751,30 @@ export class Parser {
         }
         return tempIfStatementNode;
     }
-/**
- * Parses a while statement and returns the corresponding AST node.
- * WhileStatement --> WHILE BooleanExpression Body
- * @returns {ASTnode|undefined}
- */
-parseWhileStatement() {
-    let tempWhileStatementNode = new ASTnode(
-        "WhileStatement",
-        "",
-        [],
-        undefined,
-        this.peek().getLineNumber(),
-        "");
-    // let tempToken = this.peek();
-    if (!this.consume("WHILE"))
-        return this.throwUnexpectedTokenError("WHILE");
-    let tempCondition = this.parseBooleanExpression();
-    if (this.hasErrors)
-        return undefined;
-    tempWhileStatementNode.addASTchild(tempCondition);
-    let tempBody = this.parseBody();
-    if (this.hasErrors)
-        return undefined;
-    tempWhileStatementNode.addASTchild(tempBody);
-    return tempWhileStatementNode;
-}
+    /**
+     * Parses a while statement and returns the corresponding AST node.
+     * WhileStatement --> WHILE BooleanExpression Body
+     * @returns {ASTnode|undefined}
+     */
+    parseWhileStatement() {
+        let tempWhileStatementNode = new ASTnode(
+            "WhileStatement",
+            "",
+            [],
+            undefined,
+            this.peek().getLineNumber(),
+            "");
+        // let tempToken = this.peek();
+        if (!this.consume("WHILE"))
+            return this.throwUnexpectedTokenError("WHILE");
+        let tempCondition = this.parseBooleanExpression();
+        if (this.hasErrors)
+            return undefined;
+        tempWhileStatementNode.addASTchild(tempCondition);
+        let tempBody = this.parseBody();
+        if (this.hasErrors)
+            return undefined;
+        tempWhileStatementNode.addASTchild(tempBody);
+        return tempWhileStatementNode;
+    }
 }
