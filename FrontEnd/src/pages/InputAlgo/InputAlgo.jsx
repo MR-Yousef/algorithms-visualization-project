@@ -5,9 +5,9 @@ import Background from "../../Component/Background/Background";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // ← useLocation added
 import { TextFormater } from "../../Compiler/TextFormater";
-import { Compiler } from "../../Compiler/Compiler";
+import { Tokenizer } from "../../Compiler/Tokenizer";
+import { Parser } from "../../Compiler/Parser";
 import { useAuth } from "../../hooks/useAuth";
-import { Error } from "../../Compiler/Error";
 
 function InputAlgo() {
     const { isAuthenticated, loading } = useAuth();
@@ -143,7 +143,8 @@ function InputAlgo() {
             changeStatusColor(stateColors.green);
             setInputState("text input area");
             setInputStateDescription("enter your algorithm in the text area");
-        } }, []);
+        }
+    }, []);
 
     // ── Text area interactions (called by CodeEditor) ──
     function handleTextAreaFocus() {
@@ -215,18 +216,39 @@ function InputAlgo() {
         setInputState("compiling....");
         setInputStateDescription("compiling the code , this should not take long");
         setIsCompilling(true);
-        let tempCompileResult = Compiler.compile(code) 
+        Tokenizer.tokenize(code);
         setIsCompilling(false);
-        if(typeof tempCompileResult == Error) {
+
+        if (Tokenizer.hasErrors) {
             changeStatusColor(stateColors.red);
-            setInputState(ast.getErrorType() + " error");
-            setInputStateDescription(tempCompileResult.getErrorMesssage());
+            setInputState(Tokenizer.getLexicalError().getErrorType() + " error");
+            setInputStateDescription(Tokenizer.getLexicalError().getErrorMesssage());
             return;
         }
-        setAst(tempCompileResult)
+
+        changeStatusColor(stateColors.green);
+        setInputState("Tokenized success");
+        setInputStateDescription(`found ${Tokenizer.getTokensArray().length} tokens`);
+
+        changeStatusColor(stateColors.yellow);
+        setInputState("Parsing....");
+        setInputStateDescription("Parsing the code , this should not take long");
+        const myParser = new Parser(Tokenizer.getTokensArray());
+        myParser.parse();
+
+        if (myParser.hasErrors) {
+            setIsCompilling(false);
+            changeStatusColor(stateColors.red);
+            setInputState(myParser.errors[0].getErrorType() + " error");
+            setInputStateDescription(myParser.errors[0].getErrorMesssage());
+            return;
+        }
+
         changeStatusColor(stateColors.green);
         setInputState("Compiled successfully");
         setInputStateDescription("you can generate flowchart now");
+        setAst(myParser.programNode);
+        setIsCompilling(false);
         setReadyToGenerateFlowChart(true);
     }
 

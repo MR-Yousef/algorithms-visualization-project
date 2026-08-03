@@ -4,22 +4,17 @@ import { ASTnode } from "../../Compiler/ASTNode";
 import { ResultManager } from "../../Component/ResultManager/ResultManager";
 import { FlowchartCanvas } from "./FlowchartCanvas";
 import { useAuth } from "../../hooks/useAuth";
+import { SaveIcon } from "../../assets/Icons/Icon";   // ← import save icon
 import "./ResultPage.css";
 
 const resultManager = new ResultManager();
 
-/**
- * Displays the flowchart generated from an already compiled AST.
- *
- * The input page is responsible for compilation.
- * This page is responsible for all subsequent flowchart stages.
- */
 export default function ResultPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const { isAuthenticated, loading } = useAuth();
 
-    // Always call hooks at the top, before any conditional return
+    // Always call hooks at the top
     const ast = location.state?.ast ?? null;
 
     const { result, error } = useMemo(() => {
@@ -44,7 +39,7 @@ export default function ResultPage() {
         }
     }, [isAuthenticated, loading, navigate]);
 
-    // While auth state is loading, show a simple message
+    // While auth state is loading
     if (loading) {
         return (
             <main className="result-page">
@@ -58,7 +53,7 @@ export default function ResultPage() {
         return null;
     }
 
-    // Original rendering logic (unchanged)
+    // No AST provided
     if (!ast) {
         return (
             <main className="result-page">
@@ -69,6 +64,7 @@ export default function ResultPage() {
         );
     }
 
+    // Error building flowchart
     if (error) {
         return (
             <main className="result-page">
@@ -79,8 +75,20 @@ export default function ResultPage() {
         );
     }
 
+    // Render the flowchart with a Save button (placeholder, does nothing)
     return (
         <main className="result-page">
+            {/* Optional header bar with a save button */}
+            <div className="result-page__header">
+                <button
+                    className="save-flowchart-btn"
+                    disabled  // makes it look inactive, can be removed later
+                    title="Save functionality coming soon"
+                >
+                    <SaveIcon />
+                    Save Flowchart
+                </button>
+            </div>
             <FlowchartCanvas nodes={result.nodes} edges={result.edges} />
         </main>
     );
