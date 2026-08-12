@@ -484,7 +484,7 @@ class UnsaveAlgorithmAPI(APIView):
 
         saved.delete()
 
-        return api_error(
+        return api_success(
             message="Removed from saved",
         )
     
