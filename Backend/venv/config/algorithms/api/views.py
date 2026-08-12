@@ -510,32 +510,26 @@ class MySavedAlgorithmsAPI(APIView):
             serializer.data
         )
 
-class SaveMyAlgorithmAPI(APIView):
+class MySavedAlgorithmsAPI(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def get(self, request):
 
-        serializer = AlgorithmSerializer(
-            data=request.data
-        )
+        saved = SavedAlgorithm.objects.filter(
+            user=request.user,
+            algorithm__status='PUBLISHED',
+            algorithm__is_archived=False
+        ).order_by('-saved_at')
 
-        if not serializer.is_valid():
-            return api_error(
-                message="Invalid algorithm data",
-                errors=serializer.errors,
-                status=400
-            )
-
-        algorithm = serializer.save(
-            owner=request.user,
-            status='DRAFT'
+        serializer = SavedAlgorithmSerializer(
+            saved,
+            many=True
         )
 
         return api_success(
-            message="Algorithm saved successfully",
-            data=AlgorithmSerializer(algorithm).data,
-            status=201
+            message="Saved algorithms fetched successfully",
+            data=serializer.data
         )
 
 class MyAlgorithmsAPI(APIView):
@@ -544,35 +538,19 @@ class MyAlgorithmsAPI(APIView):
 
     def get(self, request):
 
-        # الخوارزميات التي كتبها المستخدم بنفسه
-        my_algorithms = Algorithm.objects.filter(
+        algorithms = Algorithm.objects.filter(
             owner=request.user,
             is_archived=False
         ).order_by('-created_at')
 
-        # الخوارزميات المنشورة التي قام المستخدم بحفظها
-        saved_algorithms = SavedAlgorithm.objects.filter(
-            user=request.user,
-            algorithm__status='PUBLISHED',
-            algorithm__is_archived=False
-        ).order_by('-saved_at')
-
-        my_algorithms_serializer = AlgorithmSerializer(
-            my_algorithms,
-            many=True
-        )
-
-        saved_algorithms_serializer = SavedAlgorithmSerializer(
-            saved_algorithms,
+        serializer = AlgorithmSerializer(
+            algorithms,
             many=True
         )
 
         return api_success(
             message="My algorithms fetched successfully",
-            data={
-                'my_algorithms': my_algorithms_serializer.data,
-                'saved_algorithms': saved_algorithms_serializer.data
-            }
+            data=serializer.data
         )
 
 class TopicListAPI(APIView):

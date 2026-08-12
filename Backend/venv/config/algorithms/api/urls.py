@@ -78,6 +78,7 @@ urlpatterns = [
         'admin/requests/<int:id>/reject/',
         RejectRequestAPI.as_view()
     ),
+    # saved algorithm that was puplished  
     path(
         '<int:algorithm_id>/save/',
         SaveAlgorithmAPI.as_view()
@@ -92,14 +93,17 @@ urlpatterns = [
         'my-published/',
         MyPublishedAlgorithmsAPI.as_view(),
     ),
+    # show saved published algorithm 
     path(
         'saved/',
         MySavedAlgorithmsAPI.as_view()
     ),
+    # saved algorithm that he write it
     path(
         'my-algorithms/save/',
         SaveMyAlgorithmAPI.as_view()
     ),
+    # show saved not published algorithm 
     path(
         'algorithms/my/',
         MyAlgorithmsAPI.as_view(),
