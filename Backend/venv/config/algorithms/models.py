@@ -21,21 +21,55 @@ class Topic(models.Model):
     def __str__(self):
         return self.name
     
+
 class Algorithm(models.Model):
+
+    STATUS_CHOICES = (
+        ('DRAFT', 'Draft'),
+        ('PENDING', 'Pending'),
+        ('PUBLISHED', 'Published'),
+        ('REJECTED', 'Rejected'),
+    )
+
     title = models.CharField(max_length=255)
     description = models.TextField()
     code = models.TextField()
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
 
-    execution_count = models.PositiveBigIntegerField(default=0)
+    topic = models.ForeignKey(
+        Topic,
+        on_delete=models.CASCADE
+    )
 
-    views_count = models.BigIntegerField(default=0)
-    is_archived = models.BooleanField(default=False)
+    execution_count = models.PositiveBigIntegerField(
+        default=0
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    views_count = models.BigIntegerField(
+        default=0
+    )
+
+    is_archived = models.BooleanField(
+        default=False
+    )
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='DRAFT'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     def __str__(self):
         return self.title

@@ -28,10 +28,28 @@ class AlgorithmSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'code',
+            'owner',
             'owner_username',
+            'topic',
             'topic_name',
+            'execution_count',
             'views_count',
-            'created_at'
+            'is_archived',
+            'status',
+            'created_at',
+            'updated_at',
+        ]
+
+        read_only_fields = [
+            'id',
+            'owner',
+            'owner_username',
+            'execution_count',
+            'views_count',
+            'is_archived',
+            'status',
+            'created_at',
+            'updated_at',
         ]
 
 

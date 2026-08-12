@@ -3,7 +3,9 @@ from django.urls import path
 from .views import (
     AlgorithmListAPI,
     AlgorithmDetailAPI,
+    CreateDeleteRequestAPI,
     CreateRequestAPI,
+    CreateUpdateRequestAPI,
     MyPublishedAlgorithmsAPI,
     MyRequestsAPI,
     RequestDetailAPI,
@@ -11,6 +13,7 @@ from .views import (
     ApproveRequestAPI,
     RejectRequestAPI,
     SaveAlgorithmAPI,
+    SaveMyAlgorithmAPI,
     TopicListAPI,
     UnsaveAlgorithmAPI,
     MySavedAlgorithmsAPI,
@@ -39,10 +42,20 @@ urlpatterns = [
         AlgorithmDetailAPI.as_view()
     ),
     path(
-        'requests/create/',
-        CreateRequestAPI.as_view()
+        '<int:algorithm_id>/publish-request/',
+        CreateRequestAPI.as_view(),
+        name='create-publish-request'
     ),
-
+    path(
+        '<int:algorithm_id>/update-request/',
+        CreateUpdateRequestAPI.as_view(),
+        name='create-update-request'
+    ),
+    path(
+        '<int:algorithm_id>/delete-request/',
+        CreateDeleteRequestAPI.as_view(),
+        name='create-delete-request'
+    ),
     path(
         'requests/my/',
         MyRequestsAPI.as_view()
@@ -81,6 +94,10 @@ urlpatterns = [
     path(
         'saved/',
         MySavedAlgorithmsAPI.as_view()
+    ),
+    path(
+        'my-algorithms/save/',
+        SaveMyAlgorithmAPI.as_view()
     ),
     path(
         'topics/',
