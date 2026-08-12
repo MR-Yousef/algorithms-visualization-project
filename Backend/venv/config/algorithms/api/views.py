@@ -536,21 +536,28 @@ class SaveMyAlgorithmAPI(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-
-        algorithms = Algorithm.objects.filter(
-            owner=request.user,
-            is_archived=False
-        ).order_by('-created_at')
+    def post(self, request):
 
         serializer = AlgorithmSerializer(
-            algorithms,
-            many=True
+            data=request.data
+        )
+
+        if not serializer.is_valid():
+            return api_error(
+                message="Invalid algorithm data",
+                errors=serializer.errors,
+                status=400
+            )
+
+        algorithm = serializer.save(
+            owner=request.user,
+            status='DRAFT'
         )
 
         return api_success(
-            message="My algorithms fetched successfully",
-            data=serializer.data
+            message="Algorithm saved successfully",
+            data=AlgorithmSerializer(algorithm).data,
+            status=201
         )
 
 class MyAlgorithmsAPI(APIView):
