@@ -88,7 +88,6 @@ urlpatterns = [
         '<int:algorithm_id>/unsave/',
         UnsaveAlgorithmAPI.as_view()
     ),
-
     path(
         'my-published/',
         MyPublishedAlgorithmsAPI.as_view(),
@@ -103,7 +102,7 @@ urlpatterns = [
         'my-algorithms/save/',
         SaveMyAlgorithmAPI.as_view()
     ),
-    # show saved not published algorithm 
+    # show saved published algorithm 
     path(
         'algorithms/my/',
         MyAlgorithmsAPI.as_view(),

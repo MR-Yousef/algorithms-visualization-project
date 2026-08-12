@@ -489,26 +489,26 @@ class UnsaveAlgorithmAPI(APIView):
         )
     
 
-class MySavedAlgorithmsAPI(APIView):
+# class MySavedAlgorithmsAPI(APIView):
 
-    permission_classes = [IsAuthenticated]
+#     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+#     def get(self, request):
 
-        saved = SavedAlgorithm.objects.filter(
-            user=request.user
-        ).order_by('-saved_at')
+#         saved = SavedAlgorithm.objects.filter(
+#             user=request.user
+#         ).order_by('-saved_at')
 
-        serializer = (
-            SavedAlgorithmSerializer(
-                saved,
-                many=True
-            )
-        )
+#         serializer = (
+#             SavedAlgorithmSerializer(
+#                 saved,
+#                 many=True
+#             )
+#         )
 
-        return Response(
-            serializer.data
-        )
+#         return Response(
+#             serializer.data
+#         )
 
 class MySavedAlgorithmsAPI(APIView):
 
@@ -529,6 +529,27 @@ class MySavedAlgorithmsAPI(APIView):
 
         return api_success(
             message="Saved algorithms fetched successfully",
+            data=serializer.data
+        )
+
+class SaveMyAlgorithmAPI(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        algorithms = Algorithm.objects.filter(
+            owner=request.user,
+            is_archived=False
+        ).order_by('-created_at')
+
+        serializer = AlgorithmSerializer(
+            algorithms,
+            many=True
+        )
+
+        return api_success(
+            message="My algorithms fetched successfully",
             data=serializer.data
         )
 
