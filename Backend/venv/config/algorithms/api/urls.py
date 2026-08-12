@@ -6,6 +6,7 @@ from .views import (
     CreateDeleteRequestAPI,
     CreateRequestAPI,
     CreateUpdateRequestAPI,
+    MyAlgorithmsAPI,
     MyPublishedAlgorithmsAPI,
     MyRequestsAPI,
     RequestDetailAPI,
@@ -98,6 +99,11 @@ urlpatterns = [
     path(
         'my-algorithms/save/',
         SaveMyAlgorithmAPI.as_view()
+    ),
+    path(
+        'algorithms/my/',
+        MyAlgorithmsAPI.as_view(),
+        name='my-algorithms'
     ),
     path(
         'topics/',

@@ -538,6 +538,43 @@ class SaveMyAlgorithmAPI(APIView):
             status=201
         )
 
+class MyAlgorithmsAPI(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # الخوارزميات التي كتبها المستخدم بنفسه
+        my_algorithms = Algorithm.objects.filter(
+            owner=request.user,
+            is_archived=False
+        ).order_by('-created_at')
+
+        # الخوارزميات المنشورة التي قام المستخدم بحفظها
+        saved_algorithms = SavedAlgorithm.objects.filter(
+            user=request.user,
+            algorithm__status='PUBLISHED',
+            algorithm__is_archived=False
+        ).order_by('-saved_at')
+
+        my_algorithms_serializer = AlgorithmSerializer(
+            my_algorithms,
+            many=True
+        )
+
+        saved_algorithms_serializer = SavedAlgorithmSerializer(
+            saved_algorithms,
+            many=True
+        )
+
+        return api_success(
+            message="My algorithms fetched successfully",
+            data={
+                'my_algorithms': my_algorithms_serializer.data,
+                'saved_algorithms': saved_algorithms_serializer.data
+            }
+        )
+
 class TopicListAPI(APIView):
 
     def get(self, request):
