@@ -29,18 +29,26 @@ class AlgorithmListAPI(APIView):
 
     def get(self, request):
 
-        algorithms = Algorithm.objects.all()
-                                                                                                                        
+        algorithms = Algorithm.objects.filter(
+            status='PUBLISHED',
+            is_archived=False
+        ).order_by('-created_at')
+
         search = request.query_params.get('search')
 
         if search:
-            algorithms = algorithms.filter(title__icontains=search)
+            algorithms = algorithms.filter(
+                title__icontains=search
+            )
 
-        serializer = AlgorithmSerializer(algorithms, many=True)
+        serializer = AlgorithmSerializer(
+            algorithms,
+            many=True
+        )
 
         return api_success(
             data=serializer.data,
-            message="Algorithms fetched successfully"
+            message="Published algorithms fetched successfully"
         )
     
 class AlgorithmDetailAPI(APIView):
@@ -78,15 +86,13 @@ class CreateRequestAPI(APIView):
             owner=request.user,
             is_archived=False
         )
-
-        # يجب أن تكون الخوارزمية Draft
+        
         if algorithm.status != 'DRAFT':
             return api_error(
                 message="Only draft algorithms can be submitted for publishing",
                 status=400
             )
 
-        # منع إرسال أكثر من طلب Pending لنفس الخوارزمية
         pending_request = AlgorithmRequest.objects.filter(
             algorithm=algorithm,
             status='PENDING'
@@ -109,7 +115,6 @@ class CreateRequestAPI(APIView):
             status='PENDING'
         )
 
-        # تغيير حالة الخوارزمية نفسها
         algorithm.status = 'PENDING'
         algorithm.save(update_fields=['status'])
 
@@ -136,14 +141,12 @@ class CreateUpdateRequestAPI(APIView):
             is_archived=False
         )
 
-        # يجب أن تكون الخوارزمية منشورة
         if algorithm.status != 'PUBLISHED':
             return api_error(
                 message="Only published algorithms can be updated",
                 status=400
             )
 
-        # منع وجود أكثر من طلب تعديل Pending
         pending_request = AlgorithmRequest.objects.filter(
             algorithm=algorithm,
             request_type='UPDATE',
@@ -155,14 +158,12 @@ class CreateUpdateRequestAPI(APIView):
                 message="A pending update request already exists",
                 status=400
             )
-
-        # البيانات الجديدة المقترحة
+        
         title = request.data.get('title')
         description = request.data.get('description')
         code = request.data.get('code')
         topic_id = request.data.get('topic')
 
-        # التأكد من إرسال كل البيانات
         if not title or not description or not code or not topic_id:
             return api_error(
                 message="All algorithm fields are required",
@@ -203,14 +204,12 @@ class CreateDeleteRequestAPI(APIView):
             is_archived=False
         )
 
-        # يجب أن تكون الخوارزمية منشورة
         if algorithm.status != 'PUBLISHED':
             return api_error(
                 message="Only published algorithms can be deleted",
                 status=400
             )
 
-        # منع وجود أكثر من طلب حذف Pending
         pending_request = AlgorithmRequest.objects.filter(
             algorithm=algorithm,
             request_type='DELETE',
@@ -309,14 +308,12 @@ class ApproveRequestAPI(APIView):
             id=id
         )
 
-        # لا يمكن معالجة الطلب أكثر من مرة
         if req.status != 'PENDING':
             return api_error(
                 message="Already processed",
                 status=400
             )
 
-        # يجب أن تكون الخوارزمية مرتبطة بالطلب
         algorithm = req.algorithm
 
         if not algorithm:
@@ -324,10 +321,6 @@ class ApproveRequestAPI(APIView):
                 message="Algorithm not found for this request",
                 status=400
             )
-
-        # =========================
-        # CREATE
-        # =========================
 
         if req.request_type == 'CREATE':
 
@@ -342,10 +335,6 @@ class ApproveRequestAPI(APIView):
             algorithm.save(
                 update_fields=['status']
             )
-
-        # =========================
-        # UPDATE
-        # =========================
 
         elif req.request_type == 'UPDATE':
 
@@ -362,10 +351,6 @@ class ApproveRequestAPI(APIView):
 
             algorithm.save()
 
-        # =========================
-        # DELETE
-        # =========================
-
         elif req.request_type == 'DELETE':
 
             if algorithm.status != 'PUBLISHED':
@@ -379,10 +364,6 @@ class ApproveRequestAPI(APIView):
             algorithm.save(
                 update_fields=['is_archived']
             )
-
-        # =========================
-        # UPDATE REQUEST STATUS
-        # =========================
 
         req.status = 'APPROVED'
         req.reviewed_by = request.user
@@ -412,7 +393,6 @@ class RejectRequestAPI(APIView):
                 status=400
             )
 
-        # يجب أن تكون الخوارزمية موجودة
         algorithm = req.algorithm
 
         if not algorithm:
@@ -421,13 +401,11 @@ class RejectRequestAPI(APIView):
                 status=400
             )
 
-        # تغيير حالة الخوارزمية إلى REJECTED
         algorithm.status = 'REJECTED'
         algorithm.save(
             update_fields=['status']
         )
 
-        # سبب الرفض
         reason = request.data.get(
             'reason',
             ''
@@ -451,9 +429,6 @@ class MyPublishedAlgorithmsAPI(ListAPIView):
     serializer_class = AlgorithmSerializer
 
     def get_queryset(self):
-
-        if self.request.user.role != 'CONTRIBUTOR':
-            return Algorithm.objects.none()
 
         return Algorithm.objects.filter(
             owner=self.request.user,
