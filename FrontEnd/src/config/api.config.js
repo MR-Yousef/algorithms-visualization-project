@@ -16,9 +16,11 @@ export const ENDPOINTS = {
     DOCUMENTATION: `${API_BASE_URL}/algorithms/documentation/`,
     SAVE_ALGORITHM: (id) => `${API_BASE_URL}/algorithms/${id}/save/`,
     UNSAVE_ALGORITHM: (id) => `${API_BASE_URL}/algorithms/${id}/unsave/`,
-    ALGORITHM_DETAIL: (id) => `${API_BASE_URL}/algorithms/${id}/`,  
+    ALGORITHM_DETAIL: (id) => `${API_BASE_URL}/algorithms/${id}/`,
     MY_PUBLISHED: `${API_BASE_URL}/algorithms/my-published/`,
     SAVED: `${API_BASE_URL}/algorithms/saved/`,
-
+    TOPICS: `${API_BASE_URL}/algorithms/topics/`,
+    SAVE_ALGORITHM_CLOUD: `${API_BASE_URL}/algorithms/my-algorithms/save/`,
+    MY_SAVED_ALGORITHMS: `${API_BASE_URL}/algorithms/algorithms/my/`,
 };
 export default API_BASE_URL;

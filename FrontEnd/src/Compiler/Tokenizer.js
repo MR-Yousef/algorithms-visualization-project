@@ -84,16 +84,9 @@ export class Tokenizer {
     static getTokensArray() {
         return Tokenizer.tokensArray;
     }
-    /**
-     * 
-     * @returns {Error} the lexical error if there is any error during tokenization otherwise it will return null
-     */
     static getLexicalError() {
         return Tokenizer.lexicalError
     }
-    /**
-     * method to reset the tokenizer to its initial state before starting tokenization
-     */
     static reset() {
         Tokenizer.formatedText = "";
         Tokenizer.lineNumber = 0;
@@ -109,11 +102,7 @@ export class Tokenizer {
         Tokenizer.lexicalError = new Error("lexical", Tokenizer.getLineNumber(), `unkown token : ${tokenValue}`)
     };
 
-    /**
-     * The tokenize method is responsible for converting the input text into tokens based on predefined regular expressions. It first resets the tokenizer, formats the input text, splits it into lines, and then processes each line to identify and create tokens. If an unknown token is encountered, it throws a lexical error.
-     * @param {String} text 
-     * @returns dosen't return anything but it will set the tokensArray attribute with the array of tokens after tokenization is done
-     */
+    // the main function of this class is to tokenize the input text into different types of tokens 
     static tokenize(text) {
         Tokenizer.reset();
         let splitLine = []

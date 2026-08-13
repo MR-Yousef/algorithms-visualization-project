@@ -1,7 +1,3 @@
-/* ============================================================
-   PROFILE PAGE – Styles
-   ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap');
 
 :root {
@@ -102,7 +98,7 @@ body {
 .profile-main {
     position: relative;
     z-index: 10;
-    padding: 6rem 2rem 3rem;
+    padding: 2rem 2rem 3rem;
     max-width: 1000px;
     margin: 0 auto;
 }

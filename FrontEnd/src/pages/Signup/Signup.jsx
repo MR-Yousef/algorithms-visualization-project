@@ -32,6 +32,7 @@ export default function Signup() {
         if (!agreeTerms) e.terms = "YOU MUST AGREE TO THE TERMS"; // 👈 ADDED
         return e;
     };
+    console.log(email);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -134,7 +135,7 @@ export default function Signup() {
                                 className="field-input"
                                 placeholder="user@gmail.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value.toLowerCase())}
                                 autoComplete="email"
                             />
                             <span className="field-icon"><MailIcon /></span>

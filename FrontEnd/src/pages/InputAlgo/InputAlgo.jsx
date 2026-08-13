@@ -3,7 +3,7 @@ import CodeEditor from "../../Component/CodeEditor/CodeEditor";
 import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // ← useLocation added
+import { useNavigate, useLocation } from "react-router-dom";
 import { TextFormater } from "../../Compiler/TextFormater";
 import { Tokenizer } from "../../Compiler/Tokenizer";
 import { Parser } from "../../Compiler/Parser";
@@ -12,7 +12,7 @@ import { useAuth } from "../../hooks/useAuth";
 function InputAlgo() {
     const { isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();        // ← for receiving code from ShowAlgorithms
+    const location = useLocation();
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -39,15 +39,6 @@ function InputAlgo() {
         }
     }, [code]);
 
-    // ── Accept code passed from another page (e.g. Run button) ──
-    useEffect(() => {
-        if (location.state?.code) {
-            setCode(location.state.code);
-            // Clear the state so the code doesn't reappear after a refresh
-            navigate(".", { replace: true, state: {} });
-        }
-    }, [location.state?.code, navigate]);
-
     const [statistics, setStatistics] = useState({
         loops: 0,
         conditions: 0,
@@ -55,13 +46,11 @@ function InputAlgo() {
     });
     const [ast, setAst] = useState();
 
-    // Tabs and buttons state
     const [activeTab, setActiveTab] = useState("text");
     const [readyToGenerateFlowChart, setReadyToGenerateFlowChart] = useState(false);
     const [readyToCompile, setReadyToCompile] = useState(false);
     const [readyToFormat, setReadyToformat] = useState(false);
 
-    // Status display
     const stateColors = {
         green: "rgb(0, 255, 8)",
         yellow: "rgb(255, 255, 0)",
@@ -74,14 +63,43 @@ function InputAlgo() {
     );
     const [isCompilling, setIsCompilling] = useState(false);
 
-    // ── Ref for auto‑focus on the code editor ──
     const editorRef = useRef(null);
 
-    // Helper to update status color and reset stats
+    // Helper to update status color and reset statistics
     function changeStatusColor(color) {
         document.documentElement.style.setProperty("--status-color", `${color}`);
         setStatistics({ loops: 0, conditions: 0, variables: 0 });
     }
+
+    // Apply ready state based on loaded code (non‑empty → ready to format)
+    const applyLoadedCode = (codeValue) => {
+        if (codeValue && codeValue.trim().length > 0) {
+            changeStatusColor(stateColors.green);
+            setReadyToformat(true);
+            setInputState("Ready to continue?");
+            setInputStateDescription("You can start formatting now");
+        } else {
+            changeStatusColor(stateColors.gray);
+            setReadyToformat(false);
+            setInputState("Empty code");
+            setInputStateDescription("Text area is empty , no action can be done");
+        }
+    };
+
+    // ── Accept code passed from another page (e.g. Run button) ──
+    useEffect(() => {
+        if (location.state?.code) {
+            setCode(location.state.code);
+            applyLoadedCode(location.state.code);
+            // Clear the state so the code doesn't reappear after a refresh
+            navigate(".", { replace: true, state: {} });
+        }
+    }, [location.state?.code, navigate]);
+
+    // ── Apply initial code from localStorage on mount ──
+    useEffect(() => {
+        applyLoadedCode(code);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // ── Tab switch handlers ──
     function handleTextTabClick() {
@@ -113,10 +131,9 @@ function InputAlgo() {
         const reader = new FileReader();
         reader.onload = (event) => {
             const content = event.target.result;
-            setCode(content);             // load file content into the editor
-            setActiveTab("text");         // switch to Text Editor tab
-            changeStatusColor(stateColors.green);
-            setReadyToformat(true);
+            setCode(content);
+            setActiveTab("text");
+            applyLoadedCode(content);
             setInputState("File loaded");
             setInputStateDescription(`Loaded "${file.name}" successfully.`);
         };
@@ -168,7 +185,7 @@ function InputAlgo() {
             setInputState("Empty code");
             setInputStateDescription("Text area is empty , no action can be done");
         } else {
-            changeStatusColor(stateColors.green);
+            changeStatusColor(stateColors.yellow);
             setInputState("writing...");
             setInputStateDescription("writing in the text editor");
             setReadyToformat(true);

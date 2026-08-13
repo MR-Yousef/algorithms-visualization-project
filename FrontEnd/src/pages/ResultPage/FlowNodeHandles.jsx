@@ -14,6 +14,11 @@ const HANDLE_DEFINITIONS = {
         position: Position.Right
     },
 
+    "target-left": {
+        type: "target",
+        position: Position.Left
+    },
+
     "source-bottom": {
         type: "source",
         position: Position.Bottom
@@ -38,12 +43,15 @@ export function FlowNodeHandles({ handles, isConnectable = false }) {
     // Validate the handles prop to ensure it is an array of strings.
     if (!Array.isArray(handles))
         throw new Error("FlowNodeHandles requires an array of handle identifiers.");
+
     // return an array of Handle components based on the provided handle identifiers.
     return handles.map(handleId => {
         const definition = HANDLE_DEFINITIONS[handleId];
+
         // Check if the handleId is valid and defined in HANDLE_DEFINITIONS
         if (!definition)
             throw new Error(`Unsupported flow-node handle: ${handleId}.`);
+
         return (
             <Handle
                 key={handleId}

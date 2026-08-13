@@ -3,7 +3,9 @@ import { FlowNode } from "./FlowNode";
 import { ASTnode } from "../../Compiler/ASTNode"
 import { FlowEdge } from "./FlowEdge";
 import { FlowFragment } from "./FlowFragment";
+
 export class FlowchartBuilder {
+
     /**
      * a class to build a flowchart graph from the AST tree
      */
@@ -12,40 +14,283 @@ export class FlowchartBuilder {
     }
 
     /**
+     * Returns the precedence of an expression AST node.
+     * Higher numbers bind more tightly.
+     *
+     * @param {ASTnode} node
+     * @returns {number}
+     */
+    getExpressionPrecedence(node) {
+        if (!node)
+            return 100;
+
+        const operator = String(node.value ?? "").toLowerCase();
+
+        if (node.nodeType === "LogicalOperator") {
+            if (operator === "|" || operator === "or")
+                return 1;
+
+            if (operator === "&" || operator === "and")
+                return 2;
+
+            return 3;
+        }
+
+        if (node.nodeType === "ComparisonOperator")
+            return 4;
+
+        if (node.nodeType === "ArithmeticOperator") {
+            if (operator === "+" || operator === "-")
+                return 5;
+
+            if (
+                operator === "*" ||
+                operator === "/" ||
+                operator === "%"
+            )
+                return 6;
+
+            if (operator === "^" || operator === "**")
+                return 7;
+        }
+
+        return 100;
+    }
+
+    /**
+     * Convert AST expression back to readable text.
+     *
+     * This is important because compound AST expressions may
+     * have an empty sourceText.
+     *
+     * @param {ASTnode} node
+     * @param {number} parentPrecedence
+     * @returns {string}
+     */
+    formatAstText(node, parentPrecedence = 0) {
+        if (!node)
+            return "";
+
+        const children =
+            Array.isArray(node.children)
+                ? node.children
+                : [];
+
+        /*
+         * INPUT x, y, z
+         * OUTPUT x, y + 5, "hello"
+         */
+        if (
+            node.nodeType === "IdentifierList" ||
+            node.nodeType === "OutputList"
+        ) {
+            return children
+                .map(child => this.formatAstText(child))
+                .filter(Boolean)
+                .join(", ");
+        }
+
+        const isOperatorNode =
+            node.nodeType === "ArithmeticOperator" ||
+            node.nodeType === "ComparisonOperator" ||
+            node.nodeType === "LogicalOperator";
+
+        /*
+         * Reconstruct:
+         *
+         * x + 5
+         * x > y
+         * x > 5 & y < 10
+         * NOT (x == 5)
+         */
+        if (isOperatorNode && children.length > 0) {
+
+            const operator =
+                String(node.value ?? "");
+
+            const precedence =
+                this.getExpressionPrecedence(node);
+
+            /*
+             * Unary operators such as NOT / !
+             */
+            if (children.length === 1) {
+
+                const child =
+                    children[0];
+
+                let childText =
+                    this.formatAstText(child);
+
+                if (
+                    Array.isArray(child?.children) &&
+                    child.children.length > 0
+                ) {
+                    childText = `(${childText})`;
+                }
+
+                const separator =
+                    /^[A-Za-z]+$/.test(operator)
+                        ? " "
+                        : "";
+
+                const text =
+                    `${operator}${separator}${childText}`;
+
+                return precedence < parentPrecedence
+                    ? `(${text})`
+                    : text;
+            }
+
+            const isRightAssociative =
+                node.nodeType === "ArithmeticOperator" &&
+                (
+                    operator === "^" ||
+                    operator === "**"
+                );
+
+            const leftParentPrecedence =
+                isRightAssociative
+                    ? precedence + 1
+                    : precedence;
+
+            const rightParentPrecedence =
+                isRightAssociative
+                    ? precedence
+                    : precedence + 1;
+
+            const leftText =
+                this.formatAstText(
+                    children[0],
+                    leftParentPrecedence
+                );
+
+            const rightText =
+                this.formatAstText(
+                    children[1],
+                    rightParentPrecedence
+                );
+
+            const text =
+                `${leftText} ${operator} ${rightText}`;
+
+            return precedence < parentPrecedence
+                ? `(${text})`
+                : text;
+        }
+
+        /*
+         * Simple identifiers, numbers, strings, booleans, etc.
+         */
+        if (
+            typeof node.sourceText === "string" &&
+            node.sourceText.trim()
+        ) {
+            return node.sourceText.trim();
+        }
+
+        if (
+            node.value !== undefined &&
+            node.value !== null
+        ) {
+            return String(node.value);
+        }
+
+        /*
+         * Generic fallback.
+         */
+        return children
+            .map(child => this.formatAstText(child))
+            .filter(Boolean)
+            .join(" ");
+    }
+
+    /**
      * Builds a complete flow graph from the AST root.
      * @param {ASTnode} ast
      * @returns {FlowGraph}
      */
     build(ast) {
+
         if (!ast || !Array.isArray(ast.children))
-            throw new Error("Cannot build the flow graph: invalid AST root.");
-        // Reset the FlowNode and FlowEdge static counters to ensure unique IDs for each new flow graph.
+            throw new Error(
+                "Cannot build the flow graph: invalid AST root."
+            );
+
         FlowNode.reset();
         FlowEdge.reset();
-        // Initialize a new FlowGraph instance to build the flowchart.
-        this.flowGraph = new FlowGraph();
-        // Create the start and end nodes for the flowchart.
-        const startNode = new FlowNode("start", "Start");
-        const endNode = new FlowNode("end", "End");
-        // Add the start node to the flow graph and set it as the previous exit node
-        this.flowGraph.addNode(startNode);
-        let previousExitNode = startNode;
-        // Iterate through each statement in the AST and build the corresponding flow fragments.
+
+        this.flowGraph =
+            new FlowGraph();
+
+        const startNode =
+            new FlowNode(
+                "start",
+                "Start"
+            );
+
+        const endNode =
+            new FlowNode(
+                "end",
+                "End"
+            );
+
+        this.flowGraph.addNode(
+            startNode
+        );
+
+        let previousExitNode =
+            startNode;
+
         ast.children.forEach(statementNode => {
-            const currentFragment = this.buildStatement(statementNode);
-            this.flowGraph.addFragment(currentFragment);
-            this.flowGraph.addEdge(new FlowEdge(previousExitNode.id, currentFragment.entryNode.id, "next"));
-            previousExitNode = currentFragment.exitNode;
+
+            const currentFragment =
+                this.buildStatement(
+                    statementNode
+                );
+
+            this.flowGraph.addFragment(
+                currentFragment
+            );
+
+            this.flowGraph.addEdge(
+                new FlowEdge(
+                    previousExitNode.id,
+                    currentFragment.entryNode.id,
+                    "next"
+                )
+            );
+
+            previousExitNode =
+                currentFragment.exitNode;
         });
-        // Add the end node to the flow graph and connect it to the last exit node.
-        this.flowGraph.addNode(endNode);
-        this.flowGraph.addEdge(new FlowEdge(previousExitNode.id,endNode.id,"next"));
-        // Validate the constructed flow graph to ensure it is well-formed and adheres to the expected structure.
-        const validationResult = this.flowGraph.validate();
-        // If the flow graph is not valid, throw an error with the validation errors.
-        if (!validationResult.isValid) 
-            throw new Error(["Failed to build a valid flow graph:",...validationResult.errors.map(error => `- ${error}`)].join("\n"));
-        // Return the constructed flow graph.
+
+        this.flowGraph.addNode(
+            endNode
+        );
+
+        this.flowGraph.addEdge(
+            new FlowEdge(
+                previousExitNode.id,
+                endNode.id,
+                "next"
+            )
+        );
+
+        const validationResult =
+            this.flowGraph.validate();
+
+        if (!validationResult.isValid) {
+            throw new Error(
+                [
+                    "Failed to build a valid flow graph:",
+                    ...validationResult.errors.map(
+                        error => `- ${error}`
+                    )
+                ].join("\n")
+            );
+        }
+
         return this.flowGraph;
     }
 
@@ -55,213 +300,562 @@ export class FlowchartBuilder {
      * @returns {FlowFragment}
      */
     buildStatement(statementNode) {
-        // Check if the statement node is defined and not 
+
         if (!statementNode)
-            throw new Error("Cannot build a flow fragment from an undefined or null statement.");
-        // Determine the type of statement and call the corresponding build method.
+            throw new Error(
+                "Cannot build a flow fragment from an undefined or null statement."
+            );
+
         switch (statementNode.nodeType) {
+
             case "AssignmentStatement":
-                return this.buildAssignment(statementNode);
+                return this.buildAssignment(
+                    statementNode
+                );
+
             case "InputStatement":
-                return this.buildInput(statementNode);
+                return this.buildInput(
+                    statementNode
+                );
+
             case "OutputStatement":
-                return this.buildOutput(statementNode);
+                return this.buildOutput(
+                    statementNode
+                );
+
             case "IfStatement":
-                return this.buildIf(statementNode);
+                return this.buildIf(
+                    statementNode
+                );
+
             case "WhileStatement":
-                return this.buildWhile(statementNode);
-            // default case to handle unsupported statement types.
+                return this.buildWhile(
+                    statementNode
+                );
+
             default:
-                throw new Error(`Unsupported statement type: ${statementNode.nodeType}.`);
+                throw new Error(
+                    `Unsupported statement type: ${statementNode.nodeType}.`
+                );
         }
     }
 
     /**
-     * Builds an assignment flow fragment.
-     * @param {ASTnode} statementNode
-     * @returns {FlowFragment}
+     * Assignment
+     *
+     * Example:
+     * x = a + b
      */
     buildAssignment(statementNode) {
-        const assignmentNode = new FlowNode("assignment", statementNode.sourceText, statementNode);
-        return new FlowFragment(assignmentNode, assignmentNode, [assignmentNode], []);
+
+        const identifier =
+            this.formatAstText(
+                statementNode.children?.[0]
+            );
+
+        const expression =
+            this.formatAstText(
+                statementNode.children?.[1]
+            );
+
+        const operator =
+            statementNode.value || "=";
+
+        const label =
+            [
+                identifier,
+                operator,
+                expression
+            ]
+                .filter(Boolean)
+                .join(" ");
+
+        const assignmentNode =
+            new FlowNode(
+                "assignment",
+                label,
+                statementNode
+            );
+
+        return new FlowFragment(
+            assignmentNode,
+            assignmentNode,
+            [assignmentNode],
+            []
+        );
     }
 
     /**
-     * Builds an input flow fragment.
-     * @param {ASTnode} statementNode
-     * @returns {FlowFragment}
+     * Input
+     *
+     * Example:
+     * Input x
+     * Input x, y
      */
     buildInput(statementNode) {
-        const inputNode = new FlowNode("input", statementNode.sourceText, statementNode);
-        return new FlowFragment(inputNode, inputNode, [inputNode], []);
+        const input =
+            this.formatAstText(
+                statementNode.children?.[0]
+            );
+
+        const label =
+            input
+                ? `Input`
+                : "Input";
+
+        const inputNode =
+            new FlowNode(
+                "input",
+                label,
+                statementNode,
+                {
+                    input
+                }
+            );
+
+        return new FlowFragment(
+            inputNode,
+            inputNode,
+            [inputNode],
+            []
+        );
     }
 
     /**
-     * Builds an output flow fragment.
-     * @param {ASTnode} statementNode
-     * @returns {FlowFragment}
+     * Output
+     *
+     * Example:
+     * Output x
+     * Output x + 5
+     * Output "hello", x
      */
     buildOutput(statementNode) {
-        const outputNode = new FlowNode("output", statementNode.sourceText, statementNode);
-        return new FlowFragment(outputNode, outputNode, [outputNode], []);
+        const output =
+            this.formatAstText(
+                statementNode.children?.[0]
+            );
+
+        const outputNode =
+            new FlowNode(
+                "output",
+                "Output",
+                statementNode,
+                {
+                    output
+                }
+            );
+
+        return new FlowFragment(
+            outputNode,
+            outputNode,
+            [outputNode],
+            []
+        );
     }
 
     /**
      * Builds a flow fragment for a block statement.
-     * @param {ASTnode} blockNode
-     * @returns {FlowFragment}
      */
     buildBlock(blockNode) {
-        // Check if the block node is valid and has children.
-        if (!blockNode || !Array.isArray(blockNode.children))
-            throw new Error("Cannot build a block fragment: invalid block node.");
-        // If the block has no children, return an empty flow fragment.
-        if (blockNode.children.length === 0) {
+
+        if (
+            !blockNode ||
+            !Array.isArray(blockNode.children)
+        ) {
+            throw new Error(
+                "Cannot build a block fragment: invalid block node."
+            );
+        }
+
+        if (
+            blockNode.children.length === 0
+        ) {
             return FlowFragment.empty();
         }
-        // Initialize arrays to hold the nodes and edges of the block fragment.
-        const blockNodes = [];
-        const blockEdges = [];
-        // Initialize variables to track the entry and exit nodes of the block fragment.
-        let entryNode = null;
-        let previousExitNode = null;
-        // Iterate through each statement in the block and build the corresponding flow fragments.
-        blockNode.children.forEach(statementNode => {
-            const currentFragment = this.buildStatement(statementNode);
-            // If the current fragment is empty, skip to the next statement.
-            if (currentFragment.isEmpty())
-                return;
-            // If the entry node has not been set yet, set it to the entry node of the current fragment.
-            if (!entryNode)
-                entryNode = currentFragment.entryNode;
-            // Add the nodes and edges of the current fragment to the block fragment.
-            blockNodes.push(...currentFragment.nodes);
-            blockEdges.push(...currentFragment.edges);
-            // If there is a previous exit node, create an edge from it to the entry node of the current fragment.
-            if (previousExitNode)
-                blockEdges.push(new FlowEdge(previousExitNode.id, currentFragment.entryNode.id, "next"));
-            // Update the previous exit node to be the exit node of the current fragment.
-            previousExitNode = currentFragment.exitNode;
-        });
-        // If no entry or exit nodes were set, return an empty flow fragment.
-        if (!entryNode || !previousExitNode)
+
+        const blockNodes =
+            [];
+
+        const blockEdges =
+            [];
+
+        let entryNode =
+            null;
+
+        let previousExitNode =
+            null;
+
+        blockNode.children.forEach(
+            statementNode => {
+
+                const currentFragment =
+                    this.buildStatement(
+                        statementNode
+                    );
+
+                if (
+                    currentFragment.isEmpty()
+                )
+                    return;
+
+                if (!entryNode)
+                    entryNode =
+                        currentFragment.entryNode;
+
+                blockNodes.push(
+                    ...currentFragment.nodes
+                );
+
+                blockEdges.push(
+                    ...currentFragment.edges
+                );
+
+                if (previousExitNode) {
+
+                    blockEdges.push(
+                        new FlowEdge(
+                            previousExitNode.id,
+                            currentFragment.entryNode.id,
+                            "next"
+                        )
+                    );
+                }
+
+                previousExitNode =
+                    currentFragment.exitNode;
+            }
+        );
+
+        if (
+            !entryNode ||
+            !previousExitNode
+        ) {
             return FlowFragment.empty();
-        // Create and return a new FlowFragment with the collected nodes and edges.
-        return new FlowFragment(entryNode, previousExitNode, blockNodes, blockEdges);
+        }
+
+        return new FlowFragment(
+            entryNode,
+            previousExitNode,
+            blockNodes,
+            blockEdges
+        );
     }
 
     /**
-     * Builds a flow fragment for a statement body.
-     * A body may be:
-     * - a Block
-     * - a single statement
-     * @param {ASTnode} bodyNode
-     * @returns {FlowFragment}
+     * Builds a body.
      */
     buildBody(bodyNode) {
-        // Check if the body node is defined and not null.
+
         if (!bodyNode)
-            throw new Error("Cannot build a body fragment from an undefined or null node.");
-        // Determine if the body node is a block or a single statement and call the corresponding build method.
-        if (bodyNode.nodeType === "Block")
-            return this.buildBlock(bodyNode);
-        else
-            return this.buildStatement(bodyNode);
+            throw new Error(
+                "Cannot build a body fragment from an undefined or null node."
+            );
+
+        if (
+            bodyNode.nodeType === "Block"
+        ) {
+            return this.buildBlock(
+                bodyNode
+            );
+        }
+
+        return this.buildStatement(
+            bodyNode
+        );
     }
 
     /**
-     * Builds a flow fragment for an if statement.
-     * AST structure:
-     * children[0] = condition
-     * children[1] = then body
-     * children[2] = optional else body
-     * @param {ASTnode} statementNode
-     * @returns {FlowFragment}
+     * IF
+     *
+     * The visible node only says:
+     *
+     * IF
+     *
+     * The complete condition is saved in:
+     *
+     * node.condition
+     *
+     * and later sent to:
+     *
+     * ReactFlow data.condition
      */
     buildIf(statementNode) {
-        // Validate the if statement node and its children.
-        if (!statementNode || !Array.isArray(statementNode.children) || statementNode.children.length < 2)
-            throw new Error("Cannot build an if fragment: invalid if statement node.");
-        // Extract the condition, then body, and optional else body from the statement node.
-        const conditionNode = statementNode.children[0];
-        const thenBodyNode = statementNode.children[1];
-        const elseBodyNode = statementNode.children[2] ?? null;
-        // Create the decision node for the if statement.
-        const decisionNode = new FlowNode("if", conditionNode.sourceText, statementNode);
-        // Create a junction node to merge the branches of the if statement.
-        const junctionNode = new FlowNode("junction", "", null);
-        // Build the flow fragments for the then and else bodies.
-        const thenFragment = this.buildBody(thenBodyNode);
-        // If the else body exists, build its flow fragment; otherwise, create an empty fragment.
-        const elseFragment = elseBodyNode ? this.buildBody(elseBodyNode) : FlowFragment.empty();
-        // Combine the nodes from the decision node, then fragment, else fragment, and junction node into a single array.
-        const nodes = [decisionNode, ...thenFragment.nodes, ...elseFragment.nodes, junctionNode];
-        // Combine the edges from the then fragment and else fragment into a single array.
-        const edges = [...thenFragment.edges, ...elseFragment.edges];
 
-        // True branch.
-        // If the then fragment is empty, create an edge directly from the decision node to the junction node with a "true" label.
-        if (thenFragment.isEmpty())
-            edges.push(new FlowEdge(decisionNode.id, junctionNode.id, "true", "Yes"));
-        // If the then fragment is not empty, create an edge from the decision node to the entry node of the then fragment with a "true" label 
-        // After that, and another edge from the exit node of the then fragment to the junction node.
-        else {
-            edges.push(new FlowEdge(decisionNode.id, thenFragment.entryNode.id, "true", "Yes"));
-            edges.push(new FlowEdge(thenFragment.exitNode.id, junctionNode.id, "next"));
+        if (
+            !statementNode ||
+            !Array.isArray(statementNode.children) ||
+            statementNode.children.length < 2
+        ) {
+            throw new Error(
+                "Cannot build an if fragment: invalid if statement node."
+            );
         }
-        // False branch.
-        // If the else fragment is empty, create an edge directly from the decision node to the junction node with a "false" label.
-        if (elseFragment.isEmpty())
-            edges.push(new FlowEdge(decisionNode.id, junctionNode.id, "false", "No"));
-        // If the else fragment is not empty, create an edge from the decision node to the entry node of the else fragment with a "false" label
-        else {
-            edges.push(new FlowEdge(decisionNode.id, elseFragment.entryNode.id, "false", "No"));
-            edges.push(new FlowEdge(elseFragment.exitNode.id, junctionNode.id, "next"));
+
+        const conditionNode =
+            statementNode.children[0];
+
+        const thenBodyNode =
+            statementNode.children[1];
+
+        const elseBodyNode =
+            statementNode.children[2] ?? null;
+
+        /*
+         * Get full readable condition from AST.
+         *
+         * Example:
+         *
+         * x + 5 > y & z != 10
+         */
+        const condition =
+            this.formatAstText(
+                conditionNode
+            );
+
+        /*
+         * IMPORTANT:
+         *
+         * label = "If"
+         *
+         * condition contains the big condition separately.
+         */
+        const decisionNode =
+            new FlowNode(
+                "if",
+                "If",
+                statementNode,
+                {
+                    condition
+                }
+            );
+
+        const junctionNode =
+            new FlowNode(
+                "junction",
+                "",
+                null
+            );
+
+        const thenFragment =
+            this.buildBody(
+                thenBodyNode
+            );
+
+        const elseFragment =
+            elseBodyNode
+                ? this.buildBody(
+                    elseBodyNode
+                )
+                : FlowFragment.empty();
+
+        const nodes = [
+            decisionNode,
+            ...thenFragment.nodes,
+            ...elseFragment.nodes,
+            junctionNode
+        ];
+
+        const edges = [
+            ...thenFragment.edges,
+            ...elseFragment.edges
+        ];
+
+        /*
+         * TRUE branch
+         */
+        if (
+            thenFragment.isEmpty()
+        ) {
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    junctionNode.id,
+                    "true",
+                    "Yes"
+                )
+            );
         }
-        // Return a new FlowFragment representing the entire if statement
-        // (with the decision node as the entry point and the junction node as the exit point.)
-        return new FlowFragment(decisionNode, junctionNode, nodes, edges);
+        else {
+
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    thenFragment.entryNode.id,
+                    "true",
+                    "Yes"
+                )
+            );
+
+            edges.push(
+                new FlowEdge(
+                    thenFragment.exitNode.id,
+                    junctionNode.id,
+                    "next"
+                )
+            );
+        }
+
+        /*
+         * FALSE branch
+         */
+        if (
+            elseFragment.isEmpty()
+        ) {
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    junctionNode.id,
+                    "false",
+                    "No"
+                )
+            );
+        }
+        else {
+
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    elseFragment.entryNode.id,
+                    "false",
+                    "No"
+                )
+            );
+
+            edges.push(
+                new FlowEdge(
+                    elseFragment.exitNode.id,
+                    junctionNode.id,
+                    "next"
+                )
+            );
+        }
+
+        return new FlowFragment(
+            decisionNode,
+            junctionNode,
+            nodes,
+            edges
+        );
     }
 
     /**
-     * Builds a flow fragment for a while statement.
-     * AST structure:
-     * children[0] = condition
-     * children[1] = body
-     * @param {ASTnode} statementNode
-     * @returns {FlowFragment}
+     * WHILE
+     *
+     * Visible node:
+     *
+     * While
+     *
+     * Hover:
+     *
+     * full condition
      */
     buildWhile(statementNode) {
-        // Validate the while statement node and its children.
-        if (!statementNode || !Array.isArray(statementNode.children) || statementNode.children.length < 2)
-            throw new Error("Cannot build a while fragment: invalid while statement node.");
-        // Extract the condition and body nodes from the statement node.
-        const conditionNode = statementNode.children[0];
-        const bodyNode = statementNode.children[1];
-        // Create the decision node for the while statement, which evaluates the loop condition.
-        const decisionNode = new FlowNode("while", conditionNode.sourceText, statementNode);
-        // Create a junction node to represent the exit point of the loop after the body has been executed.
-        const junctionNode = new FlowNode("junction", "", null);
-        // Build the flow fragment for the loop body using the buildBody method.
-        const bodyFragment = this.buildBody(bodyNode);
-        // Combine the nodes from the decision node, body fragment, and junction node into a single array.
-        const nodes = [decisionNode, ...bodyFragment.nodes, junctionNode];
-        // Combine the edges from the body fragment into a single array.
-        const edges = [...bodyFragment.edges];
 
-        // True branch enters the loop body.
-        // If the body fragment is empty, create an edge from the decision node back to itself with a "true" label.
-        if (bodyFragment.isEmpty())
-            edges.push(new FlowEdge(decisionNode.id, decisionNode.id, "true", "Yes"));
-        // If the body fragment is not empty, create an edge from the decision node to the entry node of the body fragment with a "true" label,
-        else {
-            edges.push(new FlowEdge(decisionNode.id, bodyFragment.entryNode.id, "true", "Yes"));
-            edges.push(new FlowEdge(bodyFragment.exitNode.id, decisionNode.id, "back"));
+        if (
+            !statementNode ||
+            !Array.isArray(statementNode.children) ||
+            statementNode.children.length < 2
+        ) {
+            throw new Error(
+                "Cannot build a while fragment: invalid while statement node."
+            );
         }
-        // False branch exits the loop.
-        // If the body fragment is empty, create an edge from the decision node to the junction node with a "false" label.
-        edges.push(new FlowEdge(decisionNode.id, junctionNode.id, "false", "No"));
-        // Return a new FlowFragment representing the entire while statement
-        return new FlowFragment(decisionNode, junctionNode, nodes, edges);
+
+        const conditionNode =
+            statementNode.children[0];
+
+        const bodyNode =
+            statementNode.children[1];
+
+        const condition =
+            this.formatAstText(
+                conditionNode
+            );
+
+        const decisionNode =
+            new FlowNode(
+                "while",
+                "While",
+                statementNode,
+                {
+                    condition
+                }
+            );
+
+        const junctionNode =
+            new FlowNode(
+                "junction",
+                "",
+                null
+            );
+
+        const bodyFragment =
+            this.buildBody(
+                bodyNode
+            );
+
+        const nodes = [
+            decisionNode,
+            ...bodyFragment.nodes,
+            junctionNode
+        ];
+
+        const edges = [
+            ...bodyFragment.edges
+        ];
+
+        /*
+         * YES -> loop body
+         */
+        if (
+            bodyFragment.isEmpty()
+        ) {
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    decisionNode.id,
+                    "true",
+                    "Yes"
+                )
+            );
+        }
+        else {
+
+            edges.push(
+                new FlowEdge(
+                    decisionNode.id,
+                    bodyFragment.entryNode.id,
+                    "true",
+                    "Yes"
+                )
+            );
+
+            edges.push(
+                new FlowEdge(
+                    bodyFragment.exitNode.id,
+                    decisionNode.id,
+                    "back"
+                )
+            );
+        }
+
+        /*
+         * NO -> exit while
+         */
+        edges.push(
+            new FlowEdge(
+                decisionNode.id,
+                junctionNode.id,
+                "false",
+                "No"
+            )
+        );
+
+        return new FlowFragment(
+            decisionNode,
+            junctionNode,
+            nodes,
+            edges
+        );
     }
 }

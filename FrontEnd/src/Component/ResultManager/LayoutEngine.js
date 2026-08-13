@@ -13,16 +13,22 @@ export const DEFAULT_NODE_SIZES = {
 // default layout options
 const DEFAULT_LAYOUT_OPTIONS = {
     nodeSizes: DEFAULT_NODE_SIZES,
-    // Vertical distance between sequential layout blocks.
-    sequenceGap: 80,
-    // Horizontal distance between the false and true branches.
-    branchGap: 120,
-    // Vertical distance between a decision node and its branches.
-    decisionBranchGap: 80,
-    // Vertical distance between branch endings and the junction.
-    branchJunctionGap: 80,
-    // Empty space surrounding the final diagram bounds.
-    padding: 40
+
+    // Balanced vertical distance between sequential blocks.
+    sequenceGap: 90,
+
+    // Enough room for IF branches without making the chart enormous.
+    branchGap: 140,
+
+    // Distance from decision to its body / branches.
+    decisionBranchGap: 85,
+
+    // IMPORTANT:
+    // 220 was creating huge empty rectangles.
+    branchJunctionGap: 220,
+
+    // Padding around the complete flowchart.
+    padding: 50
 };
 export class LayoutEngine {
     /**
@@ -116,7 +122,13 @@ export class LayoutEngine {
                     throw new Error(`The height of node type ${nodeType} must be a positive finite number.`);
             });
         // validate that spacing options are finite non-negative numbers
-        const spacingOptionNames = ["sequenceGap", "branchGap", "decisionBranchGap", "branchJunctionGap",  "padding"];
+        const spacingOptionNames = [
+            "sequenceGap",
+            "branchGap",
+            "decisionBranchGap",
+            "branchJunctionGap",
+            "padding"
+        ];
         spacingOptionNames.forEach(optionName => {
             const value = options[optionName];
             if (!Number.isFinite(value) || value < 0)
@@ -442,7 +454,7 @@ export class LayoutEngine {
         // false branch extents
         const falseLeftExtent = falseBranch.axisX;
         const falseRightExtent = falseBranch.width - falseBranch.axisX;
-        // reight branch extents
+        // true branch extents
         const trueLeftExtent = trueBranch.axisX;
         const trueRightExtent = trueBranch.width - trueBranch.axisX;
         /*
@@ -486,58 +498,81 @@ export class LayoutEngine {
      * @param {import("./FlowGraph").FlowGraph} flowGraph
      */
     measureWhileNode(layoutTreeNode, flowGraph) {
-        // validate that the layoutTreeNode is defined and is a while node
         if (!layoutTreeNode)
             throw new Error("Cannot measure an undefined or null while layout node.");
+
         if (!layoutTreeNode.isWhile())
             throw new Error(`Cannot measure a while block from layout tree type ${layoutTreeNode.type}.`);
-        // validate that the flowGraph is defined
+
         if (!flowGraph)
             throw new Error("Cannot measure a while block without a flow graph.");
-        // validate that the while block has a body layout block
+
         if (!layoutTreeNode.body)
             throw new Error("Cannot measure a while block without a body layout block.");
-        // validate that the body layout block is a sequence
+
         if (!layoutTreeNode.body.isSequence())
             throw new Error("The body of a while layout block must be a sequence.");
-        // validate that the flowNodeId and junctionNodeId are valid integers
+
         if (!Number.isInteger(layoutTreeNode.flowNodeId))
             throw new Error("Cannot measure a while block with an invalid flow node ID.");
+
         if (!Number.isInteger(layoutTreeNode.junctionNodeId))
             throw new Error("Cannot measure a while block with an invalid junction node ID.");
-        // validate that the flow node is a while node and the junction node is a junction
+
         const whileFlowNode = flowGraph.getNodeById(layoutTreeNode.flowNodeId);
         if (!whileFlowNode || whileFlowNode.type !== "while")
             throw new Error(`Flow node ${layoutTreeNode.flowNodeId} is not a valid while node.`);
+
         const junctionFlowNode = flowGraph.getNodeById(layoutTreeNode.junctionNodeId);
         if (!junctionFlowNode || junctionFlowNode.type !== "junction")
             throw new Error(`Flow node ${layoutTreeNode.junctionNodeId} is not a valid junction node.`);
+
         /*
-        Measure the loop body first because the complete while
-        geometry depends on the body's width and height.
+         * Measure the loop body first because the final size of the while block
+         * depends on the body's geometry.
          */
         this.measureTreeNode(layoutTreeNode.body, flowGraph);
+
         const body = layoutTreeNode.body;
-        // getting the configured sizes for the while decision node and the junction node
         const decisionSize = this.getNodeSize("while");
         const junctionSize = this.getNodeSize("junction");
+
         /*
-         * The loop body is placed below the while node.
-         * Its execution axis will be aligned with the main
-         * execution axis of the complete while block.
+         * Keep the loop body centered under the while node.
+         * This gives the YES edge a direct straight-down line.
          */
         const bodyLeftExtent = body.width > 0 ? body.axisX : 0;
         const bodyRightExtent = body.width > 0 ? body.width - body.axisX : 0;
-        const leftExtent = Math.max(decisionSize.width / 2, junctionSize.width / 2, bodyLeftExtent);
-        const rightExtent = Math.max(decisionSize.width / 2, junctionSize.width / 2, bodyRightExtent);
-        // calculate the total width and height of the while block
-        const width = leftExtent + rightExtent;
-        const height = decisionSize.height + this.options.decisionBranchGap + body.height + this.options.branchJunctionGap + junctionSize.height;
+
         /*
-         * The execution axis is measured from the left edge
-         * of the complete while block.
+         * Add a little extra side breathing room so the outer loop lines
+         * do not sit too close to the body.
          */
+        const sidePadding = 18;
+
+        const leftExtent = Math.max(
+            decisionSize.width / 2,
+            junctionSize.width / 2,
+            bodyLeftExtent
+        ) + sidePadding;
+
+        const rightExtent = Math.max(
+            decisionSize.width / 2,
+            junctionSize.width / 2,
+            bodyRightExtent
+        ) + sidePadding;
+
+        const width = leftExtent + rightExtent;
+
+        const height =
+            decisionSize.height +
+            this.options.decisionBranchGap +
+            body.height +
+            this.options.branchJunctionGap +
+            junctionSize.height;
+
         const axisX = leftExtent;
+
         layoutTreeNode.setGeometry(width, height, axisX);
     }
 
@@ -859,62 +894,67 @@ export class LayoutEngine {
      * @param {number} y
      */
     placeWhileNode(layoutTreeNode, flowGraph, layoutResult, x, y) {
-        // validate that the layoutTreeNode is defined and is a while node
         if (!layoutTreeNode)
             throw new Error("Cannot place an undefined or null while layout node.");
+
         if (!layoutTreeNode.isWhile())
-            throw new Error(`Cannot place layout tree node of type ${layoutTreeNode.type} ` + "as a while block.");
-        // validate that the flowGraph and layoutResult are defined
+            throw new Error(`Cannot place layout tree node of type ${layoutTreeNode.type} as a while block.`);
+
         if (!flowGraph)
             throw new Error("Cannot place a while block without a flow graph.");
+
         if (!layoutResult || typeof layoutResult.setPosition !== "function")
             throw new Error("Cannot place a while block without a valid layout result.");
-        // validate that the x and y coordinates are finite numbers
+
         if (!Number.isFinite(x) || !Number.isFinite(y))
             throw new Error("While block coordinates must be finite numbers.");
+
         if (!layoutTreeNode.body)
             throw new Error("Cannot place a while block without a body.");
-        // validate that the body of the while block is a sequence
+
         if (!layoutTreeNode.body.isSequence())
             throw new Error("The body of a while layout block must be a sequence.");
-        // validate that the flowNodeId and junctionNodeId are valid integers
+
         const whileNode = flowGraph.getNodeById(layoutTreeNode.flowNodeId);
         if (!whileNode || whileNode.type !== "while")
-            throw new Error(`Flow node ${layoutTreeNode.flowNodeId} ` + "is not a valid while node.");
+            throw new Error(`Flow node ${layoutTreeNode.flowNodeId} is not a valid while node.`);
+
         const junctionNode = flowGraph.getNodeById(layoutTreeNode.junctionNodeId);
         if (!junctionNode || junctionNode.type !== "junction")
-            throw new Error(`Flow node ${layoutTreeNode.junctionNodeId} ` + "is not a valid junction node.");
-        // validate that neither the while node nor the junction node already have a position in the layout result
+            throw new Error(`Flow node ${layoutTreeNode.junctionNodeId} is not a valid junction node.`);
+
         if (layoutResult.hasPosition(whileNode.id))
             throw new Error(`While node ${whileNode.id} already has a layout position.`);
+
         if (layoutResult.hasPosition(junctionNode.id))
             throw new Error(`Junction node ${junctionNode.id} already has a layout position.`);
-        // get the configured sizes for the while decision node and the junction node
+
         const decisionSize = this.getNodeSize("while");
         const junctionSize = this.getNodeSize("junction");
         const body = layoutTreeNode.body;
+
         /*
-         * Calculate the absolute horizontal position
-         * of the main execution axis.
+         * Main vertical execution axis of the whole while block.
          */
         const mainAxisX = x + layoutTreeNode.axisX;
+
         /*
-         * Place the while decision so its center lies
-         * on the main execution axis.
+         * Place while diamond centered on the main axis.
          */
         const decisionX = mainAxisX - decisionSize.width / 2;
         layoutResult.setPosition(whileNode.id, decisionX, y);
+
         /*
-         * Place the loop body below the while decision.
-         * The body's internal execution axis is aligned with
-         * the main execution axis of the complete while block.
+         * Place loop body directly below the while node,
+         * centered on the same axis.
+         * This makes the YES edge go straight down.
          */
         const bodyX = mainAxisX - body.axisX;
         const bodyY = y + decisionSize.height + this.options.decisionBranchGap;
         this.placeTreeNode(body, flowGraph, layoutResult, bodyX, bodyY);
+
         /*
-         * Place the exit junction below the complete body height
-         * and center it on the main execution axis.
+         * Place exit junction below the body, centered on the main axis.
          */
         const junctionX = mainAxisX - junctionSize.width / 2;
         const junctionY = bodyY + body.height + this.options.branchJunctionGap;

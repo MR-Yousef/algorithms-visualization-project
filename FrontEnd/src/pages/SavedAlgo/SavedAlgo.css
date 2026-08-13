@@ -311,6 +311,55 @@
     padding: 2rem;
 }
 
+/* Topic badge */
+.saved-algo-topic-badge {
+    display: inline-block;
+    padding: 0.15rem 0.7rem;
+    border-radius: 20px;
+    background: rgba(0, 245, 228, 0.12);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    color: #00f5e4;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 0.8rem;
+    align-self: flex-start;
+    white-space: nowrap;
+}
+
+/* Tabs */
+.saved-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.saved-tab {
+    background: rgba(0, 245, 228, 0.08);
+    border: 1px solid rgba(0, 245, 228, 0.2);
+    color: #cbd5e1;
+    padding: 0.55rem 1.8rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.saved-tab:hover {
+    background: rgba(0, 245, 228, 0.15);
+    border-color: #00f5e4;
+    color: #fff;
+}
+
+.saved-tab--active {
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
 @media (max-width: 480px) {
     .saved-algorithms-main {
         padding: 5rem 1rem 2rem;

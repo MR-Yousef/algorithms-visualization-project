@@ -10,12 +10,15 @@ import { useAuth } from "../../hooks/useAuth";
 import "./SavedAlgo.css";
 
 /**
- * SavedAlgo page – displays all algorithms the current user has bookmarked.
- * Fetches full algorithm details for each saved ID and allows un-saving.
+ * SavedAlgo page – displays saved algorithms (bookmarked from others)
+ * and the user's own algorithms.
  */
 export default function SavedAlgo() {
     const navigate = useNavigate();
     const { isAuthenticated, loading: authLoading, getAccessToken, getRefreshToken } = useAuth();
+
+    // "saved" = bookmarked from others, "my" = user's own algorithms
+    const [activeTab, setActiveTab] = useState("saved");
 
     const [algorithms, setAlgorithms] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -64,11 +67,12 @@ export default function SavedAlgo() {
         return data.data ?? data;
     };
 
-    const fetchSavedAlgorithms = useCallback(async () => {
+    // Fetch saved bookmarks (others)
+    const fetchSavedBookmarks = useCallback(async () => {
         try {
             let token = getAccessToken();
             if (!token) {
-                setError("You must be logged in to view saved algorithms.");
+                setError("You must be logged in.");
                 setLoading(false);
                 return;
             }
@@ -132,11 +136,64 @@ export default function SavedAlgo() {
         }
     }, [getAccessToken, getRefreshToken]);
 
+    // Fetch user's own algorithms (from the new endpoint)
+    const fetchMyAlgorithms = useCallback(async () => {
+        try {
+            let token = getAccessToken();
+            if (!token) {
+                setError("You must be logged in.");
+                setLoading(false);
+                return;
+            }
+
+            let res = await fetch(ENDPOINTS.MY_SAVED_ALGORITHMS, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (res.status === 401) {
+                const refresh = getRefreshToken();
+                if (refresh) {
+                    const newToken = await refreshAccessToken(refresh);
+                    const storage = localStorage.getItem("remember_me") === "true" ? localStorage : sessionStorage;
+                    storage.setItem("access_token", newToken);
+                    res = await fetch(ENDPOINTS.MY_SAVED_ALGORITHMS, {
+                        headers: {
+                            Authorization: `Bearer ${newToken}`,
+                            "Content-Type": "application/json",
+                        },
+                    });
+                } else {
+                    throw new Error("Session expired. Please log in again.");
+                }
+            }
+
+            if (!res.ok) throw new Error("Failed to load your algorithms");
+
+            const json = await res.json();
+            const list = json.data ?? json.results ?? json;
+            setAlgorithms(Array.isArray(list) ? list : []);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [getAccessToken, getRefreshToken]);
+
+    // Switch tab and refetch
     useEffect(() => {
         if (isAuthenticated) {
-            fetchSavedAlgorithms();
+            setLoading(true);
+            setAlgorithms([]);
+            if (activeTab === "saved") {
+                fetchSavedBookmarks();
+            } else {
+                fetchMyAlgorithms();
+            }
         }
-    }, [fetchSavedAlgorithms, isAuthenticated]);
+    }, [activeTab, isAuthenticated, fetchSavedBookmarks, fetchMyAlgorithms]);
 
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
@@ -152,20 +209,17 @@ export default function SavedAlgo() {
 
     /**
      * Unsave (remove bookmark) for the given algorithm ID.
-     * Sends a DELETE request to the backend and instantly updates the local UI.
-     * @param {number|string} algoId
+     * Only applicable for the "Saved" tab (bookmarks).
      */
     const handleUnsave = useCallback(async (algoId) => {
         try {
             let token = getAccessToken();
             const url = ENDPOINTS.UNSAVE_ALGORITHM(algoId);
 
-            // Use DELETE method as per API documentation
             let res = await fetch(url, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    // No Content-Type needed for DELETE without body
                 },
             });
 
@@ -192,7 +246,6 @@ export default function SavedAlgo() {
                 throw new Error(message);
             }
 
-            // Remove the algorithm from local state immediately
             setAlgorithms(prev => prev.filter(algo => String(algo.id) !== String(algoId)));
         } catch (err) {
             console.error("Unsave error:", err.message);
@@ -220,7 +273,7 @@ export default function SavedAlgo() {
                         <input
                             type="text"
                             className="search-input"
-                            placeholder="Search saved algorithms..."
+                            placeholder="Search algorithms..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -228,7 +281,23 @@ export default function SavedAlgo() {
                     </div>
                 </div>
 
-                {loading && <div className="loading-container">Loading your saved algorithms...</div>}
+                {/* Tabs */}
+                <div className="saved-tabs">
+                    <button
+                        className={`saved-tab ${activeTab === "saved" ? "saved-tab--active" : ""}`}
+                        onClick={() => setActiveTab("saved")}
+                    >
+                        Saved
+                    </button>
+                    <button
+                        className={`saved-tab ${activeTab === "my" ? "saved-tab--active" : ""}`}
+                        onClick={() => setActiveTab("my")}
+                    >
+                        My Algorithms
+                    </button>
+                </div>
+
+                {loading && <div className="loading-container">Loading...</div>}
                 {error && <div className="error-msg">{error}</div>}
 
                 <div className="saved-algorithms-grid">
@@ -248,29 +317,35 @@ export default function SavedAlgo() {
                                             : algo.description
                                         : "No description"}
                                 </p>
+                                {algo.topic_name && (
+                                    <span className="saved-algo-topic-badge">{algo.topic_name}</span>
+                                )}
                                 <div className="saved-algo-footer">
                                     <span className="saved-algo-owner">{algo.owner_username || "Unknown"}</span>
                                     <span className="saved-algo-views"><EyeIcon /> {algo.views_count ?? 0}</span>
                                 </div>
                             </div>
-                            <button
-                                className="unsave-btn"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleUnsave(algo.id);
-                                }}
-                                title="Remove from saved"
-                            >
-                                <CloseIcon />
-                            </button>
+                            {/* Only show unsave button for bookmarks (not for own algorithms) */}
+                            {activeTab === "saved" && (
+                                <button
+                                    className="unsave-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleUnsave(algo.id);
+                                    }}
+                                    title="Remove from saved"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            )}
                         </div>
                     ))}
                     {!loading && filtered.length === 0 && (
-                        <p className="no-results">You haven't saved any algorithms yet.</p>
+                        <p className="no-results">No algorithms found.</p>
                     )}
                 </div>
 
-                {/* Algorithm detail modal */}
+                {/* Algorithm detail modal (same as before) */}
                 {selectedAlgo && (
                     <div className="modal-overlay" onClick={() => setSelectedAlgo(null)}>
                         <div className="modal-content algo-modal" onClick={(e) => e.stopPropagation()}>

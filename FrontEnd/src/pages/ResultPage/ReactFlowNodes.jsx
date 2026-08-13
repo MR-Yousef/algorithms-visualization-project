@@ -107,6 +107,14 @@ export function IfNode({ data, selected, isConnectable }) {
  * The false branch leaves from the bottom toward the exit junction.
  * A returning back edge enters from the right.
  */
+/**
+ * React Flow component for while decision nodes.
+ *
+ * Execution enters from the top.
+ * The true branch leaves from the bottom toward the loop body.
+ * The false branch leaves from the left toward the exit junction.
+ * A returning back edge enters from the right.
+ */
 export function WhileNode({ data, selected, isConnectable }) {
     return (
         <FlowNodeBase
@@ -126,16 +134,32 @@ export function WhileNode({ data, selected, isConnectable }) {
  *
  * Junction nodes are rendered without a text label.
  */
-export function JunctionNode({ data, selected, isConnectable }) {
+export function JunctionNode({
+    data,
+    selected,
+    isConnectable
+}) {
     return (
         <FlowNodeBase
             data={data}
             selected={selected}
             isConnectable={isConnectable}
-            handles={["target-top", "source-bottom"]}
+            handles={[
+                "target-top",
+
+                // Normal flow continues down.
+                "source-bottom",
+
+                // When this junction is the end of a WHILE body,
+                // the loop return can leave directly to the RIGHT.
+                "source-right"
+            ]}
             className="flow-node--junction"
         >
-            <span className="flow-node__junction-dot" aria-hidden="true" />
+            <span
+                className="flow-node__junction-dot"
+                aria-hidden="true"
+            />
         </FlowNodeBase>
     );
 }

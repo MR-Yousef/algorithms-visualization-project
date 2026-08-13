@@ -383,6 +383,23 @@ body {
     background: rgba(255, 50, 50, 0.1);
 }
 
+/* Topic badge */
+.algo-topic-badge {
+    display: inline-block;
+    padding: 0.15rem 0.7rem;
+    border-radius: 20px;
+    background: rgba(0, 245, 228, 0.12);
+    border: 1px solid rgba(0, 245, 228, 0.3);
+    color: #00f5e4;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    margin-bottom: 0.8rem;
+    align-self: flex-start;
+    /* align left if needed */
+    white-space: nowrap;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 480px) {
     .algorithms-header {

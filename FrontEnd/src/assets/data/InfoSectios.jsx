@@ -34,7 +34,6 @@ export const sections = [
         // this card is always the same, no API replacement
         details: (
             <>
-                <p>AlgoHub uses a role‑based access system.</p>
                 <h3>Roles</h3>
                 <ul>
                     <li><strong>User</strong> – browse and run algorithms.</li>

@@ -1,7 +1,3 @@
-/* ============================================================
-   HELP PAGE – Final Polished Styles (help- prefix)
-   ============================================================ */
-
 /* ---------- Base Variables ---------- */
 :root {
     --bg-deep: #020d18;
@@ -20,13 +16,12 @@ body {
 .help-main {
     height: fit-content;
     width: 100%;
-    position: absolute;
-    top: 100px;
-    margin-top: 75px;
+    position: relative;
     padding: 2.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 800px;
     justify-content: space-evenly;
 }
 
@@ -116,6 +111,13 @@ body {
     animation: fadeIn 0.25s ease;
 }
 
+.help-modal-overlay .help-modal {
+    max-width: 50%;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -127,7 +129,7 @@ body {
 }
 
 .help-modal {
-    max-width: 650px;
+    max-width: 75%;
     width: 90%;
     max-height: 85vh;
     overflow-y: auto;
@@ -186,7 +188,7 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--teal-bright);
     flex: 1;
     text-align: center;
     letter-spacing: 1px;
@@ -385,7 +387,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Text inputs and textarea (no arrow) */
 .help-edit-input[type="text"],
 .help-edit-input[type="email"],
 .help-edit-input[type="password"],
@@ -404,7 +405,6 @@ textarea.help-edit-input {
     transition: all 0.3s ease;
 }
 
-/* Select with custom arrow */
 select.help-edit-input {
     width: 100%;
     padding: 0.8rem 1rem;
@@ -537,7 +537,6 @@ select.help-edit-input option {
     text-align: center;
 }
 
-/* Action buttons */
 .help-modal-actions {
     display: flex;
     justify-content: center;
@@ -558,7 +557,6 @@ select.help-edit-input option {
     border: 1px solid transparent;
 }
 
-/* Cancel */
 .help-modal-cancel-btn {
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.15);
@@ -570,7 +568,6 @@ select.help-edit-input option {
     border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Delete */
 .help-modal-delete-btn {
     background: linear-gradient(135deg, #e53935, #b71c1c);
     border: 1px solid rgba(255, 80, 80, 0.4);
@@ -614,24 +611,36 @@ select.help-edit-input option {
     }
 }
 
-/* ---------- Detail Page Articles ---------- */
-.help-articles-list {
+/* ---------- Detail Page Articles (Grid Layout) ---------- */
+.help-articles-grid {
     width: 100%;
-    max-width: 800px;
+    max-width: 90%;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+    column-gap: 3rem;
 }
 
+@media (max-width: 700px) {
+    .help-articles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card styling – equal height, no extra space */
 .help-doc-article {
     background: rgba(4, 28, 48, 0.6);
     border: 1px solid rgba(0, 245, 228, 0.15);
     border-radius: 20px;
     padding: 2rem;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-height: 200px;
+    /* prevents overflow issues */
 }
 
 .help-doc-article:hover {
@@ -640,19 +649,34 @@ select.help-edit-input option {
     transform: translateY(-3px);
 }
 
-.help-doc-article h2 {
+.help-doc-title {
     font-family: 'Orbitron', sans-serif;
     color: var(--teal-bright);
-    margin-bottom: 1rem;
+    margin: 0 0 0.8rem 0;
+    /* remove extra margins */
+    font-size: 1.6rem;
+    word-break: break-word;
+}
+
+.help-doc-content {
+    color: #ffffff;
+    letter-spacing: 1px;
+    line-height: 1.6;
+    margin: 0;
+    /* zero margin to avoid gaps */
+    flex: 1;
     font-size: 1.4rem;
+    /* fill available space */
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.help-doc-article p {
-    color: #cbd5e1;
-    line-height: 1.7;
-}
-
+/* Back button */
 .help-back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -671,6 +695,44 @@ select.help-edit-input option {
     border-color: var(--teal-bright);
     box-shadow: 0 0 15px rgba(0, 245, 228, 0.3);
     transform: translateX(-3px);
+}
+
+.help-back-btn svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    stroke: currentColor;
+}
+
+/* Scroll-to-top button */
+.scroll-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 245, 228, 0.4);
+    background: rgba(4, 28, 48, 0.85);
+    color: var(--teal-bright);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1100;
+    animation: fadeInUp 0.3s ease;
+}
+
+.scroll-to-top-btn:hover {
+    background: rgba(0, 245, 228, 0.15);
+    box-shadow: 0 6px 20px rgba(0, 245, 228, 0.3);
+    transform: translateY(-2px);
+}
+
+.scroll-to-top-btn svg {
+    width: 1.2rem;
+    height: 1.2rem;
 }
 
 /* ---------- Responsive ---------- */
@@ -739,7 +801,7 @@ select.help-edit-input option {
         flex-direction: column;
     }
 
-    .help-articles-list {
+    .help-articles-grid {
         gap: 1.2rem;
         padding: 0 0.5rem;
     }
@@ -748,7 +810,7 @@ select.help-edit-input option {
         padding: 1.2rem;
     }
 
-    .help-doc-article h2 {
+    .help-doc-title {
         font-size: 1.2rem;
     }
 

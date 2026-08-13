@@ -234,6 +234,10 @@ export default function ShowAlgorithms() {
                                             : algo.description
                                         : "No description"}
                                 </p>
+                                {/* Topic badge */}
+                                {algo.topic_name && (
+                                    <span className="algo-topic-badge">{algo.topic_name}</span>
+                                )}
                                 <div className="algo-footer">
                                     <span className="algo-owner">{algo.owner_username || "Unknown"}</span>
                                     <span className="algo-views"><EyeIcon /> {algo.views_count ?? 0}</span>

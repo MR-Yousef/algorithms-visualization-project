@@ -1,0 +1,203 @@
+/* Backdrop overlay */
+.cloud-save-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Popup container */
+.cloud-save-content {
+    background: linear-gradient(145deg, #041c30, #061a2d);
+    border: 1px solid rgba(0, 245, 228, 0.25);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 245, 228, 0.15);
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Close button */
+.cloud-save-close-btn {
+    position: absolute;
+    top: 0.8rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.cloud-save-close-btn:hover {
+    color: #ff5b5b;
+}
+
+/* Step title */
+.cloud-save-step-title {
+    color: #00f5e4;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Step description */
+.cloud-save-step-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Form */
+.cloud-save-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Input fields */
+.cloud-save-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(0, 245, 228, 0.15);
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.cloud-save-input:focus {
+    border-color: #00f5e4;
+    box-shadow: 0 0 20px rgba(0, 245, 228, 0.2);
+}
+
+textarea.cloud-save-input {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Pill group for topics */
+.cloud-save-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+/* Individual pill */
+.cloud-save-pill {
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    background: rgba(0, 245, 228, 0.1);
+    border: 1px solid rgba(0, 245, 228, 0.25);
+    color: #cbd5e1;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cloud-save-pill:hover {
+    background: rgba(0, 245, 228, 0.2);
+    border-color: #00f5e4;
+}
+
+.cloud-save-pill--selected {
+    background: rgba(0, 245, 228, 0.25);
+    border-color: #00f5e4;
+    color: #00f5e4;
+    font-weight: 600;
+}
+
+/* Buttons row */
+.cloud-save-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+/* Generic button */
+.cloud-save-btn {
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+/* Back button */
+.cloud-save-btn--back {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e0e0e0;
+}
+
+.cloud-save-btn--back:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Next / Submit button */
+.cloud-save-btn--next,
+.cloud-save-btn--submit {
+    background: linear-gradient(135deg, #00d4ff, #0099ff);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.25);
+}
+
+.cloud-save-btn--next:hover,
+.cloud-save-btn--submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+}
+
+.cloud-save-message {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 245, 160, 0.2);
+    border: 1px solid #00f5a0;
+    color: #00f5a0;
+    padding: 0.6rem 1.8rem;
+    border-radius: 30px;
+    font-weight: 600;
+    z-index: 1100;
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.3s ease;
+}
