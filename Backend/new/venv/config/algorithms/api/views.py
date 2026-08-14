@@ -1,3 +1,4 @@
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
@@ -10,6 +11,7 @@ from algorithms.models import (
     DocumentationSection,
     AlgorithmExecution,
 )
+from accounts.models import User
 
 from .serializers import (
     AlgorithmSerializer,
@@ -89,20 +91,26 @@ class SaveAlgorithmAPI(APIView):
             is_archived=False
         )
 
-        saved, created = SavedAlgorithm.objects.get_or_create(
+        # Owner cannot save his own published algorithm
+        if algorithm.owner == request.user:
+            return api_error(
+                message="You cannot save your own published algorithm",
+                status=400
+            )
+
+        saved_algorithm, created = SavedAlgorithm.objects.get_or_create(
             user=request.user,
             algorithm=algorithm
         )
 
         if not created:
-
-            return api_success(
-                message="Algorithm already saved"
+            return api_error(
+                message="Algorithm is already saved",
+                status=400
             )
 
         return api_success(
-            message="Algorithm saved successfully",
-            status=201
+            message="Algorithm saved successfully"
         )
 
 class UnsaveAlgorithmAPI(APIView):
@@ -111,40 +119,46 @@ class UnsaveAlgorithmAPI(APIView):
 
     def delete(self, request, algorithm_id):
 
-        saved = get_object_or_404(
+        saved_algorithm = get_object_or_404(
             SavedAlgorithm,
             user=request.user,
-            algorithm_id=algorithm_id
+            algorithm_id=algorithm_id,
+            algorithm__status="PUBLISHED",
+            algorithm__is_archived=False
         )
 
-        saved.delete()
+        saved_algorithm.delete()
 
         return api_success(
-            message="Algorithm removed from saved"
+            message="Algorithm unsaved successfully"
         )
 
-class MySavedAlgorithmsAPI(APIView):
+class MyPublishedAlgorithmsAPI(APIView):
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
-        saved = SavedAlgorithm.objects.filter(
-            user=request.user,
-            algorithm__status="PUBLISHED",
-            algorithm__is_archived=False
+        algorithms = Algorithm.objects.filter(
+            owner=request.user,
+            status="PUBLISHED",
+            is_archived=False
         ).select_related(
-            "algorithm"
-        ).order_by("-saved_at")
+            "owner"
+        ).prefetch_related(
+            "topics"
+        ).order_by(
+            "-created_at"
+        )
 
-        serializer = SavedAlgorithmSerializer(
-            saved,
+        serializer = AlgorithmSerializer(
+            algorithms,
             many=True
         )
 
         return api_success(
             data=serializer.data,
-            message="Saved algorithms fetched successfully"
+            message="My published algorithms fetched successfully"
         )
 
 class CreateMyAlgorithmAPI(APIView):
@@ -167,7 +181,8 @@ class CreateMyAlgorithmAPI(APIView):
 
         algorithm = serializer.save(
             owner=request.user,
-            status="DRAFT"
+            status="DRAFT",
+            is_archived=False
         )
 
         return api_success(
@@ -186,10 +201,13 @@ class MyAlgorithmsAPI(APIView):
 
         algorithms = Algorithm.objects.filter(
             owner=request.user,
+            status="DRAFT",
             is_archived=False
         ).prefetch_related(
             "topics"
-        ).order_by("-created_at")
+        ).order_by(
+            "-created_at"
+        )
 
         serializer = AlgorithmSerializer(
             algorithms,
@@ -198,9 +216,9 @@ class MyAlgorithmsAPI(APIView):
 
         return api_success(
             data=serializer.data,
-            message="My algorithms fetched successfully"
+            message="My draft algorithms fetched successfully"
         )
-
+    
 class DeleteMyAlgorithmAPI(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -210,9 +228,20 @@ class DeleteMyAlgorithmAPI(APIView):
         algorithm = get_object_or_404(
             Algorithm,
             id=algorithm_id,
-            owner=request.user,
-            is_archived=False
+            owner=request.user
         )
+
+        if algorithm.status != "DRAFT":
+            return api_error(
+                message="Only draft algorithms can be archived directly",
+                status=400
+            )
+
+        if algorithm.is_archived:
+            return api_error(
+                message="Algorithm is already archived",
+                status=400
+            )
 
         algorithm.is_archived = True
 
@@ -221,9 +250,9 @@ class DeleteMyAlgorithmAPI(APIView):
         )
 
         return api_success(
-            message="Algorithm deleted successfully"
+            message="Draft algorithm archived successfully"
         )
-
+    
 class TopicListAPI(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -297,6 +326,7 @@ class ExecuteAlgorithmAPI(APIView):
         algorithm = get_object_or_404(
             Algorithm,
             id=algorithm_id,
+            status="PUBLISHED",
             is_archived=False
         )
 
@@ -307,4 +337,55 @@ class ExecuteAlgorithmAPI(APIView):
 
         return api_success(
             message="Algorithm execution recorded successfully"
+        )
+
+class SystemStatisticsAPI(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        total_users = User.objects.count()
+
+
+        published_algorithms = Algorithm.objects.filter(
+            status="PUBLISHED",
+            is_archived=False
+        ).count()
+
+        total_algorithm_executions = AlgorithmExecution.objects.filter(
+            algorithm__status="PUBLISHED",
+            algorithm__is_archived=False
+        ).count()
+
+        return api_success(
+            data={
+                "total_users": total_users,
+                "published_algorithms": published_algorithms,
+                "total_algorithm_executions": total_algorithm_executions,
+            },
+            message="System statistics fetched successfully"
+        )
+class MySavedAlgorithmsStatisticsAPI(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        saved_algorithm_ids = SavedAlgorithm.objects.filter(
+            user=request.user
+        ).values_list(
+            "algorithm_id",
+            flat=True
+        )
+
+        total_executions = AlgorithmExecution.objects.filter(
+            algorithm_id__in=saved_algorithm_ids
+        ).count()
+
+        return api_success(
+            data={
+                "saved_algorithms_executions": total_executions
+            },
+            message="Saved algorithms statistics fetched successfully"
         )

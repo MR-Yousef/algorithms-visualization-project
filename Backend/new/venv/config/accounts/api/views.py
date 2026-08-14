@@ -530,6 +530,13 @@ class ChangePasswordAPI(APIView):
             'confirm_password'
         )
 
+        if not old_password or not new_password or not confirm_password:
+
+            return api_error(
+                message="All password fields are required",
+                status=400
+            )
+
         user = request.user
 
         if not user.check_password(old_password):
@@ -546,13 +553,20 @@ class ChangePasswordAPI(APIView):
                 status=400
             )
 
+        if user.check_password(new_password):
+
+            return api_error(
+                message="New password must be different from the old password",
+                status=400
+            )
+
         user.set_password(new_password)
         user.save()
 
         return api_success(
             message="Password changed successfully"
         )
-
+    
 class LogoutAllDevicesAPI(APIView):
 
     permission_classes = [IsAuthenticated]

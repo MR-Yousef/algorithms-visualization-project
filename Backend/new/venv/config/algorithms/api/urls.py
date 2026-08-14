@@ -5,7 +5,7 @@ from .views import (
     AlgorithmDetailAPI,
     SaveAlgorithmAPI,
     UnsaveAlgorithmAPI,
-    MySavedAlgorithmsAPI,
+    MyPublishedAlgorithmsAPI,
     CreateMyAlgorithmAPI,
     MyAlgorithmsAPI,
     DeleteMyAlgorithmAPI,
@@ -13,6 +13,8 @@ from .views import (
     DocumentationListAPI,
     DocumentationDetailAPI,
     ExecuteAlgorithmAPI,
+    SystemStatisticsAPI,
+    MySavedAlgorithmsStatisticsAPI,
 )
 
 urlpatterns = [
@@ -51,7 +53,7 @@ urlpatterns = [
 
     path(
         'saved/',
-        MySavedAlgorithmsAPI.as_view(),
+        MyPublishedAlgorithmsAPI.as_view(),
         name='my-saved-algorithms'
     ),
 
@@ -111,5 +113,17 @@ urlpatterns = [
         '<int:algorithm_id>/execute/',
         ExecuteAlgorithmAPI.as_view(),
         name='execute-algorithm'
+    ),
+
+    path(
+        'statistics/',
+        SystemStatisticsAPI.as_view(),
+        name='system-statistics'
+    ),
+
+    path(
+        'my-statistics/',
+        MySavedAlgorithmsStatisticsAPI.as_view(),
+        name='my-statistics'
     ),
 ]
