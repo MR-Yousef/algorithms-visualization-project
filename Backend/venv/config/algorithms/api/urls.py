@@ -154,3 +154,5 @@ urlpatterns = [
     path('requests/', RequestsListAPI.as_view()),
     path('<int:algorithm_id>/execute/',ExecuteAlgorithmAPI.as_view())
 ]
+
+
