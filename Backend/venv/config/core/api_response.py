@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 
+
 def api_success(data=None, message="success", status=200):
 
     return Response({
@@ -8,6 +9,7 @@ def api_success(data=None, message="success", status=200):
         "data": data
     }, status=status)
 
+
 def api_error(errors=None, message="error", status=400):
 
     return Response({
@@ -15,6 +17,3 @@ def api_error(errors=None, message="error", status=400):
         "message": message,
         "errors": errors
     }, status=status)
-
-
-

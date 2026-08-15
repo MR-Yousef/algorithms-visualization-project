@@ -1,43 +1,47 @@
+from datetime import timedelta
+import random
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken        
-from accounts.models import User, PasswordResetOTP
-from rest_framework import status
-
-from algorithms.api.permissions import IsAdmin, IsSuperAdmin
-from .serializers import PromotionRequestSerializer, RegisterSerializer, UserAdminSerializer
-
-from rest_framework.permissions import IsAuthenticated, AllowAny 
-from .serializers import UserSerializer
-
-from accounts.models import PromotionRequest
-from django.db import transaction
+from django.core.mail import send_mail
 from django.db.models import Q
-from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-from .permissions import IsSuperAdmin
+from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import (
+    OutstandingToken,
+    BlacklistedToken
+)
+
+from accounts.models import User, PasswordResetOTP, EmailVerificationOTP
 
 from core.api_response import api_success, api_error
 
-import random
-from django.core.mail import send_mail
-
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
-
-from datetime import timedelta
-
-
+from .permissions import IsAdmin, IsSuperAdmin
+from .serializers import (
+    RegisterSerializer,
+    UserSerializer,
+    UserAdminSerializer,
+)
 class LoginAPI(APIView):
 
     permission_classes = [AllowAny]
 
     def post(self, request):
 
-        login = request.data.get("login")
-        password = request.data.get("password")
+        login = request.data.get('login')
+        password = request.data.get('password')
+
+        if not login or not password:
+            return api_error(
+                message="Login and password are required",
+                status=400
+            )
 
         user = User.objects.filter(
             Q(email=login) |
@@ -56,45 +60,101 @@ class LoginAPI(APIView):
                 status=401
             )
 
+        if not user.email_verified:
+            return api_error(
+                message="Please verify your email before logging in",
+                status=403
+            )
+
         if not user.is_active:
             return api_error(
                 message="Account is deactivated",
                 status=403
-            )
+        )
 
         refresh = RefreshToken.for_user(user)
 
         return api_success(
-            {
+            data={
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
                 "user": {
                     "id": user.id,
-                    "email": user.email,
                     "username": user.username,
-                    "role": user.role
+                    "email": user.email,
+                    "role": user.role,
                 }
             },
-            "Login successful"
+            message="Login successful",
+            status=200
         )
 
-    
 class RegisterAPI(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return api_success(
-                message="Account created successfully",
-                status=status.HTTP_201_CREATED
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        serializer = RegisterSerializer(
+            data=request.data
+        )
+
+        if not serializer.is_valid():
+
+            return api_error(
+                errors=serializer.errors,
+                message="Validation error",
+                status=400
             )
 
-        return api_error(
-            message="Validation erroe",
-            errors=serializer.errors,
-            status=400
+        user = serializer.save()
+
+        user.is_active = False
+        user.email_verified = False
+
+        user.save(
+            update_fields=[
+                'is_active',
+                'email_verified'
+            ]
+        )
+
+        EmailVerificationOTP.objects.filter(
+            user=user,
+            is_used=False
+        ).delete()
+
+        code = str(
+            random.randint(100000, 999999)
+        )
+
+        EmailVerificationOTP.objects.create(
+            user=user,
+            code=code,
+            expires_at=timezone.now() + timedelta(
+                minutes=10
+            )
+        )
+
+        send_mail(
+            subject="Verify your AlgoHub account",
+            message=(
+                f"Your verification code is: {code}\n\n"
+                "This code will expire in 10 minutes."
+            ),
+            from_email=None,
+            recipient_list=[user.email],
+            fail_silently=False
+        )
+
+        return api_success(
+            data={
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+            },
+            message="Account created. Verification code sent to your email.",
+            status=201
         )
 
 class MeAPI(APIView):
@@ -102,10 +162,18 @@ class MeAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+
+        serializer = UserSerializer(
+            request.user
+        )
+
+        return api_success(
+            data=serializer.data,
+            message="User information retrieved successfully"
+        )
 
     def put(self, request):
+
         serializer = UserSerializer(
             request.user,
             data=request.data,
@@ -113,300 +181,86 @@ class MeAPI(APIView):
         )
 
         if serializer.is_valid():
+
             serializer.save()
-            return Response(serializer.data)
+
+            return api_success(
+                data=serializer.data,
+                message="Profile updated successfully"
+            )
 
         return api_error(
-            message="erroe data",
             errors=serializer.errors,
+            message="Validation error",
             status=400
         )
-    
-class CreatePromotionRequestAPI(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-
-        requested_role = request.data.get('requested_role')
-        reason = request.data.get('reason')
-
-        if not requested_role:
-            return api_error("requested_role is required", 400)
-
-        if not reason:
-            return api_error("reason is required", 400)
-
-        if request.user.role == requested_role:
-            return api_error("You already have this role", 400)
-
-        if request.user.role not in ['USER', 'CONTRIBUTOR']:
-            return api_error("You are not allowed to request promotion", 403)
-
-        if request.user.role == 'USER' and requested_role != 'CONTRIBUTOR':
-            return api_error("Invalid promotion", 400)
-
-        if request.user.role == 'CONTRIBUTOR' and requested_role != 'ADMIN':
-            return api_error("Invalid promotion", 400)
-
-        existing = PromotionRequest.objects.filter(
-            requested_by=request.user,
-            status='PENDING'
-        ).exists()
-
-        if existing:
-            return api_error(
-                message="You already have a pending request",
-                status=400
-            )
-
-        promotion = PromotionRequest.objects.create(
-            requested_by=request.user,
-            requested_role=requested_role,
-            reason=reason
-        )
-
-        serializer = PromotionRequestSerializer(promotion)
-
-        return api_success(
-            message="ok request",
-            data=serializer.data,
-            status=201
-        )
-    
-
-class MyPromotionRequestsAPI(APIView):
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-
-        requests = PromotionRequest.objects.filter(
-            requested_by=request.user
-        ).order_by('-created_at')
-
-        serializer = PromotionRequestSerializer(
-            requests,
-            many=True
-        )
-
-        return api_success(
-                    message="success",
-                    data=serializer.data,
-                    status=200
-                )
-    
-
-class PromotionRequestsAdminAPI(APIView):
-
-    permission_classes = [IsAdmin | IsSuperAdmin]
-
-    def get(self, request):
-
-        requests = PromotionRequest.objects.filter(
-            status='PENDING'
-        )
-
-        serializer = PromotionRequestSerializer(
-            requests,
-            many=True
-        )
-
-        return api_success(
-            message="success",
-            data=serializer.data,
-            status=200
-        )
-    
-class ApprovePromotionAPI(APIView):
-
-    permission_classes = [IsAdmin | IsSuperAdmin]
-
-    def post(self, request, id):
-
-        promotion = get_object_or_404(
-            PromotionRequest,
-            id=id
-        )
-        if promotion.status != 'PENDING':
-            return api_error(
-                message="Already processed",
-                status=400
-            )
-
-        if promotion.requested_by == request.user:
-            return api_error("You cannot approve your own request", status=403)
-        allowed_roles = ['CONTRIBUTOR', 'ADMIN']
-        if promotion.requested_role not in allowed_roles:
-            return api_error("Invalid role", status=400)
-        
-        with transaction.atomic():
-            user = promotion.requested_by
-            user.role = promotion.requested_role
-            user.save()
-
-            promotion.status = 'APPROVED'
-            promotion.reviewed_by = request.user
-            promotion.reviewed_at = timezone.now()
-            promotion.save()
-
-        return api_success(
-            message="Promotion approved",
-            data={
-                "user_id": user.id,
-                "new_role":user.role,
-                "request_id":promotion.id
-            }
-        )
-    
-class RejectPromotionAPI(APIView):
-
-    permission_classes = [IsAdmin | IsSuperAdmin]
-
-    def post(self, request, id):
-
-        promotion = get_object_or_404(
-            PromotionRequest,
-            id=id
-        )
-
-        if promotion.status != 'PENDING':
-
-            return api_error(
-                message="Already processed",
-                status=400
-            )
-
-        promotion.status = 'REJECTED'
-
-        promotion.admin_note = request.data.get(
-            'reason',
-            ''
-        )
-
-        promotion.reviewed_by = request.user
-
-        promotion.reviewed_at = timezone.now()
-
-        promotion.save()
-
-        return api_error(
-            message="Promotion rejected",
-        )
-    
 
 class UsersListAPI(APIView):
 
-    permission_classes = [IsAdmin | IsSuperAdmin]
+    permission_classes = [IsAdmin]
 
     def get(self, request):
 
-        users = User.objects.all()
+        users = User.objects.all().order_by('-created_at')
 
         role = request.query_params.get('role')
 
         if role:
             users = users.filter(role=role)
 
-        serializer = UserAdminSerializer(users, many=True)
+        serializer = UserAdminSerializer(
+            users,
+            many=True
+        )
 
-        return Response(serializer.data)
-    
-
-class PromoteUserAPI(APIView):
-
-    permission_classes = [IsAdmin | IsSuperAdmin]
-
-    def post(self, request, id):
-
-        user = get_object_or_404(User, id=id)
-
-        if user.role == 'USER':
-            user.role = 'CONTRIBUTOR'
-            user.save()
-
-            return api_error(message="User promoted to CONTRIBUTOR",)
-
-        return api_error(message="Invalid promotion", status=400)
-    
-
-
-class DemoteUserAPI(APIView):
-
-    permission_classes = [IsAdmin | IsSuperAdmin]
-
-    def post(self, request, id):
-
-        user = get_object_or_404(User, id=id)
-
-        if user.role == 'CONTRIBUTOR':
-            user.role = 'USER'
-            user.save()
-
-            return api_error(message="User demoted to USER",)
-
-        return api_error(message="Invalid demotion", status=400)
-    
-
+        return api_success(
+            data=serializer.data,
+            message="Users retrieved successfully"
+        )
 
 class DeleteUserAPI(APIView):
 
-    permission_classes = [IsAdmin | IsSuperAdmin]
+    permission_classes = [IsAdmin]
 
     def delete(self, request, id):
 
-        user = get_object_or_404(User, id=id)
+        user = get_object_or_404(
+            User,
+            id=id
+        )
 
         if request.user.id == user.id:
-            return api_error("You cannot delete yourself", 400)
 
-        if request.user.role == "ADMIN":
-            if user.role in ["ADMIN", "SUPER_ADMIN"]:
-                return api_error("Admin cannot delete this user", 403)
+            return api_error(
+                message="You cannot delete yourself",
+                status=400
+            )
 
-        elif request.user.role == "SUPER_ADMIN":
-            if user.role in ["SUPER_ADMIN"]:
-                return api_error("Super admin cannot delete this user", 403)
-            pass
+        if request.user.role == 'ADMIN':
+
+            if user.role in [
+                'ADMIN',
+                'SUPER_ADMIN'
+            ]:
+                return api_error(
+                    message="Admin cannot delete this user",
+                    status=403
+                )
+
+        elif request.user.role == 'SUPER_ADMIN':
+
+            if user.role == 'SUPER_ADMIN':
+
+                return api_error(
+                    message="Super admin cannot delete another super admin",
+                    status=403
+                )
 
         user.delete()
 
-        return api_success("User deleted successfully")
-    
-
-class PromoteToAdminAPI(APIView):
-
-    permission_classes = [IsSuperAdmin]
-
-    def post(self, request, id):
-
-        user = get_object_or_404(User, id=id)
-
-        if user.role in ['USER', 'CONTRIBUTOR']:
-            user.role = 'ADMIN'
-            user.save()
-
-            return api_error(message="User promoted to ADMIN",)
-
-        return api_error(message="Invalid operation", status=400)
-    
-
-class DemoteAdminAPI(APIView):
-
-    permission_classes = [IsSuperAdmin]
-
-    def post(self, request, id):
-
-        user = get_object_or_404(User, id=id)
-
-        if user.role == 'ADMIN':
-            user.role = 'CONTRIBUTOR'
-            user.save()
-
-            return api_error(message="Admin demoted to CONTRIBUTOR")
-
-        return api_error(message="Invalid operation", status=400)
-    
-
+        return api_success(
+            message="User deleted successfully"
+        )
 
 class LogoutAPI(APIView):
 
@@ -414,11 +268,18 @@ class LogoutAPI(APIView):
 
     def post(self, request):
 
+        refresh_token = request.data.get('refresh')
+
+        if not refresh_token:
+
+            return api_error(
+                message="Refresh token is required",
+                status=400
+            )
+
         try:
-            refresh_token = request.data.get("refresh")
 
             token = RefreshToken(refresh_token)
-
             token.blacklist()
 
             return api_success(
@@ -426,61 +287,93 @@ class LogoutAPI(APIView):
             )
 
         except Exception:
+
             return api_error(
-                message="Invalid token",
+                message="Invalid refresh token",
                 status=400
             )
-        
+
 class DeleteMyAccountAPI(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def delete(self, request):
 
-        password = request.data.get("password")
-        confirm_password = request.data.get("confirm_password")
-        if password != confirm_password:
+        password = request.data.get('password')
+
+        if not password:
+
             return api_error(
-                message="Password do not match",
+                message="Password is required",
                 status=400
             )
+
         user = request.user
 
         if not user.check_password(password):
-            return api_error("Wrong password", 400)
 
-        # logout all tokens
-        tokens = OutstandingToken.objects.filter(user=user)
+            return api_error(
+                message="Wrong password",
+                status=400
+            )
+
+        tokens = OutstandingToken.objects.filter(
+            user=user
+        )
+
         for token in tokens:
-            BlacklistedToken.objects.get_or_create(token=token)
 
-        # hard delete
+            BlacklistedToken.objects.get_or_create(
+                token=token
+            )
+
         user.delete()
 
-        return api_success("Account deleted successfully")
-
-    
+        return api_success(
+            message="Account deleted successfully"
+        )
 
 class ForgotPasswordAPI(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        email = request.data.get("email")
 
-        user = User.objects.filter(email=email).first()
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        email = request.data.get('email')
+
+        if not email:
+
+            return api_error(
+                message="Email is required",
+                status=400
+            )
+
+        user = User.objects.filter(
+            email=email
+        ).first()
 
         if not user:
-            return api_error("User not found", 404)
+
+            return api_error(
+                message="User not found",
+                status=404
+            )
+
         PasswordResetOTP.objects.filter(
             user=user,
             is_used=False
         ).delete()
 
-        code = str(random.randint(100000, 999999))
+        code = str(
+            random.randint(100000, 999999)
+        )
 
         PasswordResetOTP.objects.create(
             user=user,
             code=code,
-            created_at=timezone.now()
+            expires_at=timezone.now() + timedelta(
+                minutes=10
+            )
         )
 
         send_mail(
@@ -494,75 +387,130 @@ class ForgotPasswordAPI(APIView):
         return api_success(
             message="OTP sent successfully"
         )
-    
+
 class VerifyOTPAPI(APIView):
+
     permission_classes = [AllowAny]
+
     def post(self, request):
 
-        email = request.data.get("email")
-        code = request.data.get("code")
+        email = request.data.get('email')
+        code = request.data.get('code')
 
-        user = User.objects.filter(email=email).first()
+        if not email or not code:
 
-        if not user:
-            return api_error("Invalid email", 404)
-
-        otp = PasswordResetOTP.objects.filter(
-            user=user,
-            code=code,
-            is_used=False
-        ).first()
-
-        if not otp:
-            return api_error("Invalid code", 400)
-
-        if (timezone.now() - otp.created_at).seconds > 600:
-            return api_error("Code expired", 400)
-
-        return api_success(
-            message="OTP verified"
-        )
-        
-class ResetPasswordAPI(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):    
-
-        email = request.data.get("email")
-        code = request.data.get("code")
-        new_password = request.data.get("new_password")
-        confirm_password = request.data.get("confirm_password")
-
-        user = User.objects.filter(email=email).first()
-
-        if not user:
-            return api_error("Invalid email", 404)
-
-        otp = PasswordResetOTP.objects.filter(
-            user=user,
-            code=code,
-            is_used=False
-        ).first()
-
-        if not otp:
-            return api_error("Invalid code", 400)
-
-        # update password
-        if new_password != confirm_password:
             return api_error(
-                message="Password do not match",
+                message="Email and code are required",
                 status=400
             )
+
+        user = User.objects.filter(
+            email=email
+        ).first()
+
+        if not user:
+
+            return api_error(
+                message="Invalid email",
+                status=404
+            )
+
+        otp = PasswordResetOTP.objects.filter(
+            user=user,
+            code=code,
+            is_used=False
+        ).first()
+
+        if not otp:
+
+            return api_error(
+                message="Invalid code",
+                status=400
+            )
+
+        if timezone.now() > otp.expires_at:
+
+            return api_error(
+                message="Code expired",
+                status=400
+            )
+
+        return api_success(
+            message="OTP verified successfully"
+        )
+
+class ResetPasswordAPI(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        email = request.data.get('email')
+        code = request.data.get('code')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get(
+            'confirm_password'
+        )
+
+        if not all([
+            email,
+            code,
+            new_password,
+            confirm_password
+        ]):
+
+            return api_error(
+                message="All fields are required",
+                status=400
+            )
+
+        if new_password != confirm_password:
+
+            return api_error(
+                message="Passwords do not match",
+                status=400
+            )
+
+        user = User.objects.filter(
+            email=email
+        ).first()
+
+        if not user:
+
+            return api_error(
+                message="Invalid email",
+                status=404
+            )
+
+        otp = PasswordResetOTP.objects.filter(
+            user=user,
+            code=code,
+            is_used=False
+        ).first()
+
+        if not otp:
+
+            return api_error(
+                message="Invalid code",
+                status=400
+            )
+
+        if timezone.now() > otp.expires_at:
+
+            return api_error(
+                message="Code expired",
+                status=400
+            )
+
         user.set_password(new_password)
         user.save()
 
-        # mark OTP used
         otp.is_used = True
         otp.save()
 
         return api_success(
             message="Password reset successfully"
         )
-    
 
 class ChangePasswordAPI(APIView):
 
@@ -570,21 +518,45 @@ class ChangePasswordAPI(APIView):
 
     def post(self, request):
 
-        old_password = request.data.get("old_password")
-        new_password = request.data.get("new_password")
-        confirm_password = request.data.get("confirm_password")
+        old_password = request.data.get(
+            'old_password'
+        )
+
+        new_password = request.data.get(
+            'new_password'
+        )
+
+        confirm_password = request.data.get(
+            'confirm_password'
+        )
+
+        if not old_password or not new_password or not confirm_password:
+
+            return api_error(
+                message="All password fields are required",
+                status=400
+            )
 
         user = request.user
 
         if not user.check_password(old_password):
+
             return api_error(
                 message="Old password is incorrect",
                 status=400
             )
 
         if new_password != confirm_password:
+
             return api_error(
                 message="Passwords do not match",
+                status=400
+            )
+
+        if user.check_password(new_password):
+
+            return api_error(
+                message="New password must be different from the old password",
                 status=400
             )
 
@@ -594,16 +566,163 @@ class ChangePasswordAPI(APIView):
         return api_success(
             message="Password changed successfully"
         )
-
+    
 class LogoutAllDevicesAPI(APIView):
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
-        tokens = OutstandingToken.objects.filter(user=request.user)
+        tokens = OutstandingToken.objects.filter(
+            user=request.user
+        )
 
         for token in tokens:
-            BlacklistedToken.objects.get_or_create(token=token)
 
-        return api_success("Logged out from all devices")
+            BlacklistedToken.objects.get_or_create(
+                token=token
+            )
+
+        return api_success(
+            message="Logged out from all devices"
+        )
+
+
+class VerifyEmailAPI(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        email = request.data.get('email')
+        code = request.data.get('code')
+
+        if not email or not code:
+
+            return api_error(
+                message="Email and code are required",
+                status=400
+            )
+
+        user = User.objects.filter(
+            email=email
+        ).first()
+
+        if not user:
+
+            return api_error(
+                message="Invalid email",
+                status=404
+            )
+
+        if user.email_verified:
+
+            return api_error(
+                message="Email is already verified",
+                status=400
+            )
+
+        otp = EmailVerificationOTP.objects.filter(
+            user=user,
+            code=code,
+            is_used=False
+        ).first()
+
+        if not otp:
+
+            return api_error(
+                message="Invalid verification code",
+                status=400
+            )
+
+        if timezone.now() > otp.expires_at:
+
+            return api_error(
+                message="Verification code expired",
+                status=400
+            )
+
+        user.email_verified = True
+        user.is_active = True
+
+        user.save(
+            update_fields=[
+                'email_verified',
+                'is_active'
+            ]
+        )
+
+        otp.is_used = True
+
+        otp.save(
+            update_fields=['is_used']
+        )
+
+        return api_success(
+            message="Email verified successfully. You can now login."
+        )
+
+class ResendVerificationOTPAPI(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        email = request.data.get('email')
+
+        if not email:
+            return api_error(
+                message="Email is required",
+                status=400
+            )
+
+        user = User.objects.filter(
+            email=email
+        ).first()
+
+        if not user:
+            return api_error(
+                message="Invalid email",
+                status=404
+            )
+
+        if user.email_verified:
+            return api_error(
+                message="Email is already verified",
+                status=400
+            )
+
+        # Delete old unused OTPs
+        EmailVerificationOTP.objects.filter(
+            user=user,
+            is_used=False
+        ).delete()
+
+        # Generate new OTP
+        code = str(
+            random.randint(100000, 999999)
+        )
+
+        EmailVerificationOTP.objects.create(
+            user=user,
+            code=code,
+            expires_at=timezone.now() + timedelta(
+                minutes=10
+            )
+        )
+
+        send_mail(
+            subject="Verify your AlgoHub account",
+            message=(
+                f"Your new verification code is: {code}\n\n"
+                "This code will expire in 10 minutes."
+            ),
+            from_email=None,
+            recipient_list=[user.email],
+            fail_silently=False
+        )
+
+        return api_success(
+            message="A new verification code has been sent"
+        )
+    

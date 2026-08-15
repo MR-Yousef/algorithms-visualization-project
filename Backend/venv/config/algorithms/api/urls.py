@@ -3,156 +3,127 @@ from django.urls import path
 from .views import (
     AlgorithmListAPI,
     AlgorithmDetailAPI,
-    CreateDeleteRequestAPI,
-    CreateRequestAPI,
-    CreateUpdateRequestAPI,
-    MyAlgorithmsAPI,
-    MyPublishedAlgorithmsAPI,
-    MyRequestsAPI,
-    RequestDetailAPI,
-    PendingRequestsAPI,
-    ApproveRequestAPI,
-    RejectRequestAPI,
     SaveAlgorithmAPI,
-    SaveMyAlgorithmAPI,
-    TopicListAPI,
     UnsaveAlgorithmAPI,
-    MySavedAlgorithmsAPI,
-    CreateTopicAPI,
-    UpdateTopicAPI,
-    DeleteTopicAPI,
+    MyPublishedAlgorithmsAPI,
+    CreateMyAlgorithmAPI,
+    MyAlgorithmsAPI,
+    DeleteMyAlgorithmAPI,
+    TopicListAPI,
     DocumentationListAPI,
     DocumentationDetailAPI,
-    CreateDocumentationAPI,
-    UpdateDocumentationAPI,
-    DeleteDocumentationAPI,
-    RequestsListAPI,
     ExecuteAlgorithmAPI,
-    MyPublishedAlgorithmsAPI
+    SystemStatisticsAPI,
+    MySavedAlgorithmsStatisticsAPI,
 )
 
 urlpatterns = [
 
+    # =========================
+    # Public Published Algorithms
+    # =========================
+
     path(
         '',
-        AlgorithmListAPI.as_view()
+        AlgorithmListAPI.as_view(),
+        name='algorithm-list'
     ),
 
     path(
-        '<int:id>/',
-        AlgorithmDetailAPI.as_view()
-    ),
-    path(
-        '<int:algorithm_id>/publish-request/',
-        CreateRequestAPI.as_view(),
-        name='create-publish-request'
-    ),
-    path(
-        '<int:algorithm_id>/update-request/',
-        CreateUpdateRequestAPI.as_view(),
-        name='create-update-request'
-    ),
-    path(
-        '<int:algorithm_id>/delete-request/',
-        CreateDeleteRequestAPI.as_view(),
-        name='create-delete-request'
-    ),
-    path(
-        'requests/my/',
-        MyRequestsAPI.as_view()
+        '<int:algorithm_id>/',
+        AlgorithmDetailAPI.as_view(),
+        name='algorithm-detail'
     ),
 
-    path(
-        'requests/<int:id>/',
-        RequestDetailAPI.as_view()
-    ),
-    path(
-        'admin/pending-requests/',
-        PendingRequestsAPI.as_view()
-    ),
-    path(
-        'admin/requests/<int:id>/approve/',
-        ApproveRequestAPI.as_view()
-    ),
-    path(
-        'admin/requests/<int:id>/reject/',
-        RejectRequestAPI.as_view()
-    ),
-    # saved algorithm that was puplished  
+    # =========================
+    # Save / Unsave Published Algorithms
+    # =========================
+
     path(
         '<int:algorithm_id>/save/',
-        SaveAlgorithmAPI.as_view()
+        SaveAlgorithmAPI.as_view(),
+        name='save-algorithm'
     ),
 
     path(
         '<int:algorithm_id>/unsave/',
-        UnsaveAlgorithmAPI.as_view()
+        UnsaveAlgorithmAPI.as_view(),
+        name='unsave-algorithm'
     ),
-    path(
-        'my-published/',
-        MyPublishedAlgorithmsAPI.as_view(),
-    ),
-    # show saved published algorithm 
+
     path(
         'saved/',
-        MySavedAlgorithmsAPI.as_view()
+        MyPublishedAlgorithmsAPI.as_view(),
+        name='my-saved-algorithms'
     ),
-    # saved algorithm that he write it
+
+    # =========================
+    # User's Own Algorithms
+    # =========================
+
     path(
-        'my-algorithms/save/',
-        SaveMyAlgorithmAPI.as_view()
-    ),
-    # show saved published algorithm 
-    path(
-        'algorithms/my/',
+        'my/',
         MyAlgorithmsAPI.as_view(),
         name='my-algorithms'
     ),
+
+    path(
+        'my/create/',
+        CreateMyAlgorithmAPI.as_view(),
+        name='create-my-algorithm'
+    ),
+
+    path(
+        'my/<int:algorithm_id>/delete/',
+        DeleteMyAlgorithmAPI.as_view(),
+        name='delete-my-algorithm'
+    ),
+
+    # =========================
+    # Static Topics
+    # =========================
+
     path(
         'topics/',
-        TopicListAPI.as_view()
+        TopicListAPI.as_view(),
+        name='topic-list'
     ),
 
-    path(
-        'topics/create/',
-        CreateTopicAPI.as_view()
-    ),
+    # =========================
+    # Static Documentation
+    # =========================
 
-    path(
-        'topics/<int:id>/update/',
-        UpdateTopicAPI.as_view()
-    ),
-
-    path(
-        'topics/<int:id>/delete/',
-        DeleteTopicAPI.as_view()
-    ),
     path(
         'documentation/',
-        DocumentationListAPI.as_view()
+        DocumentationListAPI.as_view(),
+        name='documentation-list'
     ),
 
     path(
-        'documentation/<int:id>/',
-        DocumentationDetailAPI.as_view()
+        'documentation/<int:documentation_id>/',
+        DocumentationDetailAPI.as_view(),
+        name='documentation-detail'
+    ),
+
+    # =========================
+    # Algorithm Execution
+    # =========================
+
+    path(
+        '<int:algorithm_id>/execute/',
+        ExecuteAlgorithmAPI.as_view(),
+        name='execute-algorithm'
     ),
 
     path(
-        'documentation/create/',
-        CreateDocumentationAPI.as_view()
+        'statistics/',
+        SystemStatisticsAPI.as_view(),
+        name='system-statistics'
     ),
 
     path(
-        'documentation/<int:id>/update/',
-        UpdateDocumentationAPI.as_view()
+        'my-statistics/',
+        MySavedAlgorithmsStatisticsAPI.as_view(),
+        name='my-statistics'
     ),
-
-    path(
-        'documentation/<int:id>/delete/',
-        DeleteDocumentationAPI.as_view()
-    ),
-    path('requests/', RequestsListAPI.as_view()),
-    path('<int:algorithm_id>/execute/',ExecuteAlgorithmAPI.as_view())
 ]
-
-
