@@ -3,9 +3,12 @@ import random
 
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -89,6 +92,7 @@ class LoginAPI(APIView):
             status=200
         )
 
+
 class RegisterAPI(APIView):
 
     permission_classes = [AllowAny]
@@ -119,11 +123,13 @@ class RegisterAPI(APIView):
             ]
         )
 
+        # Delete any old unused verification codes
         EmailVerificationOTP.objects.filter(
             user=user,
             is_used=False
         ).delete()
 
+        # Generate new verification code
         code = str(
             random.randint(100000, 999999)
         )
@@ -136,16 +142,42 @@ class RegisterAPI(APIView):
             )
         )
 
-        send_mail(
-            subject="Verify your AlgoHub account",
-            message=(
-                f"Your verification code is: {code}\n\n"
-                "This code will expire in 10 minutes."
-            ),
-            from_email=None,
-            recipient_list=[user.email],
-            fail_silently=False
+        # Render HTML email template
+        html_message = render_to_string(
+            "emails/verify_email.html",
+            {
+                "username": user.username,
+                "code": code,
+            }
         )
+
+        # Plain-text fallback
+        text_message = (
+            f"Hello {user.username},\n\n"
+            "Thank you for creating an AlgoHub account.\n\n"
+            f"Your verification code is: {code}\n\n"
+            "This code will expire in 10 minutes.\n\n"
+            "If you did not create this account, "
+            "you can safely ignore this email.\n\n"
+            "AlgoHub"
+        )
+
+        # Create email
+        email = EmailMultiAlternatives(
+            subject="Verify your AlgoHub account",
+            body=text_message,
+            from_email=None,
+            to=[user.email]
+        )
+
+        # Attach HTML version
+        email.attach_alternative(
+            html_message,
+            "text/html"
+        )
+
+        # Send email
+        email.send()
 
         return api_success(
             data={
@@ -153,10 +185,13 @@ class RegisterAPI(APIView):
                 "username": user.username,
                 "email": user.email,
             },
-            message="Account created. Verification code sent to your email.",
+            message=(
+                "Account created. "
+                "Verification code sent to your email."
+            ),
             status=201
         )
-
+    
 class MeAPI(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -333,6 +368,7 @@ class DeleteMyAccountAPI(APIView):
             message="Account deleted successfully"
         )
 
+
 class ForgotPasswordAPI(APIView):
 
     permission_classes = [AllowAny]
@@ -359,11 +395,13 @@ class ForgotPasswordAPI(APIView):
                 status=404
             )
 
+        # Delete old unused password reset OTPs
         PasswordResetOTP.objects.filter(
             user=user,
             is_used=False
         ).delete()
 
+        # Generate new OTP
         code = str(
             random.randint(100000, 999999)
         )
@@ -376,13 +414,43 @@ class ForgotPasswordAPI(APIView):
             )
         )
 
-        send_mail(
-            subject="Password Reset Code",
-            message=f"Your OTP code is: {code}",
-            from_email=None,
-            recipient_list=[email],
-            fail_silently=False
+        # Render HTML email template
+        html_message = render_to_string(
+            "emails/reset_password.html",
+            {
+                "username": user.username,
+                "code": code,
+            }
         )
+
+        # Plain-text fallback
+        text_message = (
+            f"Hello {user.username},\n\n"
+            "We received a request to reset your "
+            "AlgoHub password.\n\n"
+            f"Your password reset code is: {code}\n\n"
+            "This code will expire in 10 minutes.\n\n"
+            "If you did not request a password reset, "
+            "you can safely ignore this email.\n\n"
+            "AlgoHub"
+        )
+
+        # Create email
+        email_message = EmailMultiAlternatives(
+            subject="Reset your AlgoHub password",
+            body=text_message,
+            from_email=None,
+            to=[user.email]
+        )
+
+        # Attach HTML version
+        email_message.attach_alternative(
+            html_message,
+            "text/html"
+        )
+
+        # Send email
+        email_message.send()
 
         return api_success(
             message="OTP sent successfully"
@@ -662,6 +730,7 @@ class VerifyEmailAPI(APIView):
             message="Email verified successfully. You can now login."
         )
 
+    
 class ResendVerificationOTPAPI(APIView):
 
     permission_classes = [AllowAny]
@@ -671,6 +740,7 @@ class ResendVerificationOTPAPI(APIView):
         email = request.data.get('email')
 
         if not email:
+
             return api_error(
                 message="Email is required",
                 status=400
@@ -681,12 +751,14 @@ class ResendVerificationOTPAPI(APIView):
         ).first()
 
         if not user:
+
             return api_error(
                 message="Invalid email",
                 status=404
             )
 
         if user.email_verified:
+
             return api_error(
                 message="Email is already verified",
                 status=400
@@ -711,18 +783,43 @@ class ResendVerificationOTPAPI(APIView):
             )
         )
 
-        send_mail(
-            subject="Verify your AlgoHub account",
-            message=(
-                f"Your new verification code is: {code}\n\n"
-                "This code will expire in 10 minutes."
-            ),
-            from_email=None,
-            recipient_list=[user.email],
-            fail_silently=False
+        # Render HTML email template
+        html_message = render_to_string(
+            "emails/verify_email.html",
+            {
+                "username": user.username,
+                "code": code,
+            }
         )
+
+        # Plain-text fallback
+        text_message = (
+            f"Hello {user.username},\n\n"
+            "Here is your new AlgoHub verification code.\n\n"
+            f"Your new verification code is: {code}\n\n"
+            "This code will expire in 10 minutes.\n\n"
+            "If you did not request a new verification code, "
+            "you can safely ignore this email.\n\n"
+            "AlgoHub"
+        )
+
+        # Create email
+        email_message = EmailMultiAlternatives(
+            subject="Verify your AlgoHub account",
+            body=text_message,
+            from_email=None,
+            to=[user.email]
+        )
+
+        # Attach HTML version
+        email_message.attach_alternative(
+            html_message,
+            "text/html"
+        )
+
+        # Send email
+        email_message.send()
 
         return api_success(
             message="A new verification code has been sent"
         )
-    
