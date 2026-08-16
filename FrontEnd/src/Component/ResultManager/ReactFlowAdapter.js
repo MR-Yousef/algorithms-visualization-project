@@ -18,10 +18,10 @@ export class ReactFlowAdapter {
      */
     constructor(options = {}) {
         const loopEdgeBaseOffset =
-            options.loopEdgeBaseOffset ?? 70;
+            options.loopEdgeBaseOffset ?? 110;
 
         const loopEdgeLaneGap =
-            options.loopEdgeLaneGap ?? 70;
+            options.loopEdgeLaneGap ?? 90;
 
         if (
             !Number.isFinite(loopEdgeBaseOffset) ||
@@ -220,7 +220,14 @@ export class ReactFlowAdapter {
                     flowNode.type,
 
                 label:
-                    flowNode.label,
+                    flowNode.type === "assignment"
+                        ? "Assignment"
+                        : flowNode.label,
+
+                assignment:
+                    flowNode.type === "assignment"
+                        ? flowNode.label
+                        : null,
 
                 condition:
                     flowNode.condition,
@@ -645,7 +652,7 @@ export class ReactFlowAdapter {
                         this.options
                             .loopEdgeBaseOffset
                     ) +
-                    12,
+                    30,
 
                 borderRadius:
                     6
@@ -670,7 +677,7 @@ export class ReactFlowAdapter {
                         this.options
                             .loopEdgeBaseOffset
                     ) +
-                    12,
+                    30,
 
                 borderRadius:
                     6
@@ -959,7 +966,14 @@ export class ReactFlowAdapter {
                 targetNode
             );
 
+        const useCustomEdge =
+            flowEdge.role === "true" ||
+            flowEdge.role === "false" ||
+            flowEdge.role === "back";
+
+
         const reactFlowEdge = {
+
             id:
                 String(flowEdge.id),
 
@@ -973,13 +987,23 @@ export class ReactFlowAdapter {
                     flowEdge.target
                 ),
 
+
+            /*
+             * YES and NO use our custom edge.
+             * Other edges stay normal.
+             */
             type:
-                this.options.edgeType,
+                useCustomEdge
+                    ? "branch"
+                    : this.options.edgeType,
+
 
             sourceHandle,
             targetHandle,
 
+
             data: {
+
                 flowEdgeId:
                     flowEdge.id,
 
@@ -987,7 +1011,13 @@ export class ReactFlowAdapter {
                     flowEdge.role,
 
                 label:
-                    flowEdge.label
+                    flowEdge.label,
+
+                sourceNodeType:
+                    sourceNode.type,
+
+                targetNodeType:
+                    targetNode.type
             }
         };
 
@@ -1002,22 +1032,30 @@ export class ReactFlowAdapter {
                 loopLaneOffsets
             );
 
-        if (
-            loopPathOptions
-        ) {
-            reactFlowEdge.pathOptions =
-                loopPathOptions;
+        if (loopPathOptions) {
+
+            if (useCustomEdge) {
+
+                reactFlowEdge.data.pathOptions =
+                    loopPathOptions;
+
+            }
+            else {
+
+                reactFlowEdge.pathOptions =
+                    loopPathOptions;
+            }
         }
 
         /*
          * Labels.
          */
         if (
-            typeof flowEdge.label ===
-            "string" &&
-            flowEdge.label
-                .trim()
-                .length > 0
+            flowEdge.role !== "true" &&
+            flowEdge.role !== "false" &&
+            flowEdge.role !== "back" &&
+            typeof flowEdge.label === "string" &&
+            flowEdge.label.trim().length > 0
         ) {
             const labelColors = {
                 true:

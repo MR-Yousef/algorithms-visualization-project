@@ -41,11 +41,6 @@ export default function Privacy() {
                                     (such as a biography or avatar). If you upload or create algorithms,
                                     the code and associated metadata are stored on our servers.
                                 </p>
-                                <p>
-                                    We also automatically collect certain technical data when you visit
-                                    the site, such as your IP address, browser type, and usage patterns
-                                    through standard server logs and analytics tools.
-                                </p>
                             </section>
 
                             <section>
@@ -56,7 +51,6 @@ export default function Privacy() {
                                 </p>
                                 <ul>
                                     <li>Managing your account and authentication</li>
-                                    <li>Displaying your public profile and contributed algorithms</li>
                                     <li>Analyzing site usage to improve performance and user experience</li>
                                     <li>Responding to your inquiries or support requests</li>
                                 </ul>
@@ -131,11 +125,13 @@ export default function Privacy() {
                             </section>
                         </div>
 
-                        {/* Back to Home */}
                         <div className="privacy-footer">
-                            <button className="back-btn" onClick={() => navigate('/signup')}>
+                            <button
+                                className="back-btn"
+                                onClick={() => navigate("/signup")}
+                            >
                                 <BackIcon />
-                                Back to Home
+                                Back to Sign Up
                             </button>
                         </div>
                     </div>

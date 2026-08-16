@@ -201,3 +201,29 @@ textarea.cloud-save-input {
     backdrop-filter: blur(6px);
     animation: fadeIn 0.3s ease;
 }
+
+/* Multi-topic / loading additions */
+.cloud-save-loading,
+.cloud-save-step-counter,
+.cloud-save-selected-summary {
+    margin: 0.75rem 0;
+    color: #9fb5c9;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.cloud-save-step-counter {
+    text-align: center;
+    opacity: 0.8;
+}
+
+.cloud-save-selected-summary {
+    margin-top: 1rem;
+    color: #00f5e4;
+}
+
+.cloud-save-pill-group {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}

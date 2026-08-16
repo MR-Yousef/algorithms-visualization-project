@@ -1,96 +1,91 @@
-import { createContext, useState, useEffect, useCallback } from 'react';
-import AuthService from '../services/auth.service';
+import {
+    createContext,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
+import AuthService from "../services/auth.service";
 
-// Create the authentication context
 export const AuthContext = createContext(null);
 
-/**
- * Provides authentication state and actions to the entire application.
- * Manages user data, tokens (access & refresh), and login/logout flows.
- */
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // ---------- Stable storage helpers ----------
-
-    /** Returns localStorage if "remember me" is true, otherwise sessionStorage. */
     const getStorage = useCallback(() => {
-        const rememberMe = localStorage.getItem('remember_me') === 'true';
+        const rememberMe = localStorage.getItem("remember_me") === "true";
         return rememberMe ? localStorage : sessionStorage;
     }, []);
 
-    /** Retrieves the access token from the appropriate storage. */
-    const getAccessToken = useCallback(
-        () => getStorage().getItem('access_token'),
-        [getStorage]
-    );
+    const getAccessToken = useCallback(() => {
+        const preferred = getStorage();
+        const secondary = preferred === localStorage ? sessionStorage : localStorage;
+        return preferred.getItem("access_token") || secondary.getItem("access_token");
+    }, [getStorage]);
 
-    /** Retrieves the refresh token from the appropriate storage. */
-    const getRefreshToken = useCallback(
-        () => getStorage().getItem('refresh_token'),
-        [getStorage]
-    );
+    const getRefreshToken = useCallback(() => {
+        const preferred = getStorage();
+        const secondary = preferred === localStorage ? sessionStorage : localStorage;
+        return preferred.getItem("refresh_token") || secondary.getItem("refresh_token");
+    }, [getStorage]);
 
-    /**
-     * Stores access and refresh tokens, and persists the "remember me" preference.
-     * @param {string} access - Access token
-     * @param {string} refresh - Refresh token
-     * @param {boolean} rememberMe - Whether to persist tokens across browser sessions
-     */
     const setTokens = useCallback((access, refresh, rememberMe = false) => {
-        localStorage.setItem('remember_me', rememberMe ? 'true' : 'false');
+        localStorage.setItem("remember_me", rememberMe ? "true" : "false");
+
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("refresh_token");
+
         const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem('access_token', access);
-        storage.setItem('refresh_token', refresh);
+        storage.setItem("access_token", access);
+        storage.setItem("refresh_token", refresh);
     }, []);
 
-    /** Removes all stored tokens and remembered settings from both storages. */
     const clearTokens = useCallback(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('remember_me');
-        localStorage.removeItem('remembered_email');
-        sessionStorage.removeItem('access_token');
-        sessionStorage.removeItem('refresh_token');
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("remember_me");
+        localStorage.removeItem("remembered_email");
+        localStorage.removeItem("remembered_ID");
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("refresh_token");
     }, []);
-
-    // ---------- Initial user loading (runs once on mount) ----------
 
     useEffect(() => {
-        let cancelled = false; // Prevents state update if component unmounts
+        let cancelled = false;
 
         const loadUser = async () => {
-            const token = getAccessToken();
-            if (!token) {
-                setLoading(false);
+            const accessToken = getAccessToken();
+
+            if (!accessToken) {
+                if (!cancelled) setLoading(false);
                 return;
             }
 
             try {
-                const userData = await AuthService.getCurrentUser(token);
+                const userData = await AuthService.getCurrentUser(accessToken);
                 if (!cancelled) setUser(userData);
-            } catch (error) {
-                // Token may be expired – attempt to refresh it
+            } catch {
                 const refreshToken = getRefreshToken();
-                if (refreshToken && !cancelled) {
-                    try {
-                        const data = await AuthService.refreshToken(refreshToken);
-                        // Store the new access token in the same storage type
-                        const storage = getStorage();
-                        storage.setItem('access_token', data.access);
-                        const userData = await AuthService.getCurrentUser(data.access);
-                        if (!cancelled) setUser(userData);
-                    } catch (refreshError) {
-                        // Refresh failed – clear everything
-                        if (!cancelled) {
-                            clearTokens();
-                            setUser(null);
-                        }
+
+                if (!refreshToken) {
+                    if (!cancelled) {
+                        clearTokens();
+                        setUser(null);
                     }
-                } else {
-                    // No refresh token available
+                    return;
+                }
+
+                try {
+                    const refreshed = await AuthService.refreshToken(refreshToken);
+                    const storage = getStorage();
+                    storage.setItem("access_token", refreshed.access);
+
+                    const userData = await AuthService.getCurrentUser(refreshed.access);
+                    if (!cancelled) setUser(userData);
+                } catch {
                     if (!cancelled) {
                         clearTokens();
                         setUser(null);
@@ -106,73 +101,124 @@ export function AuthProvider({ children }) {
         return () => {
             cancelled = true;
         };
-    }, []); // Runs only once on mount (empty dependency array)
+    }, [clearTokens, getAccessToken, getRefreshToken, getStorage]);
 
-    // ---------- Auth actions ----------
-
-    /**
-     * Authenticates the user, stores tokens, fetches the full user profile,
-     * and updates the context state.
-     */
-    const login = useCallback(async (login, password, rememberMe = false) => {
+    const login = useCallback(async (loginValue, password, rememberMe = false) => {
         setError(null);
+
         try {
-            const response = await AuthService.login(login, password);
-            const { access, refresh, user } = response.data;
+            const response = await AuthService.login(loginValue, password);
+            const data = response?.data ?? response;
+            const access = data?.access;
+            const refresh = data?.refresh;
+
+            if (!access || !refresh) {
+                throw new Error("Login response did not contain access and refresh tokens.");
+            }
+
             setTokens(access, refresh, rememberMe);
 
-            // Fetch the complete user profile (includes bio, avatar, etc.)
             const fullUser = await AuthService.getCurrentUser(access);
             setUser(fullUser);
 
-            return { success: true };
+            return {
+                success: true,
+                data: fullUser,
+            };
         } catch (err) {
             setError(err.message);
-            return { success: false, error: err.message };
+            return {
+                success: false,
+                error: err.message,
+            };
         }
     }, [setTokens]);
 
-    /** Registers a new user. */
     const register = useCallback(async (username, email, password) => {
         setError(null);
+
         try {
-            await AuthService.register(username, email, password);
-            return { success: true };
+            const data = await AuthService.register(username, email, password);
+            return { success: true, data };
         } catch (err) {
             setError(err.message);
             return { success: false, error: err.message };
         }
     }, []);
 
-    /** Logs out the user, clears tokens, and resets user state. */
+    const verifyRegistrationOtp = useCallback(async (email, code) => {
+        setError(null);
+
+        try {
+            const data = await AuthService.verifyRegistrationOtp(email, code);
+            return { success: true, data };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        }
+    }, []);
+
+    const resendVerificationOtp = useCallback(async (email) => {
+        setError(null);
+
+        try {
+            const data = await AuthService.resendVerificationOtp(email);
+            return { success: true, data };
+        } catch (err) {
+            setError(err.message);
+            return { success: false, error: err.message };
+        }
+    }, []);
+
     const logout = useCallback(async () => {
         const accessToken = getAccessToken();
         const refreshToken = getRefreshToken();
+
         if (accessToken && refreshToken) {
             try {
                 await AuthService.logout(accessToken, refreshToken);
             } catch (err) {
-                console.error('Logout error:', err);
+                console.error("Logout error:", err);
             }
         }
+
         clearTokens();
         setUser(null);
-    }, [getAccessToken, getRefreshToken, clearTokens]);
+    }, [clearTokens, getAccessToken, getRefreshToken]);
 
-    /** Partially updates the current user object (e.g., after profile edit). */
+    const logoutAll = useCallback(async () => {
+        const accessToken = getAccessToken();
+
+        if (accessToken) {
+            try {
+                await AuthService.logoutAll(accessToken);
+            } catch (err) {
+                console.error("Logout-all error:", err);
+            }
+        }
+
+        clearTokens();
+        setUser(null);
+    }, [clearTokens, getAccessToken]);
+
     const updateUser = useCallback((updatedFields) => {
-        setUser(prev => prev ? { ...prev, ...updatedFields } : null);
+        setUser((previous) => previous
+            ? { ...previous, ...updatedFields }
+            : null
+        );
     }, []);
 
-    // Expose everything through the context value
     const value = {
         user,
         loading,
         error,
-        isAuthenticated: !!user,
+        isAuthenticated: Boolean(user),
         login,
         register,
+        verifyRegistrationOtp,
+        resendVerificationOtp,
         logout,
+        logoutAll,
         getAccessToken,
         getRefreshToken,
         updateUser,

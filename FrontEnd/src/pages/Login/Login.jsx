@@ -18,7 +18,7 @@ export default function Login() {
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/Home';
+    const from = location.state?.from?.pathname || '/home';
 
     // Load saved email on mount
     useEffect(() => {

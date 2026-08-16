@@ -88,13 +88,21 @@ export function OutputNode({ data, selected, isConnectable }) {
  * The true branch leaves from the right.
  * The false branch leaves from the left.
  */
-export function IfNode({ data, selected, isConnectable }) {
+export function IfNode({
+    data,
+    selected,
+    isConnectable
+}) {
     return (
         <FlowNodeBase
             data={data}
             selected={selected}
             isConnectable={isConnectable}
-            handles={["target-top", "source-left", "source-right"]}
+            handles={[
+                "target-top",
+                "source-left",
+                "source-right"
+            ]}
             className="flow-node--if"
         />
     );
@@ -115,13 +123,22 @@ export function IfNode({ data, selected, isConnectable }) {
  * The false branch leaves from the left toward the exit junction.
  * A returning back edge enters from the right.
  */
-export function WhileNode({ data, selected, isConnectable }) {
+export function WhileNode({
+    data,
+    selected,
+    isConnectable
+}) {
     return (
         <FlowNodeBase
             data={data}
             selected={selected}
             isConnectable={isConnectable}
-            handles={["target-top", "target-right", "source-left", "source-bottom"]}
+            handles={[
+                "target-top",
+                "target-right",
+                "source-left",
+                "source-bottom"
+            ]}
             className="flow-node--while"
         />
     );

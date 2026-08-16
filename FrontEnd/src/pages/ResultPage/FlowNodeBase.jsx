@@ -22,6 +22,10 @@ export function FlowNodeBase({
         typeof data?.label === "string"
             ? data.label
             : "";
+    const assignment =
+        typeof data?.assignment === "string"
+            ? data.assignment.trim()
+            : "";
 
     const condition =
         typeof data?.condition === "string"
@@ -48,16 +52,31 @@ export function FlowNodeBase({
     let tooltipTitle = "";
     let tooltipValue = "";
 
-    if (condition) {
+    if (assignment) {
+
+        tooltipTitle = "Assignment";
+
+        tooltipValue = assignment;
+
+    }
+    else if (condition) {
+
         tooltipTitle = "Condition";
+
         tooltipValue = condition;
+
     }
     else if (input) {
+
         tooltipTitle = "Input";
+
         tooltipValue = input;
+
     }
     else if (output) {
+
         tooltipTitle = "Output";
+
         tooltipValue = output;
     }
 

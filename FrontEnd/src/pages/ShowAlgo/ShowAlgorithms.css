@@ -25,10 +25,17 @@ body {
 
 .algorithms-main {
     position: relative;
+
     z-index: 10;
-    padding: 1.5rem 2rem 3rem;
-    max-width: 1200px;
+
+    width: 100%;
+    max-width: 1450px;
+
     margin: 0 auto;
+
+    padding: 1.5rem 2rem 4rem;
+
+    box-sizing: border-box;
 }
 
 /* ---------- Header with search ---------- */
@@ -101,17 +108,32 @@ body {
 /* ---------- Algorithms grid ---------- */
 .algorithms-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.8rem;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 1.2rem;
+
+    width: 100%;
 }
 
 .algo-card {
     position: relative;
-    background: rgba(4, 28, 48, 0.5);
-    border: 1px solid rgba(0, 245, 228, 0.12);
-    border-radius: 16px;
-    padding: 1.8rem;
+
+    min-width: 0;
+
+    padding: 1.35rem;
+
+    background:
+        rgba(4, 28, 48, 0.5);
+
+    border:
+        1px solid rgba(0, 245, 228, 0.12);
+
+    border-radius: 15px;
+
     cursor: pointer;
+
     transition: all 0.3s ease;
 }
 
@@ -165,7 +187,14 @@ body {
 
 .algo-card-content {
     position: relative;
+
     z-index: 1;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
 }
 
 .algo-icon {
@@ -192,38 +221,58 @@ body {
 }
 
 .algo-name {
+    margin: 0 0 0.5rem;
+
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
+
+    font-size: 1rem;
     font-weight: 600;
+
     color: #ffffff;
-    margin-bottom: 0.5rem;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
 }
 
 .algo-desc {
-    color: rgba(224, 247, 245, 0.6);
-    font-size: 0.9rem;
+    min-height: 3.8em;
+
+    margin-bottom: 1rem;
+
+    color:
+        rgba(224, 247, 245, 0.6);
+
+    font-size: 0.85rem;
+
     line-height: 1.4;
-    margin-bottom: 1.5rem;
-    min-height: 3em;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
 }
 
 .algo-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: rgba(0, 245, 228, 0.6);
-    font-size: 0.85rem;
-}
 
-.algo-views {
-    display: flex;
     align-items: center;
-    gap: 0.3rem;
-}
 
-.algo-views svg {
-    width: 1rem;
-    height: 1rem;
+    margin-top: auto;
+
+    padding-top: 0.8rem;
+
+    color:
+        rgba(0, 245, 228, 0.6);
+
+    font-size: 0.82rem;
+
+    border-top:
+        1px solid rgba(0, 245, 228, 0.07);
 }
 
 /* ---------- Modal ---------- */
@@ -307,80 +356,749 @@ body {
     grid-column: 1 / -1;
 }
 
-.save-section {
+/* =========================================================
+   SHOW ALGO ACTIONS
+========================================================= */
+
+.showalgo-modal-actions {
+    width: 100%;
+
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+
+    justify-content: flex-end;
+
+    gap: 0.8rem;
+
+    margin-top: 1rem;
 }
 
-.save-btn {
-    padding: 0.7rem 1.5rem;
-    background: linear-gradient(135deg, #00d4ff, #0099ff);
+
+/* =========================================================
+   RUN CODE
+========================================================= */
+
+.showalgo-run-btn,
+.showalgo-save-btn {
+    min-width: 150px;
+    min-height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.5rem;
+
+    padding: 0.7rem 1.2rem;
+
     border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: 600;
+
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    font-family: 'Rajdhani', sans-serif;
+
+    font-size: 0.92rem;
+    font-weight: 700;
+
     cursor: pointer;
-    transition: all 0.3s;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
 }
 
-.save-btn:hover:not(:disabled) {
+
+.showalgo-run-btn {
+    background:
+        linear-gradient(135deg,
+            #00f5a0,
+            #00a88f);
+
+    box-shadow:
+        0 6px 18px rgba(0, 245, 160, 0.15);
+}
+
+
+.showalgo-run-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+
+.showalgo-run-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+
+    box-shadow:
+        0 9px 25px rgba(0, 245, 160, 0.35);
 }
 
-.save-btn:disabled {
-    opacity: 0.6;
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.showalgo-save-btn {
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0077ff);
+
+    box-shadow:
+        0 6px 18px rgba(0, 153, 255, 0.18);
+}
+
+
+.showalgo-save-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+
+.showalgo-save-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 25px rgba(0, 153, 255, 0.35);
+}
+
+
+/* SAVED STATE */
+
+.showalgo-save-btn.is-saved {
+    color: #00f5a0;
+
+    background:
+        rgba(0, 245, 160, 0.08);
+
+    border:
+        1px solid rgba(0, 245, 160, 0.3);
+
+    box-shadow:
+        0 0 18px rgba(0, 245, 160, 0.08);
+}
+
+
+.showalgo-run-btn:disabled,
+.showalgo-save-btn:disabled {
     cursor: not-allowed;
 }
 
-.save-message {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
+
+.showalgo-run-btn:disabled {
+    opacity: 0.4;
 }
 
-.save-message.success {
-    color: #00f5a0;
-    background: rgba(0, 245, 160, 0.1);
+
+.showalgo-save-btn.is-saved:disabled {
+    opacity: 1;
 }
 
-.save-message.error {
-    color: #ff4d4d;
-    background: rgba(255, 50, 50, 0.1);
-}
 
-.run-btn {
-    padding: 0.7rem 1.5rem;
-    background: linear-gradient(135deg, #00f5a0, #009688);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
+/* =========================================================
+   SAVE SUCCESS / ERROR
+========================================================= */
+
+.showalgo-save-notice {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.55rem;
+
+    margin-top: 1.2rem;
+
+    padding: 0.75rem 0.9rem;
+
+    border-radius: 9px;
+
+    font-size: 0.88rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
+
+    animation:
+        showAlgoNoticeIn 0.3s ease;
 }
 
-.run-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 245, 160, 0.4);
+
+.showalgo-save-notice svg {
+    flex-shrink: 0;
+
+    width: 1rem;
+    height: 1rem;
 }
 
-.save-message {
-    font-size: 0.9rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-}
 
-.save-message.success {
+.showalgo-save-notice.success {
     color: #00f5a0;
-    background: rgba(0, 245, 160, 0.1);
+
+    background:
+        rgba(0, 245, 160, 0.07);
+
+    border:
+        1px solid rgba(0, 245, 160, 0.2);
+
+    box-shadow:
+        0 0 18px rgba(0, 245, 160, 0.05);
 }
 
-.save-message.error {
-    color: #ff4d4d;
-    background: rgba(255, 50, 50, 0.1);
+
+.showalgo-save-notice.error {
+    color: #ff7474;
+
+    background:
+        rgba(255, 77, 77, 0.07);
+
+    border:
+        1px solid rgba(255, 77, 77, 0.2);
+}
+
+/* =========================================================
+   ALGORITHM MODAL ACTION BUTTONS
+========================================================= */
+
+.show-algorithms-page .show-algo-modal-actions {
+    width: 100%;
+
+    margin-top: 2rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+
+/* MESSAGE */
+
+.show-algorithms-page .show-algo-modal-actions .save-message {
+    width: 100%;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   BUTTON ROW
+========================================================= */
+
+.show-algorithms-page .show-algo-modal-buttons {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 1rem;
+}
+
+
+/* =========================================================
+   RUN CODE
+========================================================= */
+
+.show-algorithms-page .show-algo-run-btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding:
+        0.8rem 1.4rem;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.55rem;
+
+    border: none !important;
+
+    border-radius: 10px !important;
+
+    outline: none;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    background:
+        linear-gradient(135deg,
+            #00e6b8,
+            #00a88f) !important;
+
+    color:
+        #ffffff !important;
+
+    font-family:
+        "Rajdhani",
+        sans-serif !important;
+
+    font-size:
+        1rem !important;
+
+    font-weight:
+        700 !important;
+
+    line-height:
+        1 !important;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 18px rgba(0,
+            230,
+            184,
+            0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.show-algorithms-page .show-algo-run-btn svg {
+    width: 18px;
+
+    height: 18px;
+}
+
+
+.show-algorithms-page .show-algo-run-btn:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0,
+            230,
+            184,
+            0.32);
+}
+
+
+.show-algorithms-page .show-algo-run-btn:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.show-algorithms-page .show-algo-save-btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding:
+        0.8rem 1.4rem;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none !important;
+
+    border-radius: 10px !important;
+
+    outline: none;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    background:
+        linear-gradient(135deg,
+            #00c8f5,
+            #069cff) !important;
+
+    color:
+        #ffffff !important;
+
+    font-family:
+        "Rajdhani",
+        sans-serif !important;
+
+    font-size:
+        1rem !important;
+
+    font-weight:
+        700 !important;
+
+    line-height:
+        1 !important;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 18px rgba(0,
+            180,
+            255,
+            0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.show-algorithms-page .show-algo-save-btn:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0,
+            180,
+            255,
+            0.32);
+}
+
+
+.show-algorithms-page .show-algo-save-btn:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+/* ============================================================
+   SHOW ALGORITHMS - PAGE SCROLL FIX
+============================================================ */
+
+.show-algorithms-page {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 100dvh !important;
+
+    height: auto !important;
+
+    overflow-x: hidden !important;
+
+    overflow-y: visible !important;
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+
+.show-algorithms-page .algorithms-main {
+    width: 100%;
+
+    min-height:
+        calc(100dvh - 80px);
+
+    height:
+        auto !important;
+
+    overflow:
+        visible !important;
+
+    padding-bottom:
+        6rem;
+}
+
+
+/* ============================================================
+   ALLOW BODY TO SCROLL
+============================================================ */
+
+body:has(.show-algorithms-page):not(:has(.show-algorithms-page .modal-overlay)) {
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+}
+
+
+/* ============================================================
+   GRID
+============================================================ */
+
+.show-algorithms-page .algorithms-grid {
+    overflow:
+        visible !important;
+}
+
+
+/* ============================================================
+   MODAL OPEN
+============================================================ */
+
+body:has(.show-algorithms-page .modal-overlay) {
+    overflow:
+        hidden !important;
+}
+
+
+/* ============================================================
+   MODAL OVERLAY
+============================================================ */
+
+.show-algorithms-page .modal-overlay {
+    position:
+        fixed !important;
+
+    inset:
+        0 !important;
+
+    z-index:
+        9999 !important;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+
+    overscroll-behavior:
+        contain;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    padding:
+        1.5rem;
+}
+
+
+/* ============================================================
+   ALGORITHM MODAL
+============================================================ */
+
+.show-algorithms-page .algo-modal {
+    width:
+        min(94vw,
+            900px) !important;
+
+    max-width:
+        900px !important;
+
+    max-height:
+        calc(100dvh - 3rem) !important;
+
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+
+    overscroll-behavior:
+        contain;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        rgba(0,
+            245,
+            228,
+            0.55) rgba(255,
+            255,
+            255,
+            0.04);
+}
+
+
+/* ============================================================
+   MODAL SCROLLBAR
+============================================================ */
+
+.show-algorithms-page .algo-modal::-webkit-scrollbar {
+    width:
+        7px;
+}
+
+
+.show-algorithms-page .algo-modal::-webkit-scrollbar-track {
+    background:
+        rgba(255,
+            255,
+            255,
+            0.03);
+
+    border-radius:
+        999px;
+}
+
+
+.show-algorithms-page .algo-modal::-webkit-scrollbar-thumb {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.5);
+
+    border-radius:
+        999px;
+}
+
+
+.show-algorithms-page .algo-modal::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.8);
+}
+
+
+/* ============================================================
+   LONG CODE / DESCRIPTION
+============================================================ */
+
+.show-algorithms-page .algo-modal pre {
+
+    max-width:
+        100%;
+
+    overflow-x:
+        auto;
+
+    white-space:
+        pre;
+}
+
+
+.show-algorithms-page .algo-modal p {
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    .show-algorithms-page .algorithms-main {
+
+        padding-bottom:
+            4rem;
+
+    }
+
+
+    .show-algorithms-page .modal-overlay {
+
+        padding:
+            0.5rem;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .show-algorithms-page .algo-modal {
+
+        width:
+            100% !important;
+
+        max-width:
+            100% !important;
+
+        max-height:
+            calc(100dvh - 1rem) !important;
+
+        margin:
+            0 auto;
+
+    }
+
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .show-algorithms-page .show-algo-modal-buttons {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@keyframes showAlgoNoticeIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SAVING SPINNER
+========================================================= */
+
+.showalgo-btn-spinner {
+    width: 14px;
+    height: 14px;
+
+    border:
+        2px solid rgba(255, 255, 255, 0.3);
+
+    border-top-color:
+        #ffffff;
+
+    border-radius: 50%;
+
+    animation:
+        showAlgoSpin 0.7s linear infinite;
+}
+
+
+@keyframes showAlgoSpin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
 }
 
 /* Topic badge */
@@ -401,13 +1119,113 @@ body {
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+
+    .algorithms-main {
+        width: 100%;
+
+        padding:
+            1.2rem 1rem 4rem;
+
+        box-sizing: border-box;
+    }
+
+
+    /* HEADER */
+
     .algorithms-header {
         flex-direction: column;
-        align-items: flex-start;
+
+        align-items: stretch;
+
+        gap: 1rem;
+
+        margin-bottom: 1.5rem;
     }
+
+
+    .page-title {
+        font-size: 1.35rem;
+    }
+
+
+    .page-title svg {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+
 
     .search-wrapper {
         width: 100%;
+    }
+
+
+    /* ONE ALGORITHM PER ROW */
+
+    .algorithms-grid {
+        grid-template-columns: 1fr;
+
+        gap: 1rem;
+    }
+
+
+    .algo-card {
+        width: 100%;
+
+        padding: 1.2rem;
+
+        box-sizing: border-box;
+    }
+
+
+    .algo-name {
+        font-size: 1rem;
+    }
+
+
+    /* MODAL */
+
+    .algo-modal {
+        width: calc(100% - 1.5rem);
+
+        max-height: 85vh;
+
+        padding: 1.25rem;
+
+        box-sizing: border-box;
+    }
+
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+
+
+    .algo-meta {
+        flex-direction: column;
+
+        gap: 0.5rem;
+    }
+
+
+    /* BUTTONS */
+
+    .showalgo-modal-actions {
+        flex-direction: column;
+
+        gap: 0.6rem;
+    }
+
+
+    .showalgo-run-btn,
+    .showalgo-save-btn {
+        width: 100%;
+
+        min-width: 0;
+    }
+
+
+    .showalgo-save-notice {
+        font-size: 0.8rem;
     }
 }

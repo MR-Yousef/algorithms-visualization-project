@@ -269,6 +269,354 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* =========================================================
+   LOCAL SAVE FILE NAME
+========================================================= */
+
+.local-save-section {
+    margin-bottom: 1.3rem;
+}
+
+
+.local-file-label {
+    display: block;
+
+    margin-bottom: 0.45rem;
+
+    color: #94a3b8;
+
+    font-family: 'Rajdhani', sans-serif;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    text-transform: uppercase;
+}
+
+
+.local-file-input-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    background:
+        rgba(0, 212, 255, 0.05);
+
+    border:
+        1px solid rgba(0, 212, 255, 0.25);
+
+    border-radius: 10px;
+
+    transition: 0.25s;
+}
+
+
+.local-file-input-wrapper:focus-within {
+    border-color: #00d4ff;
+
+    box-shadow:
+        0 0 18px rgba(0, 212, 255, 0.12);
+}
+
+
+.local-file-name-input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 0.8rem 0.9rem;
+
+    outline: none;
+    border: none;
+
+    background: transparent;
+
+    color: #e2e8f0;
+
+    font-family: 'Rajdhani', sans-serif;
+
+    font-size: 1rem;
+}
+
+
+.local-file-extension {
+    padding:
+        0.8rem 0.9rem;
+
+    color: #00d4ff;
+
+    background:
+        rgba(0, 212, 255, 0.08);
+
+    font-family: monospace;
+
+    font-size: 0.9rem;
+}
+
+
+.local-file-hint {
+    display: block;
+
+    margin-top: 0.4rem;
+
+    color: #64748b;
+
+    font-size: 0.75rem;
+}
+
+/* =========================================================
+   LOCAL SAVE MODAL
+========================================================= */
+
+.local-save-modal {
+    width: 100%;
+    max-width: 430px;
+}
+
+
+.local-save-form {
+    width: 100%;
+}
+
+
+.local-save-description {
+    margin:
+        0 0 1.4rem;
+
+    color: #94a3b8;
+
+    font-size: 0.95rem;
+
+    text-align: center;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FILE NAME
+========================================================= */
+
+.local-file-label {
+    display: block;
+
+    margin-bottom: 0.45rem;
+
+    color: #cbd5e1;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+}
+
+
+.local-file-input-wrapper {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background:
+        rgba(0, 212, 255, 0.05);
+
+    border:
+        1px solid rgba(0, 212, 255, 0.25);
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.local-file-input-wrapper:focus-within {
+    border-color: #00d4ff;
+
+    box-shadow:
+        0 0 18px rgba(0, 212, 255, 0.15);
+}
+
+
+.local-file-name-input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding:
+        0.8rem 0.9rem;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #e2e8f0;
+
+    font-family:
+        'Rajdhani',
+        sans-serif;
+
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+
+.local-file-name-input::placeholder {
+    color: #64748b;
+}
+
+
+.local-file-extension {
+    align-self: stretch;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        0 0.9rem;
+
+    color: #00d4ff;
+
+    background:
+        rgba(0, 212, 255, 0.08);
+
+    border-left:
+        1px solid rgba(0, 212, 255, 0.15);
+
+    font-family: monospace;
+
+    font-size: 0.9rem;
+}
+
+
+.local-file-hint {
+    display: block;
+
+    margin-top: 0.45rem;
+
+    color: #64748b;
+
+    font-size: 0.75rem;
+}
+
+
+/* =========================================================
+   LOCAL SAVE ACTIONS
+========================================================= */
+
+.local-save-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 0.7rem;
+
+    margin-top: 1.5rem;
+}
+
+
+.local-cancel-btn,
+.local-confirm-btn {
+    min-height: 42px;
+
+    padding:
+        0.7rem 1.2rem;
+
+    border-radius: 9px;
+
+    font-family:
+        'Rajdhani',
+        sans-serif;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+
+/* CANCEL */
+
+.local-cancel-btn {
+    color: #94a3b8;
+
+    background:
+        rgba(255, 255, 255, 0.04);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.local-cancel-btn:hover {
+    color: #e2e8f0;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+/* SAVE */
+
+.local-confirm-btn {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.45rem;
+
+    color: #ffffff;
+
+    border: none;
+
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0077ff);
+
+    box-shadow:
+        0 5px 18px rgba(0, 153, 255, 0.2);
+}
+
+
+.local-confirm-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+
+.local-confirm-btn:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(0, 153, 255, 0.35);
+}
+
+
+.local-confirm-btn:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+}
+
 /* ... keep existing styles ... */
 
 .loading-text {
@@ -300,4 +648,494 @@
     z-index: 1100;
     backdrop-filter: blur(6px);
     animation: fadeIn 0.3s ease;
+}
+
+/* =========================================================
+   LOCAL SAVE FILE NAME MODAL
+========================================================= */
+
+.local-save-modal {
+    width:
+        min(92vw,
+            480px);
+
+    padding:
+        0;
+
+    overflow:
+        hidden;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.local-save-form {
+    width: 100%;
+
+    padding:
+        1.5rem;
+
+    display: flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        0.8rem;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.local-save-description {
+    margin:
+        0 0 0.7rem;
+
+    color:
+        #a8b7c7;
+
+    font-size:
+        0.95rem;
+
+    line-height:
+        1.6;
+
+    text-align:
+        center;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.local-file-label {
+    color:
+        #dbeafe;
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        700;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.local-file-input-wrapper {
+    width: 100%;
+
+    display: flex;
+
+    align-items:
+        stretch;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.28);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(0,
+            0,
+            0,
+            0.25);
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.local-file-input-wrapper:focus-within {
+    border-color:
+        #00f5e4;
+
+    box-shadow:
+        0 0 0 3px rgba(0,
+            245,
+            228,
+            0.07),
+        0 0 18px rgba(0,
+            245,
+            228,
+            0.1);
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.local-file-name-input {
+    flex: 1;
+
+    min-width:
+        0;
+
+    height:
+        48px;
+
+    padding:
+        0 1rem;
+
+    border:
+        none;
+
+    outline:
+        none;
+
+    background:
+        transparent;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+}
+
+
+.local-file-name-input::placeholder {
+    color:
+        #5e7287;
+}
+
+
+/* =========================================================
+   .TXT EXTENSION
+========================================================= */
+
+.local-file-extension {
+    min-width:
+        60px;
+
+    padding:
+        0 0.9rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-left:
+        1px solid rgba(0,
+            245,
+            228,
+            0.18);
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.06);
+
+    color:
+        #00f5e4;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+.local-file-preview {
+    margin-top:
+        0.25rem;
+
+    padding:
+        0.75rem 0.9rem;
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    align-items:
+        center;
+
+    gap:
+        0.35rem;
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.05);
+
+    color:
+        #8297aa;
+
+    font-size:
+        0.85rem;
+}
+
+
+.local-file-preview strong {
+    color:
+        #00f5e4;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* =========================================================
+   HINT
+========================================================= */
+
+.local-file-hint {
+    color:
+        #697f93;
+
+    font-size:
+        0.8rem;
+
+    line-height:
+        1.5;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.local-save-error {
+    padding:
+        0.65rem 0.8rem;
+
+    border:
+        1px solid rgba(255,
+            80,
+            80,
+            0.35);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(255,
+            70,
+            70,
+            0.08);
+
+    color:
+        #ff6b6b;
+
+    font-size:
+        0.85rem;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.local-save-actions {
+    width: 100%;
+
+    margin-top:
+        1rem;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0, 1fr));
+
+    gap:
+        0.8rem;
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.local-cancel-btn {
+    min-height:
+        44px;
+
+    border:
+        1px solid rgba(255,
+            255,
+            255,
+            0.14);
+
+    border-radius:
+        9px;
+
+    background:
+        rgba(255,
+            255,
+            255,
+            0.05);
+
+    color:
+        #b8c7d5;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    transition:
+        all 0.25s ease;
+}
+
+
+.local-cancel-btn:hover {
+    background:
+        rgba(255,
+            255,
+            255,
+            0.1);
+
+    color:
+        #ffffff;
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+.local-confirm-btn {
+    min-height:
+        44px;
+
+    display: inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        0.5rem;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0099ff);
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    transition:
+        all 0.25s ease;
+}
+
+
+.local-confirm-btn:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(0,
+            180,
+            255,
+            0.3);
+}
+
+
+.local-confirm-btn:disabled {
+    opacity:
+        0.4;
+
+    cursor:
+        not-allowed;
+
+    transform:
+        none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .local-save-form {
+        padding:
+            1.2rem 1rem;
+    }
+
+
+    .local-save-actions {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .local-file-name-input {
+        font-size:
+            0.95rem;
+    }
+
 }

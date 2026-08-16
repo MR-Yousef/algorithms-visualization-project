@@ -12,23 +12,36 @@ export const DEFAULT_NODE_SIZES = {
 };
 // default layout options
 const DEFAULT_LAYOUT_OPTIONS = {
-    nodeSizes: DEFAULT_NODE_SIZES,
 
-    // Balanced vertical distance between sequential blocks.
-    sequenceGap: 90,
+    nodeSizes:
+        DEFAULT_NODE_SIZES,
 
-    // Enough room for IF branches without making the chart enormous.
-    branchGap: 140,
 
-    // Distance from decision to its body / branches.
-    decisionBranchGap: 85,
+    // Distance between normal nodes.
+    sequenceGap:
+        105,
 
-    // IMPORTANT:
-    // 220 was creating huge empty rectangles.
-    branchJunctionGap: 220,
 
-    // Padding around the complete flowchart.
-    padding: 50
+    // More horizontal space between IF branches.
+    // Important when IF contains WHILE
+    // or WHILE contains IF.
+    branchGap:
+        220,
+
+
+    // Distance between decision and branch/body.
+    decisionBranchGap:
+        110,
+
+
+    // Space before branches reconnect.
+    branchJunctionGap:
+        220,
+
+
+    // Outer diagram padding.
+    padding:
+        70
 };
 export class LayoutEngine {
     /**
@@ -548,7 +561,7 @@ export class LayoutEngine {
          * Add a little extra side breathing room so the outer loop lines
          * do not sit too close to the body.
          */
-        const sidePadding = 18;
+        const sidePadding = 90;
 
         const leftExtent = Math.max(
             decisionSize.width / 2,

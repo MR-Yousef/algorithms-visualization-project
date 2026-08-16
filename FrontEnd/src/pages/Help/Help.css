@@ -587,6 +587,2082 @@ select.help-edit-input option {
     box-shadow: none;
 }
 
+/* ============================================================
+   HELP DETAIL PAGE
+   RESTORE LARGE ARTICLE DESIGN
+============================================================ */
+
+
+/* ============================================================
+   DETAIL PAGE
+============================================================ */
+
+.help-detail-page {
+    width: 100%;
+
+    max-width: 1440px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    padding-left: 3rem;
+
+    padding-right: 3rem;
+
+    padding-bottom: 6rem;
+}
+
+
+/* ============================================================
+   TITLE
+============================================================ */
+
+.help-detail-page .help-title-section {
+    width: 100%;
+
+    max-width: 900px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    margin-bottom: 1.6rem;
+
+    text-align: center;
+}
+
+
+.help-detail-page .help-main-title {
+    margin: 0 0 0.8rem;
+
+    justify-content: center;
+
+    color: #ffffff;
+
+    font-size:
+        clamp(2rem,
+            4vw,
+            2.8rem);
+
+    text-align: center;
+}
+
+
+.help-detail-page .help-subtitle {
+    color:
+        rgba(210,
+            225,
+            238,
+            0.48);
+
+    font-size: 1.05rem;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+   BACK BUTTON
+   CENTER IT UNDER TITLE LIKE BEFORE
+============================================================ */
+
+.help-detail-page .help-admin-actions {
+    position: static !important;
+
+    width: 100%;
+
+    max-width: none;
+
+    margin:
+        0 auto 2.8rem;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center !important;
+}
+
+
+.help-detail-page .help-back-btn {
+    width: auto !important;
+
+    min-width: 150px;
+
+    min-height: 48px;
+
+    padding:
+        0.7rem 1.4rem;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.6rem;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.45);
+
+    border-radius: 10px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.07);
+
+    color: #00f5e4;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        all 0.25s ease;
+}
+
+
+
+.help-detail-page .help-back-btn:hover {
+    border-color:
+        #00f5e4;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.15);
+
+    box-shadow:
+        0 0 22px rgba(0,
+            245,
+            228,
+            0.2);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ============================================================
+   ARTICLE GRID
+
+   DESKTOP = TWO BIG CARDS PER ROW
+============================================================ */
+
+.help-detail-page .help-articles-grid,
+
+.help-detail-page .help-articles-list {
+    width: 100% !important;
+
+    max-width: 1200px !important;
+
+    margin:
+        0 auto !important;
+
+    padding: 0;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0, 1fr)) !important;
+
+    align-items: stretch;
+
+    gap: 2rem !important;
+}
+
+
+/* ============================================================
+   ARTICLE CARD
+============================================================ */
+
+.help-detail-page .help-doc-article {
+    position: relative;
+
+    width: 100%;
+
+    min-width: 0;
+
+    min-height: 250px;
+
+    padding:
+        2.1rem 2rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: flex-start;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.24);
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(5,
+                34,
+                57,
+                0.92),
+            rgba(2,
+                22,
+                38,
+                0.88));
+
+    box-shadow:
+        0 15px 38px rgba(0,
+            0,
+            0,
+            0.28);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* LEFT CYAN LINE */
+
+.help-detail-page .help-doc-article::before {
+    content: "";
+
+    position: absolute;
+
+    top: 22px;
+
+    bottom: 22px;
+
+    left: 0;
+
+    width: 4px;
+
+    border-radius:
+        0 4px 4px 0;
+
+    background:
+        linear-gradient(180deg,
+            transparent,
+            #00f5e4,
+            transparent);
+
+    opacity: 0.8;
+}
+
+
+/* GLOW */
+
+.help-detail-page .help-doc-article::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+
+    height: 180px;
+
+    top: -90px;
+
+    right: -70px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.08);
+
+    filter:
+        blur(20px);
+
+    pointer-events: none;
+}
+
+
+.help-detail-page .help-doc-article:hover {
+    border-color:
+        rgba(0,
+            245,
+            228,
+            0.62);
+
+    transform:
+        translateY(-6px);
+
+    box-shadow:
+        0 20px 45px rgba(0,
+            0,
+            0,
+            0.35),
+        0 0 28px rgba(0,
+            245,
+            228,
+            0.1);
+}
+
+
+/* ============================================================
+   ARTICLE TITLE
+============================================================ */
+
+.help-detail-page .help-doc-article h2 {
+    width: 100%;
+
+    margin:
+        0 0 1.4rem;
+
+    color: #00f5e4;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        clamp(1.25rem,
+            2vw,
+            1.55rem);
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    text-align: left;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   ARTICLE CONTENT
+
+   BIG LINES / BIG TEXT AREA
+============================================================ */
+
+.help-detail-page .help-doc-article p {
+    width: 100%;
+
+    margin: 0;
+
+    color: #bdc9d6;
+
+    font-size: 1.05rem;
+
+    line-height: 1.9;
+
+    text-align: left;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   NO RESULTS
+============================================================ */
+
+.help-detail-page .no-results {
+    grid-column:
+        1 / -1;
+
+    width: 100%;
+
+    padding: 3rem;
+
+    color:
+        rgba(210,
+            225,
+            238,
+            0.55);
+
+    text-align: center;
+
+    font-size: 1rem;
+}
+
+
+/* ============================================================
+   SCROLL TO TOP BUTTON
+
+   SHOWS WHEN USER GOES DOWN
+============================================================ */
+
+.scroll-to-top-btn {
+    position: fixed;
+
+    right: 28px;
+
+    bottom: 28px;
+
+    z-index: 1500;
+
+    width: 52px;
+
+    height: 52px;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.55);
+
+    border-radius: 50%;
+
+    background:
+        rgba(2,
+            26,
+            44,
+            0.95);
+
+    color: #00f5e4;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 28px rgba(0,
+            0,
+            0,
+            0.45),
+        0 0 22px rgba(0,
+            245,
+            228,
+            0.14);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+    backdrop-filter:
+        blur(8px);
+
+    animation:
+        help-scroll-button-in 0.25s ease;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.scroll-to-top-btn:hover {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.17);
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 12px 32px rgba(0,
+            0,
+            0,
+            0.48),
+        0 0 26px rgba(0,
+            245,
+            228,
+            0.26);
+}
+
+
+.scroll-to-top-btn svg {
+    width: 23px;
+
+    height: 23px;
+}
+
+
+@keyframes help-scroll-button-in {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(14px) scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0) scale(1);
+    }
+
+}
+
+
+/* ============================================================
+   TABLET
+
+   STILL TWO CARDS WHILE ENOUGH SPACE EXISTS
+============================================================ */
+
+@media (max-width: 900px) {
+
+    .help-detail-page {
+        padding-left: 1.4rem;
+
+        padding-right: 1.4rem;
+    }
+
+
+    .help-detail-page .help-articles-grid,
+
+    .help-detail-page .help-articles-list {
+        gap: 1.25rem !important;
+    }
+
+
+    .help-detail-page .help-doc-article {
+        min-height: 230px;
+
+        padding:
+            1.6rem 1.4rem;
+    }
+
+}
+
+/* ============================================================
+   HELP FINAL RESPONSIVE IMPROVEMENTS
+
+   - Roles & Permissions responsive
+   - Wider documentation
+   - Wider article popup
+   - Two large articles per row
+============================================================ */
+
+
+/* ============================================================
+   ROLES & PERMISSIONS MODAL
+============================================================ */
+
+.help-role-modal {
+    width:
+        min(94vw,
+            1050px) !important;
+
+    max-width:
+        1050px !important;
+
+    max-height:
+        88vh;
+
+    max-height:
+        88dvh;
+
+    padding:
+        2rem 2.2rem !important;
+}
+
+
+/* ============================================================
+   ROLES CONTENT
+============================================================ */
+
+.roles-permissions-content {
+    width: 100%;
+
+    min-width: 0;
+}
+
+
+.roles-intro {
+    max-width:
+        850px;
+
+    margin:
+        0 auto 2rem !important;
+
+    color:
+        #9bafc1;
+
+    font-size:
+        1rem;
+
+    line-height:
+        1.75;
+
+    text-align:
+        center;
+}
+
+
+/* ============================================================
+   ROLE SECTION
+============================================================ */
+
+.roles-section {
+    width: 100%;
+
+    margin-bottom:
+        2.5rem;
+}
+
+
+.roles-section h3,
+.permissions-section h3 {
+    margin:
+        0 0 1.2rem !important;
+}
+
+
+/* ============================================================
+   ROLE CARDS
+============================================================ */
+
+.roles-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,
+            minmax(0, 1fr));
+
+    gap:
+        1rem;
+}
+
+
+.role-info-card {
+    min-width: 0;
+
+    min-height:
+        145px;
+
+    padding:
+        1.25rem;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.16);
+
+    border-radius:
+        14px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(5,
+                36,
+                59,
+                0.72),
+            rgba(2,
+                20,
+                34,
+                0.55));
+
+    transition:
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.role-info-card:hover {
+    border-color:
+        rgba(0,
+            245,
+            228,
+            0.4);
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,
+            0,
+            0,
+            0.22);
+}
+
+
+.role-info-header {
+    display: flex;
+
+    align-items: center;
+
+    gap:
+        0.65rem;
+
+    margin-bottom:
+        0.8rem;
+}
+
+
+.role-info-header strong {
+    color:
+        #ffffff;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        1rem;
+}
+
+
+.role-info-card p {
+    margin:
+        0 !important;
+
+    color:
+        #91a5b8;
+
+    font-size:
+        0.9rem;
+
+    line-height:
+        1.65;
+}
+
+
+/* ============================================================
+   ROLE DOTS
+============================================================ */
+
+.role-dot {
+    width:
+        10px;
+
+    height:
+        10px;
+
+    flex-shrink:
+        0;
+
+    border-radius:
+        50%;
+}
+
+
+.role-dot-user {
+    background:
+        #38bdf8;
+
+    box-shadow:
+        0 0 10px rgba(56,
+            189,
+            248,
+            0.6);
+}
+
+
+.role-dot-contributor {
+    background:
+        #00f5a0;
+
+    box-shadow:
+        0 0 10px rgba(0,
+            245,
+            160,
+            0.55);
+}
+
+
+.role-dot-admin {
+    background:
+        #c084fc;
+
+    box-shadow:
+        0 0 10px rgba(192,
+            132,
+            252,
+            0.55);
+}
+
+
+/* ============================================================
+   PERMISSIONS
+============================================================ */
+
+.permissions-section {
+    width:
+        100%;
+}
+
+
+.permissions-table {
+    width:
+        100%;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.16);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(0,
+            0,
+            0,
+            0.14);
+}
+
+
+/* ============================================================
+   DESKTOP TABLE HEADER
+============================================================ */
+
+.permissions-header {
+    display: grid;
+
+    grid-template-columns:
+        minmax(220px,
+            1.7fr) repeat(3,
+            minmax(110px,
+                1fr));
+
+    align-items:
+        center;
+
+    min-height:
+        52px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.08);
+
+    border-bottom:
+        1px solid rgba(0,
+            245,
+            228,
+            0.2);
+
+    color:
+        #00f5e4;
+
+    font-weight:
+        700;
+}
+
+
+.permissions-header>div {
+    padding:
+        0.8rem 1rem;
+
+    text-align:
+        center;
+}
+
+
+.permissions-header>div:first-child {
+    text-align:
+        left;
+}
+
+
+/* ============================================================
+   PERMISSION ROW
+============================================================ */
+
+.permission-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(220px,
+            1.7fr) repeat(3,
+            minmax(110px,
+                1fr));
+
+    align-items:
+        stretch;
+
+    border-bottom:
+        1px solid rgba(255,
+            255,
+            255,
+            0.055);
+}
+
+
+.permission-row:last-child {
+    border-bottom:
+        none;
+}
+
+
+.permission-row:hover {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.035);
+}
+
+
+/* ============================================================
+   ACTION
+============================================================ */
+
+.permission-action {
+    min-width:
+        0;
+
+    padding:
+        0.9rem 1rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    color:
+        #d3dde7;
+
+    font-weight:
+        600;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ============================================================
+   VALUES
+============================================================ */
+
+.permission-value {
+    padding:
+        0.9rem 1rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-left:
+        1px solid rgba(255,
+            255,
+            255,
+            0.05);
+}
+
+
+.permission-value span {
+    width:
+        26px;
+
+    height:
+        26px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        50%;
+
+    font-size:
+        1.05rem;
+
+    font-weight:
+        900;
+}
+
+
+/* YES */
+
+.permission-yes span {
+    background:
+        rgba(0,
+            245,
+            160,
+            0.11);
+
+    color:
+        #00f5a0;
+
+    box-shadow:
+        0 0 12px rgba(0,
+            245,
+            160,
+            0.08);
+}
+
+
+/* NO */
+
+.permission-no span {
+    background:
+        rgba(255,
+            80,
+            80,
+            0.11);
+
+    color:
+        #ff6464;
+}
+
+
+/* ============================================================
+   WIDER HELP DETAIL PAGES
+
+   Language Guide
+   Flowchart Guide
+   Input Methods
+============================================================ */
+
+.help-detail-page {
+    width:
+        100% !important;
+
+    max-width:
+        1550px !important;
+
+    margin-left:
+        auto;
+
+    margin-right:
+        auto;
+
+    padding-left:
+        clamp(1rem,
+            4vw,
+            4rem) !important;
+
+    padding-right:
+        clamp(1rem,
+            4vw,
+            4rem) !important;
+
+    padding-bottom:
+        6rem !important;
+}
+
+
+/* ============================================================
+   WIDER ARTICLE AREA
+
+   TWO LARGE ARTICLES PER ROW
+============================================================ */
+
+.help-detail-page .help-articles-grid,
+
+.help-detail-page .help-articles-list {
+    width:
+        100% !important;
+
+    max-width:
+        1380px !important;
+
+    margin:
+        0 auto !important;
+
+    display:
+        grid !important;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0,
+                1fr)) !important;
+
+    gap:
+        2rem !important;
+}
+
+
+/* ============================================================
+   BIGGER ARTICLE
+============================================================ */
+
+.help-detail-page .help-doc-article {
+    width:
+        100% !important;
+
+    min-width:
+        0;
+
+    min-height:
+        285px !important;
+
+    padding:
+        2.2rem 2.1rem !important;
+
+    border-radius:
+        22px !important;
+}
+
+
+.help-detail-page .help-doc-article h2 {
+    margin:
+        0 0 1.35rem;
+
+    font-size:
+        clamp(1.25rem,
+            2vw,
+            1.55rem);
+
+    line-height:
+        1.4;
+}
+
+
+.help-detail-page .help-doc-article p {
+    margin:
+        0;
+
+    color:
+        #aebdca;
+
+    font-size:
+        1.02rem;
+
+    line-height:
+        1.9;
+}
+
+
+/* ============================================================
+   WIDER ARTICLE POPUP
+============================================================ */
+
+.help-article-modal {
+    width:
+        min(94vw,
+            1050px) !important;
+
+    max-width:
+        1050px !important;
+
+    max-height:
+        88vh;
+
+    max-height:
+        88dvh;
+
+    padding:
+        2rem 2.3rem !important;
+}
+
+
+.help-article-modal .help-documentation-body {
+    width:
+        100%;
+
+    max-width:
+        none;
+
+    color:
+        #c5d1dc;
+
+    font-size:
+        1.02rem;
+
+    line-height:
+        1.9;
+}
+
+
+.help-article-modal .help-documentation-body p {
+    width:
+        100%;
+
+    max-width:
+        none;
+}
+
+/* ============================================================
+   HELP - SCROLL FIX
+============================================================ */
+
+/*
+ * Allow the Help page to grow naturally.
+ * Do NOT use height: 100vh here.
+ */
+.help-main {
+    min-height: 100dvh !important;
+    height: auto !important;
+
+    overflow: visible !important;
+
+    padding-bottom: 6rem !important;
+}
+
+
+/* ============================================================
+   PAGE SCROLL
+============================================================ */
+
+body:has(.help-main):not(:has(.help-modal-overlay)) {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+
+/* ============================================================
+   MODAL OPEN
+   Stop page behind modal from moving.
+============================================================ */
+
+body:has(.help-modal-overlay) {
+    overflow: hidden !important;
+}
+
+
+/* ============================================================
+   MODAL OVERLAY
+============================================================ */
+
+.help-modal-overlay {
+    position: fixed !important;
+
+    inset: 0 !important;
+
+    z-index: 9999 !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    overscroll-behavior: contain;
+
+    -webkit-overflow-scrolling: touch;
+
+    padding:
+        clamp(0.75rem,
+            3vw,
+            2rem) !important;
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.help-modal {
+    width: min(94vw, 1050px);
+
+    max-height:
+        calc(100dvh - 3rem) !important;
+
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+
+    overscroll-behavior:
+        contain;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        rgba(0, 245, 228, 0.55) rgba(255, 255, 255, 0.04);
+}
+
+
+/* ============================================================
+   HELP SCROLLBAR
+============================================================ */
+
+.help-modal::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.help-modal::-webkit-scrollbar-track {
+    background:
+        rgba(255,
+            255,
+            255,
+            0.03);
+
+    border-radius:
+        999px;
+}
+
+
+.help-modal::-webkit-scrollbar-thumb {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.5);
+
+    border-radius:
+        999px;
+}
+
+
+.help-modal::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.8);
+}
+
+/* ============================================================
+   HELP DETAIL HEADER FIX
+============================================================ */
+
+.help-detail-topbar {
+    position: relative !important;
+
+    z-index: 2;
+
+    width: min(100%, 1380px);
+
+    margin:
+        0 auto 1.5rem;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+}
+
+
+/* ============================================================
+   BACK BUTTON
+============================================================ */
+
+.help-detail-topbar .help-back-btn {
+    position: static !important;
+
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    width: auto !important;
+
+    min-width: 0;
+
+    max-width: 100%;
+
+    margin: 0 !important;
+
+    flex:
+        0 0 auto !important;
+
+    transform:
+        none !important;
+}
+
+
+/* ============================================================
+   TITLE
+============================================================ */
+
+.help-detail-title-section {
+    position: relative !important;
+
+    z-index: 1;
+
+    width: 100%;
+
+    margin:
+        0 auto 2.5rem !important;
+
+    padding:
+        0 !important;
+}
+
+
+.help-detail-title-section .help-main-title {
+    position: static !important;
+
+    width: 100%;
+
+    margin:
+        0 0 0.65rem !important;
+
+    padding:
+        0 !important;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    transform:
+        none !important;
+}
+
+
+.help-detail-title-section .help-subtitle {
+    margin:
+        0 !important;
+
+    text-align:
+        center;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    .help-detail-page {
+        padding-top:
+            1.25rem !important;
+    }
+
+
+    /* -----------------------------------------
+       BACK BUTTON AREA
+    ----------------------------------------- */
+
+    .help-detail-topbar {
+        width:
+            100%;
+
+        margin:
+            0 0 1.8rem;
+
+        padding:
+            0;
+
+        justify-content:
+            flex-start;
+    }
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Your previous CSS had:
+     *
+     * .help-back-btn {
+     *     width: 100%;
+     * }
+     *
+     * We override that here.
+     */
+
+    .help-detail-topbar .help-back-btn {
+        width:
+            auto !important;
+
+        min-height:
+            38px;
+
+        padding:
+            0.55rem 0.85rem;
+
+        gap:
+            0.4rem;
+
+        font-size:
+            0.88rem;
+
+        white-space:
+            nowrap;
+    }
+
+
+    .help-detail-topbar .help-back-btn svg {
+        width:
+            17px;
+
+        height:
+            17px;
+
+        flex-shrink:
+            0;
+    }
+
+
+    /* -----------------------------------------
+       TITLE
+    ----------------------------------------- */
+
+    .help-detail-title-section {
+        width:
+            100%;
+
+        margin-bottom:
+            2rem !important;
+
+        padding:
+            0 0.25rem !important;
+    }
+
+
+    .help-detail-title-section .help-main-title {
+        width:
+            100%;
+
+        margin:
+            0 0 0.55rem !important;
+
+        justify-content:
+            center !important;
+
+        align-items:
+            center !important;
+
+        font-size:
+            clamp(1.7rem,
+                8vw,
+                2.15rem);
+
+        line-height:
+            1.2;
+
+        text-align:
+            center;
+
+        overflow-wrap:
+            anywhere;
+    }
+
+
+    .help-detail-title-section .help-subtitle {
+        font-size:
+            0.9rem;
+
+        line-height:
+            1.4;
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+============================================================ */
+
+@media (max-width: 380px) {
+
+    .help-detail-topbar {
+        margin-bottom:
+            1.5rem;
+    }
+
+
+    .help-detail-topbar .help-back-btn {
+        padding:
+            0.5rem 0.7rem;
+
+        font-size:
+            0.82rem;
+    }
+
+
+    .help-detail-title-section .help-main-title {
+        font-size:
+            1.65rem;
+    }
+
+}
+
+
+/* ============================================================
+   DOCUMENTATION CONTENT
+============================================================ */
+
+.help-documentation-body {
+    width: 100%;
+
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+
+.help-documentation-body pre {
+    max-width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    .help-main {
+        padding-bottom:
+            4rem !important;
+    }
+
+
+    .help-modal-overlay {
+        padding:
+            0.5rem !important;
+
+        align-items:
+            flex-start !important;
+    }
+
+
+    .help-modal {
+        width:
+            100% !important;
+
+        max-width:
+            100% !important;
+
+        max-height:
+            calc(100dvh - 1rem) !important;
+
+        margin:
+            0 auto;
+
+        border-radius:
+            18px !important;
+    }
+
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    /* =====================================================
+       ROLE MODAL
+    ===================================================== */
+
+    .help-role-modal {
+        width:
+            100% !important;
+
+        max-width:
+            100% !important;
+
+        max-height:
+            92vh;
+
+        max-height:
+            92dvh;
+
+        padding:
+            1rem !important;
+    }
+
+
+    .roles-intro {
+        margin-bottom:
+            1.4rem !important;
+
+        font-size:
+            0.9rem;
+
+        text-align:
+            left;
+    }
+
+
+    /* =====================================================
+       ROLE CARDS
+    ===================================================== */
+
+    .roles-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            0.75rem;
+    }
+
+
+    .role-info-card {
+        padding:
+            1rem;
+
+        border-radius:
+            11px;
+    }
+
+
+    .role-info-card p {
+        font-size:
+            0.84rem;
+    }
+
+
+    /* =====================================================
+       PERMISSION TABLE → MOBILE CARDS
+    ===================================================== */
+
+    .permissions-table {
+        border:
+            none;
+
+        overflow:
+            visible;
+
+        background:
+            transparent;
+    }
+
+
+    .permissions-header {
+        display:
+            none;
+    }
+
+
+    .permission-row {
+        width:
+            100%;
+
+        margin-bottom:
+            0.9rem;
+
+        padding:
+            1rem;
+
+        display:
+            block;
+
+        border:
+            1px solid rgba(0,
+                245,
+                228,
+                0.16);
+
+        border-radius:
+            12px;
+
+        background:
+            rgba(2,
+                24,
+                40,
+                0.7);
+    }
+
+
+    .permission-row:last-child {
+        margin-bottom:
+            0;
+    }
+
+
+    .permission-action {
+        width:
+            100%;
+
+        padding:
+            0 0 0.75rem;
+
+        margin-bottom:
+            0.4rem;
+
+        border-bottom:
+            1px solid rgba(255,
+                255,
+                255,
+                0.07);
+
+        color:
+            #ffffff;
+
+        font-size:
+            0.95rem;
+
+        font-weight:
+            700;
+    }
+
+
+    .permission-value {
+        width:
+            100%;
+
+        padding:
+            0.55rem 0;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        border-left:
+            none;
+    }
+
+
+    .permission-value::before {
+        content:
+            attr(data-label);
+
+        color:
+            #8ea3b7;
+
+        font-size:
+            0.86rem;
+
+        font-weight:
+            600;
+    }
+
+
+    /* =====================================================
+       ARTICLE GRID
+       ONE BIG CARD PER ROW
+    ===================================================== */
+
+    .help-detail-page {
+        padding-left:
+            0.85rem !important;
+
+        padding-right:
+            0.85rem !important;
+    }
+
+
+    .help-detail-page .help-articles-grid,
+
+    .help-detail-page .help-articles-list {
+        grid-template-columns:
+            1fr !important;
+
+        gap:
+            1rem !important;
+    }
+
+
+    .help-detail-page .help-doc-article {
+        min-height:
+            220px !important;
+
+        padding:
+            1.4rem 1.2rem !important;
+
+        border-radius:
+            18px !important;
+    }
+
+
+    .help-detail-page .help-doc-article p {
+        font-size:
+            0.93rem;
+
+        line-height:
+            1.75;
+    }
+
+
+    /* =====================================================
+       ARTICLE POPUP
+    ===================================================== */
+
+    .help-article-modal {
+        width:
+            100% !important;
+
+        max-width:
+            100% !important;
+
+        max-height:
+            92dvh;
+
+        padding:
+            1rem !important;
+    }
+
+
+    .help-article-modal .help-documentation-body {
+        font-size:
+            0.92rem;
+
+        line-height:
+            1.75;
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL MOBILE
+============================================================ */
+
+@media (max-width: 380px) {
+
+    .help-role-modal {
+        padding:
+            0.8rem !important;
+    }
+
+
+    .permission-row {
+        padding:
+            0.85rem;
+    }
+
+
+    .permission-action {
+        font-size:
+            0.88rem;
+    }
+
+
+    .permission-value::before {
+        font-size:
+            0.8rem;
+    }
+
+
+    .help-detail-page .help-doc-article {
+        padding:
+            1.15rem 1rem !important;
+    }
+
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    .help-detail-page {
+        padding-left: 0.9rem;
+
+        padding-right: 0.9rem;
+
+        padding-bottom: 5rem;
+    }
+
+
+    .help-detail-page .help-title-section {
+        margin-bottom: 1.4rem;
+    }
+
+
+    .help-detail-page .help-main-title {
+        font-size: 1.8rem;
+    }
+
+
+    .help-detail-page .help-admin-actions {
+        margin-bottom: 1.8rem;
+    }
+
+
+    .help-detail-page .help-back-btn {
+        width: 100% !important;
+    }
+
+
+    /* ONE CARD PER ROW ON MOBILE */
+
+    .help-detail-page .help-articles-grid,
+
+    .help-detail-page .help-articles-list {
+        grid-template-columns:
+            1fr !important;
+
+        gap: 1rem !important;
+    }
+
+
+    .help-detail-page .help-doc-article {
+        min-height: 210px;
+
+        padding:
+            1.4rem 1.2rem;
+
+        border-radius: 18px;
+    }
+
+
+    .help-detail-page .help-doc-article h2 {
+        margin-bottom: 1rem;
+
+        font-size: 1.15rem;
+    }
+
+
+    .help-detail-page .help-doc-article p {
+        font-size: 0.95rem;
+
+        line-height: 1.75;
+    }
+
+
+    .scroll-to-top-btn {
+        right: 16px;
+
+        bottom: 16px;
+
+        width: 46px;
+
+        height: 46px;
+    }
+
+
+    .scroll-to-top-btn svg {
+        width: 20px;
+
+        height: 20px;
+    }
+
+}
+
 /* ---------- Loading Indicator ---------- */
 .help-loading-container {
     display: flex;

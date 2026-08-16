@@ -1,97 +1,298 @@
-import { StreamLanguage } from "@codemirror/language";
-import { HighlightStyle } from "@codemirror/language";
-import { tags } from "@lezer/highlight";
+import {
+    StreamLanguage,
+    HighlightStyle
+} from "@codemirror/language";
 
-export const CodeEditorHighlighter = StreamLanguage.define({
-    // context statisttics
-    
-    token(stream) {
-        if (stream.eatSpace()) return null;
-        if (
-            stream.match(/^(if|else|while|input|output|skip|leaveloop)\b/)) {
-            return "keyword";
-        }
-        if (stream.match(/^\d+(\.\d+)?/)) {
-            return "number";
-        }
-        if (stream.match(/^"([^"]*)"/) || stream.match(/^'([^']*)'/)) {
-            return "string";
-        }
-        if (stream.match(/^[+\-*/=<>!]+/)) {
-            return "operator";
-        }
-        if (stream.match(/^[( ) [ \] {}]/)) {
-            return "bracket";
-        }
-        if (stream.match(/^[a-zA-Z_][a-zA-Z0-9_]*/)) {
-            return "variable";
-        }
-        if(stream.match(","))
-            return"punctuation";
-        stream.next();
-        return null;
-    }
-
-});
+import {
+    tags
+} from "@lezer/highlight";
 
 
-// export const CodeEditorHighlighter = StreamLanguage.define({
-//     token(stream) {
-//         if (stream.match(/^(if|else|while|input|output|skip|leaveloop)\b/)) 
-//             return "keyword";
-//         if(stream.match(/^[a-zA-Z][a-zA-Z0-9_-]*\b/))
-//             return "variableName";
-//         if(stream.match(/^\d+(\.\d+)?\b/))
-//             return "number" ;
-//         if(stream.match(/^".*"\b/))
-//             return "string";
-//         if(stream.match(/^(\+|-|=)\b/))
-//             return  "operator"
-//         stream.next();
-//         return null;
-//     }
-// });
+export const CodeEditorHighlighter =
+    StreamLanguage.define({
 
-// export const CodeEditorHighlighter = StreamLanguage.define({
-//     token(stream) {
-//         if(RegEx.checkType(stream,"keyword"))
-//                     return "keyword";
-//         stream.next();
-//         return null;
-//     }
-// });
+        token(stream) {
 
-export const CodeEditorHighlightColors = HighlightStyle.define([
-    {
-        tag: tags.keyword,
-        color: "#19b0ff"
-    },
-    {
-        tag: tags.variableName,
-        color: "#ffffff"
-    },
-    {
-        tag: tags.number,
-        color: "#f7c948"
-    },
-    {
-        tag: tags.string,
-        color: "#4ade80 "
-    },
-    {
-        tag: tags.operator,
-        color: "#ff8a65"
-    },
-    {
-        tag:tags.bracket ,
-        color:"#8994a0ff"
-    },
-    {
-        tag :tags.punctuation,
-        color:"#b8c7d8"
-    },
-    {
-        tag:tags.invalid,
-        color:"red"
-    }
-]);
+
+            /* =============================================
+               SPACE
+            ============================================= */
+
+            if (
+                stream.eatSpace()
+            ) {
+
+                return null;
+
+            }
+
+
+            /* =============================================
+               KEYWORDS
+
+               elseif is now included.
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^(if|else|elseif|while|input|output|leaveloop|skip)\b/
+                )
+            ) {
+
+                return "keyword";
+
+            }
+
+
+            /* =============================================
+               BOOLEAN CONSTANTS
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^(true|false)\b/
+                )
+            ) {
+
+                return "bool";
+
+            }
+
+
+            /* =============================================
+               WORD LOGICAL OPERATORS
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^(and|or)\b/
+                )
+            ) {
+
+                return "operator";
+
+            }
+
+
+            /* =============================================
+               NUMBERS
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^\d+(\.\d+)?/
+                )
+            ) {
+
+                return "number";
+
+            }
+
+
+            /* =============================================
+               VALID STRING
+
+               ONLY:
+               "hello"
+
+               Single quotes are NOT valid.
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^"([^"\\]|\\.)*"/
+                )
+            ) {
+
+                return "string";
+
+            }
+
+
+            /* =============================================
+               OPERATORS
+
+               Added:
+               %
+               ^
+               &
+               |
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^[+\-*/%^=<>!&|]+/
+                )
+            ) {
+
+                return "operator";
+
+            }
+
+
+            /* =============================================
+               BRACKETS
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^[()[\]{}]/
+                )
+            ) {
+
+                return "bracket";
+
+            }
+
+
+            /* =============================================
+               VARIABLES
+            ============================================= */
+
+            if (
+                stream.match(
+                    /^[a-zA-Z_][a-zA-Z0-9_]*/
+                )
+            ) {
+
+                return "variable";
+
+            }
+
+
+            /* =============================================
+               COMMA
+            ============================================= */
+
+            if (
+                stream.match(",")
+            ) {
+
+                return "punctuation";
+
+            }
+
+
+            /*
+             * Unknown character.
+             */
+
+            stream.next();
+
+            return null;
+
+        }
+
+    });
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+export const CodeEditorHighlightColors =
+    HighlightStyle.define([
+
+
+        /* if / elseif / else / while / input / output */
+
+        {
+            tag:
+                tags.keyword,
+
+            color:
+                "#19b0ff"
+        },
+
+
+        /* Variables */
+
+        {
+            tag:
+                tags.variableName,
+
+            color:
+                "#ffffff"
+        },
+
+
+        /* Numbers */
+
+        {
+            tag:
+                tags.number,
+
+            color:
+                "#f7c948"
+        },
+
+
+        /* true / false */
+
+        {
+            tag:
+                tags.bool,
+
+            color:
+                "#c084fc"
+        },
+
+
+        /* "string" */
+
+        {
+            tag:
+                tags.string,
+
+            color:
+                "#4ade80"
+        },
+
+
+        /* + - * / % ^ and or etc. */
+
+        {
+            tag:
+                tags.operator,
+
+            color:
+                "#ff8a65"
+        },
+
+
+        /* () [] {} */
+
+        {
+            tag:
+                tags.bracket,
+
+            color:
+                "#8994a0"
+        },
+
+
+        /* , */
+
+        {
+            tag:
+                tags.punctuation,
+
+            color:
+                "#b8c7d8"
+        },
+
+
+        /* Invalid token such as 'hello' */
+
+        {
+            tag:
+                tags.invalid,
+
+            color:
+                "#ff4d4d",
+
+            textDecoration:
+                "underline wavy #ff4d4d"
+        }
+
+    ]);

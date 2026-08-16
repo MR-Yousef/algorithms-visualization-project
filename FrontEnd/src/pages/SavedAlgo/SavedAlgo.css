@@ -1,375 +1,2991 @@
-/* SavedAlgorithms.css – Styling for the Saved Algorithms page */
+/* ============================================================
+   PAGE
+============================================================ */
 
 .saved-algorithms-page {
     position: relative;
+
+    width: 100%;
+
     min-height: 100vh;
+    min-height: 100dvh;
+
+    height: auto;
+
+    overflow-x: hidden;
+    overflow-y: visible;
+
     background: #020d18;
+
     color: #e0f7f5;
-    font-family: 'Rajdhani', sans-serif;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
 }
+
+
+.saved-algorithms-page,
+.saved-algorithms-page * {
+    box-sizing: border-box;
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
 
 .saved-algorithms-main {
     position: relative;
+
     z-index: 10;
-    padding: 6rem 2rem 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
+
+    width: 100%;
+    max-width: 1400px;
+
+    min-height:
+        calc(100dvh - 80px);
+
+    height: auto;
+
+    margin:
+        0 auto;
+
+    padding:
+        6rem 2rem 6rem;
+
+    overflow:
+        visible;
 }
+
+
+/* ============================================================
+   PAGE SCROLL
+============================================================ */
+
+body:has(.saved-algorithms-page):not( :has(.saved-algorithms-page .modal-overlay)):not( :has(.saved-confirm-overlay)) {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+/* Lock background while modal is open */
+
+body:has(.saved-algorithms-page .modal-overlay),
+body:has(.saved-confirm-overlay) {
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
 
 .saved-algorithms-header {
+    width: 100%;
+
+    margin-bottom:
+        2rem;
+
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
+
+    justify-content:
+        space-between;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        1rem;
 }
+
+
+/* ============================================================
+   TITLE
+============================================================ */
 
 .page-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #ffffff;
+    margin:
+        0;
+
     display: flex;
+
     align-items: center;
-    gap: 0.7rem;
+
+    gap:
+        0.7rem;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        2rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.25;
 }
+
 
 .page-title svg {
-    width: 2rem;
-    height: 2rem;
-    color: #00f5e4;
+    width:
+        2rem;
+
+    height:
+        2rem;
+
+    flex-shrink:
+        0;
+
+    color:
+        #00f5e4;
 }
+
+
+/* ============================================================
+   SEARCH
+============================================================ */
 
 .search-wrapper {
-    position: relative;
-    width: 300px;
-    max-width: 100%;
+    position:
+        relative;
+
+    width:
+        300px;
+
+    max-width:
+        100%;
 }
+
 
 .search-input {
-    width: 100%;
-    padding: 0.7rem 2.5rem 0.7rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(0, 245, 228, 0.15);
-    border-radius: 10px;
-    color: #ffffff;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: all 0.3s;
+    width:
+        100%;
+
+    min-height:
+        42px;
+
+    padding:
+        0.7rem 2.5rem 0.7rem 1rem;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.15);
+
+    border-radius:
+        10px;
+
+    outline:
+        none;
+
+    background:
+        rgba(255,
+            255,
+            255,
+            0.05);
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        0.95rem;
+
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
+
 
 .search-input:focus {
-    border-color: #00d4ff;
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    border-color:
+        #00d4ff;
+
+    box-shadow:
+        0 0 15px rgba(0,
+            212,
+            255,
+            0.2);
 }
+
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color:
+        rgba(255,
+            255,
+            255,
+            0.3);
 }
+
 
 .search-icon {
-    position: absolute;
-    right: 0.8rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(0, 245, 228, 0.5);
+    position:
+        absolute;
+
+    top:
+        50%;
+
+    right:
+        0.8rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    transform:
+        translateY(-50%);
+
+    color:
+        rgba(0,
+            245,
+            228,
+            0.5);
+
+    pointer-events:
+        none;
 }
+
 
 .search-icon svg {
-    width: 1.2rem;
-    height: 1.2rem;
+    width:
+        1.2rem;
+
+    height:
+        1.2rem;
 }
 
-/* Grid */
-.saved-algorithms-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.8rem;
-}
 
-.saved-algo-card {
-    position: relative;
-    background: rgba(4, 28, 48, 0.5);
-    border: 1px solid rgba(0, 245, 228, 0.12);
-    border-radius: 16px;
-    padding: 1.8rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+/* ============================================================
+   TABS
+============================================================ */
 
-.saved-algo-card:hover {
-    border-color: rgba(0, 245, 228, 0.3);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 245, 228, 0.1);
-    transform: translateY(-5px);
-}
-
-.saved-algo-card-content {
-    flex: 1;
-}
-
-.saved-algo-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(0, 245, 228, 0.1);
-    border: 1px solid rgba(0, 245, 228, 0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    transition: all 0.3s;
-}
-
-.saved-algo-card:hover .saved-algo-icon {
-    background: rgba(0, 245, 228, 0.15);
-    box-shadow: 0 0 15px rgba(0, 245, 228, 0.2);
-}
-
-.saved-algo-icon svg {
-    width: 1.8rem;
-    height: 1.8rem;
-    color: #00f5e4;
-}
-
-.saved-algo-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
-}
-
-.saved-algo-desc {
-    color: rgba(224, 247, 245, 0.6);
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-    min-height: 2.8em;
-}
-
-.saved-algo-footer {
-    display: flex;
-    justify-content: space-between;
-    color: rgba(0, 245, 228, 0.6);
-    font-size: 0.85rem;
-}
-
-.saved-algo-owner {
-    font-weight: 500;
-}
-
-.saved-algo-views {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.saved-algo-views svg {
-    width: 1rem;
-    height: 1rem;
-}
-
-/* Unsave button */
-.unsave-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 80, 80, 0.3);
-    color: #ff6b6b;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    padding: 0;
-}
-
-.unsave-btn:hover {
-    background: rgba(255, 80, 80, 0.2);
-    border-color: #ff4d4d;
-    color: #ff4d4d;
-}
-
-.unsave-btn svg {
-    width: 14px;
-    height: 14px;
-}
-
-/* Detail modal (reused from ShowAlgorithms) */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.algo-modal {
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: linear-gradient(135deg, #041825, #061a2d);
-    border: 1px solid rgba(0, 245, 228, 0.3);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.modal-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.modal-close-btn {
-    background: none;
-    border: none;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.modal-close-btn:hover {
-    color: #ff4d4d;
-}
-
-.algo-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    color: #94a3b8;
-    font-size: 0.9rem;
-}
-
-.algo-meta strong {
-    color: #cbd5e1;
-}
-
-.code-block {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
-    padding: 1rem;
-    overflow-x: auto;
-    margin-top: 0.5rem;
-    border-left: 3px solid #00f5e4;
-}
-
-.code-block pre {
-    margin: 0;
-    white-space: pre-wrap;
-    color: #cbd5e1;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-}
-
-/* Status messages */
-.error-msg {
-    color: #ff4d4d;
-    background: rgba(255, 50, 50, 0.1);
-    border: 1px solid rgba(255, 50, 50, 0.2);
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-}
-
-.loading-container {
-    display: flex;
-    justify-content: center;
-    padding: 3rem;
-    color: rgba(0, 245, 228, 0.6);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
-}
-
-.no-results {
-    text-align: center;
-    color: #94a3b8;
-    grid-column: 1 / -1;
-    padding: 2rem;
-}
-
-/* Topic badge */
-.saved-algo-topic-badge {
-    display: inline-block;
-    padding: 0.15rem 0.7rem;
-    border-radius: 20px;
-    background: rgba(0, 245, 228, 0.12);
-    border: 1px solid rgba(0, 245, 228, 0.3);
-    color: #00f5e4;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    margin-bottom: 0.8rem;
-    align-self: flex-start;
-    white-space: nowrap;
-}
-
-/* Tabs */
 .saved-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    width:
+        100%;
+
+    margin-bottom:
+        0.8rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        1rem;
 }
+
 
 .saved-tab {
-    background: rgba(0, 245, 228, 0.08);
-    border: 1px solid rgba(0, 245, 228, 0.2);
-    color: #cbd5e1;
-    padding: 0.55rem 1.8rem;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width:
+        170px;
+
+    min-height:
+        42px;
+
+    padding:
+        0.65rem 1.5rem;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.22);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.06);
+
+    color:
+        #94a3b8;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
 }
+
 
 .saved-tab:hover {
-    background: rgba(0, 245, 228, 0.15);
-    border-color: #00f5e4;
-    color: #fff;
+    color:
+        #ffffff;
+
+    border-color:
+        rgba(0,
+            245,
+            228,
+            0.65);
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.12);
 }
+
 
 .saved-tab--active {
-    background: linear-gradient(135deg, #00d4ff, #0099ff);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    color:
+        #ffffff;
+
+    border-color:
+        transparent;
+
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0099ff);
+
+    box-shadow:
+        0 7px 22px rgba(0,
+            212,
+            255,
+            0.25);
 }
 
-@media (max-width: 480px) {
-    .saved-algorithms-main {
-        padding: 5rem 1rem 2rem;
-    }
+
+.saved-tab-description {
+    margin:
+        0 0 2rem;
+
+    color:
+        #7f93a8;
+
+    text-align:
+        center;
+
+    font-size:
+        0.95rem;
+
+    line-height:
+        1.5;
+}
+
+
+/* ============================================================
+   ALGORITHM GRID
+============================================================ */
+
+.saved-algorithms-grid {
+    width:
+        100%;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4,
+            minmax(0,
+                1fr));
+
+    gap:
+        1.2rem;
+
+    overflow:
+        visible;
+}
+
+
+/* ============================================================
+   ALGORITHM CARD
+============================================================ */
+
+.saved-algo-card {
+    position:
+        relative;
+
+    width:
+        100%;
+
+    min-width:
+        0;
+
+    padding:
+        1.4rem;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.12);
+
+    border-radius:
+        16px;
+
+    background:
+        rgba(4,
+            28,
+            48,
+            0.5);
+
+    cursor:
+        pointer;
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.saved-algo-card:hover {
+    border-color:
+        rgba(0,
+            245,
+            228,
+            0.3);
+
+    box-shadow:
+        0 15px 30px rgba(0,
+            0,
+            0,
+            0.3),
+        0 0 20px rgba(0,
+            245,
+            228,
+            0.1);
+
+    transform:
+        translateY(-5px);
+}
+
+
+/* ============================================================
+   CARD CONTENT
+============================================================ */
+
+.saved-algo-card-content {
+    width:
+        100%;
+
+    height:
+        100%;
+
+    min-width:
+        0;
+
+    flex:
+        1;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+}
+
+
+/* ============================================================
+   CARD ICON
+============================================================ */
+
+.saved-algo-icon {
+    width:
+        50px;
+
+    height:
+        50px;
+
+    flex:
+        0 0 50px;
+
+    margin-bottom:
+        1rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.2);
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.1);
+
+    transition:
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.saved-algo-card:hover .saved-algo-icon {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.15);
+
+    box-shadow:
+        0 0 15px rgba(0,
+            245,
+            228,
+            0.2);
+}
+
+
+.saved-algo-icon svg {
+    width:
+        1.8rem;
+
+    height:
+        1.8rem;
+
+    max-width:
+        1.8rem;
+
+    max-height:
+        1.8rem;
+
+    color:
+        #00f5e4;
+}
+
+
+/* ============================================================
+   CARD TITLE
+============================================================ */
+
+.saved-algo-title {
+    max-width:
+        100%;
+
+    margin:
+        0 0 0.5rem;
+
+    overflow:
+        hidden;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        600;
+
+    line-height:
+        1.4;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+}
+
+
+/* ============================================================
+   CARD DESCRIPTION
+============================================================ */
+
+.saved-algo-desc {
+    min-height:
+        3.8em;
+
+    margin:
+        0 0 1rem;
+
+    overflow:
+        hidden;
+
+    display:
+        -webkit-box;
+
+    -webkit-line-clamp:
+        3;
+
+    -webkit-box-orient:
+        vertical;
+
+    color:
+        rgba(224,
+            247,
+            245,
+            0.6);
+
+    font-size:
+        0.85rem;
+
+    line-height:
+        1.4;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ============================================================
+   TOPICS
+============================================================ */
+
+.saved-topic-list {
+    width:
+        100%;
+
+    margin-bottom:
+        0.9rem;
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        0.4rem;
+}
+
+
+.saved-algo-topic-badge {
+    max-width:
+        100%;
+
+    margin:
+        0;
+
+    padding:
+        0.15rem 0.7rem;
+
+    display:
+        inline-block;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.3);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(0,
+            245,
+            228,
+            0.12);
+
+    color:
+        #00f5e4;
+
+    font-size:
+        0.75rem;
+
+    font-weight:
+        600;
+
+    letter-spacing:
+        0.4px;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+}
+
+
+/* ============================================================
+   CARD FOOTER
+============================================================ */
+
+.saved-algo-footer {
+    margin-top:
+        auto;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        0.6rem;
+
+    color:
+        rgba(0,
+            245,
+            228,
+            0.6);
+
+    font-size:
+        0.85rem;
+}
+
+
+.saved-algo-owner {
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    font-weight:
+        500;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+}
+
+
+/* ============================================================
+   SMALL CARD UNSAVE BUTTON
+============================================================ */
+
+.unsave-btn {
+    position:
+        absolute;
+
+    top:
+        12px;
+
+    right:
+        12px;
+
+    z-index:
+        2;
+
+    width:
+        30px;
+
+    height:
+        30px;
+
+    min-width:
+        30px;
+
+    min-height:
+        30px;
+
+    max-width:
+        30px;
+
+    max-height:
+        30px;
+
+    padding:
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,
+            80,
+            80,
+            0.3);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(0,
+            0,
+            0,
+            0.4);
+
+    color:
+        #ff6b6b;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.unsave-btn:hover:not(:disabled) {
+    background:
+        rgba(255,
+            80,
+            80,
+            0.2);
+
+    border-color:
+        #ff4d4d;
+
+    color:
+        #ff4d4d;
+
+    transform:
+        scale(1.05);
+}
+
+
+.unsave-btn:disabled {
+    opacity:
+        0.45;
+
+    cursor:
+        not-allowed;
+}
+
+
+.unsave-btn svg {
+    width:
+        14px !important;
+
+    height:
+        14px !important;
+
+    min-width:
+        14px !important;
+
+    min-height:
+        14px !important;
+
+    max-width:
+        14px !important;
+
+    max-height:
+        14px !important;
+
+    flex:
+        0 0 14px !important;
+}
+
+
+/* ============================================================
+   CARD RUN ACTION
+============================================================ */
+
+.saved-card-actions {
+    width:
+        100%;
+
+    margin-top:
+        auto;
+
+    padding-top:
+        1rem;
+}
+
+
+/* ============================================================
+   SHARED RUN BUTTON
+============================================================ */
+
+.saved-algorithms-page .saved-run-btn {
+    width:
+        100%;
+
+    min-width:
+        0;
+
+    min-height:
+        44px;
+
+    padding:
+        0.7rem 1.5rem;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        0.45rem;
+
+    overflow:
+        hidden;
+
+    border:
+        none;
+
+    border-radius:
+        9px;
+
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0099ff);
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+    white-space:
+        nowrap;
+
+    cursor:
+        pointer;
+
+    box-shadow:
+        0 5px 15px rgba(0,
+            153,
+            255,
+            0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.saved-algorithms-page .saved-run-btn:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(0,
+            212,
+            255,
+            0.35);
+}
+
+
+.saved-algorithms-page .saved-run-btn:disabled {
+    opacity:
+        0.45;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* ============================================================
+   IMPORTANT
+   KEEP RUN ICON SMALL
+============================================================ */
+
+.saved-algorithms-page .saved-run-btn svg {
+    width:
+        17px !important;
+
+    height:
+        17px !important;
+
+    min-width:
+        17px !important;
+
+    min-height:
+        17px !important;
+
+    max-width:
+        17px !important;
+
+    max-height:
+        17px !important;
+
+    flex:
+        0 0 17px !important;
+
+    display:
+        block !important;
+}
+
+
+/* ============================================================
+   DELETE / UNSAVE BUTTON
+============================================================ */
+
+.saved-algorithms-page .saved-remove-btn {
+    width:
+        auto;
+
+    min-width:
+        130px;
+
+    min-height:
+        44px;
+
+    padding:
+        0.7rem 1.5rem;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        0.45rem;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,
+            80,
+            80,
+            0.4);
+
+    border-radius:
+        9px;
+
+    background:
+        rgba(255,
+            70,
+            70,
+            0.12);
+
+    color:
+        #ff6b6b;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+    white-space:
+        nowrap;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.saved-algorithms-page .saved-remove-btn:hover:not(:disabled) {
+    background:
+        rgba(255,
+            70,
+            70,
+            0.22);
+
+    border-color:
+        #ff5d5d;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(255,
+            70,
+            70,
+            0.12);
+}
+
+
+.saved-algorithms-page .saved-remove-btn:disabled {
+    opacity:
+        0.45;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* ============================================================
+   VERY IMPORTANT
+   PREVENT GIANT DELETE / UNSAVE ICON
+============================================================ */
+
+.saved-algorithms-page .saved-remove-btn svg {
+    width:
+        17px !important;
+
+    height:
+        17px !important;
+
+    min-width:
+        17px !important;
+
+    min-height:
+        17px !important;
+
+    max-width:
+        17px !important;
+
+    max-height:
+        17px !important;
+
+    flex:
+        0 0 17px !important;
+
+    display:
+        block !important;
+}
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+
+.error-msg {
+    margin-bottom:
+        1rem;
+
+    padding:
+        0.6rem 1rem;
+
+    border:
+        1px solid rgba(255,
+            50,
+            50,
+            0.2);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(255,
+            50,
+            50,
+            0.1);
+
+    color:
+        #ff4d4d;
+
+    font-size:
+        0.85rem;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.loading-container {
+    width:
+        100%;
+
+    padding:
+        3rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    color:
+        rgba(0,
+            245,
+            228,
+            0.6);
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        1.1rem;
+
+    text-align:
+        center;
+}
+
+
+.no-results {
+    grid-column:
+        1 / -1;
+
+    width:
+        100%;
+
+    padding:
+        2rem;
+
+    color:
+        #94a3b8;
+
+    text-align:
+        center;
+}
+
+
+.saved-detail-loading {
+    margin-bottom:
+        1rem;
+
+    color:
+        #00d4ff;
+}
+
+
+/* ============================================================
+   ALGORITHM DETAIL MODAL OVERLAY
+============================================================ */
+
+.saved-algorithms-page .modal-overlay {
+    position:
+        fixed !important;
+
+    inset:
+        0 !important;
+
+    z-index:
+        9999 !important;
+
+    padding:
+        1.5rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+
+    overscroll-behavior:
+        contain;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    background:
+        rgba(0,
+            0,
+            0,
+            0.8);
+
+    backdrop-filter:
+        blur(5px);
+
+    -webkit-backdrop-filter:
+        blur(5px);
+}
+
+
+/* ============================================================
+   DETAIL MODAL
+============================================================ */
+
+.saved-algorithms-page .modal-content,
+
+.saved-algorithms-page .algo-modal {
+    width:
+        min(94vw,
+            900px) !important;
+
+    max-width:
+        900px !important;
+
+    max-height:
+        calc(100dvh - 3rem) !important;
+
+    margin:
+        auto;
+
+    padding:
+        2rem;
+
+    overflow-x:
+        hidden !important;
+
+    overflow-y:
+        auto !important;
+
+    overscroll-behavior:
+        contain;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    border:
+        1px solid rgba(0,
+            245,
+            228,
+            0.3);
+
+    border-radius:
+        20px;
+
+    background:
+        linear-gradient(135deg,
+            #041825,
+            #061a2d);
+
+    box-shadow:
+        0 20px 40px rgba(0,
+            0,
+            0,
+            0.5);
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        rgba(0,
+            245,
+            228,
+            0.55) rgba(255,
+            255,
+            255,
+            0.04);
+}
+
+
+/* ============================================================
+   MODAL SCROLLBAR
+============================================================ */
+
+.saved-algorithms-page .modal-content::-webkit-scrollbar,
+
+.saved-algorithms-page .algo-modal::-webkit-scrollbar {
+    width:
+        7px;
+}
+
+
+.saved-algorithms-page .modal-content::-webkit-scrollbar-track,
+
+.saved-algorithms-page .algo-modal::-webkit-scrollbar-track {
+    background:
+        rgba(255,
+            255,
+            255,
+            0.03);
+
+    border-radius:
+        999px;
+}
+
+
+.saved-algorithms-page .modal-content::-webkit-scrollbar-thumb,
+
+.saved-algorithms-page .algo-modal::-webkit-scrollbar-thumb {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.5);
+
+    border-radius:
+        999px;
+}
+
+
+.saved-algorithms-page .modal-content::-webkit-scrollbar-thumb:hover,
+
+.saved-algorithms-page .algo-modal::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(0,
+            245,
+            228,
+            0.8);
+}
+
+
+/* ============================================================
+   MODAL HEADER
+============================================================ */
+
+.saved-algorithms-page .modal-header {
+    width:
+        100%;
+
+    margin-bottom:
+        1.5rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        1rem;
+}
+
+
+.saved-algorithms-page .modal-title {
+    min-width:
+        0;
+
+    margin:
+        0;
+
+    overflow-wrap:
+        anywhere;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        1.5rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.35;
+}
+
+
+/* ============================================================
+   MODAL CLOSE
+============================================================ */
+
+.saved-algorithms-page .modal-close-btn {
+    width:
+        36px;
+
+    height:
+        36px;
+
+    min-width:
+        36px;
+
+    min-height:
+        36px;
+
+    flex:
+        0 0 36px;
+
+    padding:
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow:
+        hidden;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    background:
+        transparent;
+
+    color:
+        #cbd5e1;
+
+    cursor:
+        pointer;
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease;
+}
+
+
+.saved-algorithms-page .modal-close-btn:hover {
+    color:
+        #ff4d4d;
+
+    background:
+        rgba(255,
+            77,
+            77,
+            0.08);
+}
+
+
+.saved-algorithms-page .modal-close-btn svg {
+    width:
+        18px !important;
+
+    height:
+        18px !important;
+
+    min-width:
+        18px !important;
+
+    min-height:
+        18px !important;
+
+    max-width:
+        18px !important;
+
+    max-height:
+        18px !important;
+}
+
+
+/* ============================================================
+   MODAL BODY
+============================================================ */
+
+.saved-algorithms-page .modal-body {
+    width:
+        100%;
+
+    min-width:
+        0;
+}
+
+
+.saved-algorithms-page .modal-body h3 {
+    margin:
+        1rem 0 0.45rem;
+
+    color:
+        #ffffff;
+}
+
+
+.saved-algorithms-page .modal-body p {
+    max-width:
+        100%;
+
+    margin-top:
+        0;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ============================================================
+   META
+============================================================ */
+
+.saved-algorithms-page .algo-meta {
+    width:
+        100%;
+
+    margin-bottom:
+        1.5rem;
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        0.8rem 1rem;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        0.9rem;
+}
+
+
+.saved-algorithms-page .algo-meta span {
+    min-width:
+        0;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.saved-algorithms-page .algo-meta strong {
+    color:
+        #cbd5e1;
+}
+
+
+/* ============================================================
+   CODE
+============================================================ */
+
+.saved-algorithms-page .code-block {
+    width:
+        100%;
+
+    max-width:
+        100%;
+
+    margin-top:
+        0.5rem;
+
+    padding:
+        1rem;
+
+    overflow-x:
+        auto;
+
+    border-left:
+        3px solid #00f5e4;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(0,
+            0,
+            0,
+            0.4);
+
+    -webkit-overflow-scrolling:
+        touch;
+}
+
+
+.saved-algorithms-page .code-block pre {
+    max-width:
+        100%;
+
+    margin:
+        0;
+
+    overflow-x:
+        auto;
+
+    color:
+        #cbd5e1;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:
+        0.9rem;
+
+    line-height:
+        1.55;
+
+    white-space:
+        pre-wrap;
+
+    overflow-wrap:
+        normal;
+
+    word-break:
+        normal;
+}
+
+
+/* ============================================================
+   MODAL ACTIONS
+============================================================ */
+
+.saved-algorithms-page .saved-modal-actions,
+
+.saved-algorithms-page .algo-modal .form-actions,
+
+.saved-algorithms-page .algo-modal .modal-actions {
+    width:
+        100% !important;
+
+    margin-top:
+        1.5rem !important;
+
+    display:
+        grid !important;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0,
+                1fr)) !important;
+
+    align-items:
+        center !important;
+
+    gap:
+        0.75rem !important;
+}
+
+
+/* ============================================================
+   LEGACY / CURRENT RUN BUTTONS
+
+   This supports:
+   saved-run-btn
+   save-btn
+   modal-cancel-btn
+============================================================ */
+
+.saved-algorithms-page .algo-modal:is(.saved-run-btn,
+    .save-btn,
+    .modal-cancel-btn) {
+    width:
+        100% !important;
+
+    min-width:
+        0 !important;
+
+    height:
+        44px !important;
+
+    min-height:
+        44px !important;
+
+    max-height:
+        44px !important;
+
+    padding:
+        0 1rem !important;
+
+    display:
+        inline-flex !important;
+
+    align-items:
+        center !important;
+
+    justify-content:
+        center !important;
+
+    gap:
+        0.45rem !important;
+
+    overflow:
+        hidden !important;
+
+    border:
+        none !important;
+
+    border-radius:
+        9px !important;
+
+    background:
+        linear-gradient(135deg,
+            #00d4ff,
+            #0099ff) !important;
+
+    color:
+        #ffffff !important;
+
+    font-family:
+        "Rajdhani",
+        sans-serif !important;
+
+    font-size:
+        0.92rem !important;
+
+    font-weight:
+        700 !important;
+
+    line-height:
+        1 !important;
+
+    white-space:
+        nowrap !important;
+
+    cursor:
+        pointer;
+
+    flex:
+        none !important;
+}
+
+
+/* ============================================================
+   LEGACY / CURRENT DELETE / UNSAVE BUTTONS
+
+   This supports:
+   saved-remove-btn
+   cancel-btn
+   modal-delete-btn
+============================================================ */
+
+.saved-algorithms-page .algo-modal:is(.saved-remove-btn,
+    .cancel-btn,
+    .modal-delete-btn,
+    .saved-delete-btn,
+    .saved-unsave-btn) {
+    width:
+        100% !important;
+
+    min-width:
+        0 !important;
+
+    height:
+        44px !important;
+
+    min-height:
+        44px !important;
+
+    max-height:
+        44px !important;
+
+    padding:
+        0 1rem !important;
+
+    display:
+        inline-flex !important;
+
+    align-items:
+        center !important;
+
+    justify-content:
+        center !important;
+
+    gap:
+        0.45rem !important;
+
+    overflow:
+        hidden !important;
+
+    border:
+        1px solid rgba(255,
+            80,
+            80,
+            0.4) !important;
+
+    border-radius:
+        9px !important;
+
+    background:
+        rgba(255,
+            70,
+            70,
+            0.12) !important;
+
+    color:
+        #ff6b6b !important;
+
+    font-family:
+        "Rajdhani",
+        sans-serif !important;
+
+    font-size:
+        0.92rem !important;
+
+    font-weight:
+        700 !important;
+
+    line-height:
+        1 !important;
+
+    white-space:
+        nowrap !important;
+
+    cursor:
+        pointer;
+
+    flex:
+        none !important;
+}
+
+
+/* ============================================================
+   CRITICAL ICON FIX
+
+   The space after .algo-modal is IMPORTANT.
+============================================================ */
+
+.saved-algorithms-page .algo-modal:is(.saved-run-btn,
+    .saved-remove-btn,
+    .save-btn,
+    .cancel-btn,
+    .modal-cancel-btn,
+    .modal-delete-btn,
+    .saved-delete-btn,
+    .saved-unsave-btn) svg {
+    width:
+        18px !important;
+
+    height:
+        18px !important;
+
+    min-width:
+        18px !important;
+
+    min-height:
+        18px !important;
+
+    max-width:
+        18px !important;
+
+    max-height:
+        18px !important;
+
+    flex:
+        0 0 18px !important;
+
+    display:
+        block !important;
+
+    object-fit:
+        contain !important;
+}
+
+
+/* Extra protection */
+
+.saved-algorithms-page:is(.saved-run-btn,
+    .saved-remove-btn) svg {
+    width:
+        18px !important;
+
+    height:
+        18px !important;
+
+    min-width:
+        18px !important;
+
+    min-height:
+        18px !important;
+
+    max-width:
+        18px !important;
+
+    max-height:
+        18px !important;
+
+    flex:
+        0 0 18px !important;
+}
+
+
+/* ============================================================
+   MODAL RUN WIDTH
+============================================================ */
+
+.saved-modal-run-btn {
+    width:
+        100%;
+}
+
+
+/* ============================================================
+   CONFIRM DELETE / UNSAVE OVERLAY
+============================================================ */
+
+.saved-confirm-overlay {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        10000;
+
+    padding:
+        1rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow-y:
+        auto;
+
+    background:
+        rgba(0,
+            5,
+            12,
+            0.82);
+
+    backdrop-filter:
+        blur(9px);
+
+    -webkit-backdrop-filter:
+        blur(9px);
+}
+
+
+/* ============================================================
+   CONFIRM MODAL
+============================================================ */
+
+.saved-confirm-modal {
+    width:
+        min(100%,
+            430px);
+
+    max-height:
+        calc(100dvh - 2rem);
+
+    padding:
+        2rem;
+
+    overflow-y:
+        auto;
+
+    border:
+        1px solid rgba(255,
+            90,
+            90,
+            0.3);
+
+    border-radius:
+        20px;
+
+    background:
+        linear-gradient(145deg,
+            #061b2d,
+            #03131f);
+
+    box-shadow:
+        0 25px 60px rgba(0,
+            0,
+            0,
+            0.55),
+        0 0 28px rgba(255,
+            70,
+            70,
+            0.08);
+
+    text-align:
+        center;
+}
+
+
+/* ============================================================
+   CONFIRM ICON
+============================================================ */
+
+.saved-confirm-icon {
+    width:
+        56px;
+
+    height:
+        56px;
+
+    margin:
+        0 auto 1.1rem;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,
+            90,
+            90,
+            0.35);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(255,
+            70,
+            70,
+            0.1);
+
+    color:
+        #ff6666;
+}
+
+
+.saved-confirm-icon svg {
+    width:
+        27px !important;
+
+    height:
+        27px !important;
+
+    min-width:
+        27px !important;
+
+    min-height:
+        27px !important;
+
+    max-width:
+        27px !important;
+
+    max-height:
+        27px !important;
+}
+
+
+/* ============================================================
+   CONFIRM TEXT
+============================================================ */
+
+.saved-confirm-modal h2 {
+    margin:
+        0 0 0.9rem;
+
+    color:
+        #ffffff;
+
+    font-family:
+        "Orbitron",
+        sans-serif;
+
+    font-size:
+        1.35rem;
+
+    line-height:
+        1.35;
+}
+
+
+.saved-confirm-modal p {
+    margin:
+        0;
+
+    color:
+        #aebdca;
+
+    font-size:
+        0.98rem;
+
+    line-height:
+        1.7;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.saved-confirm-modal p strong {
+    color:
+        #ffffff;
+}
+
+
+/* ============================================================
+   CONFIRM BUTTONS
+============================================================ */
+
+.saved-confirm-actions {
+    width:
+        100%;
+
+    margin-top:
+        1.8rem;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0,
+                1fr));
+
+    gap:
+        0.8rem;
+}
+
+
+.saved-confirm-cancel,
+.saved-confirm-delete {
+    width:
+        100%;
+
+    min-width:
+        0;
+
+    min-height:
+        44px;
+
+    padding:
+        0.7rem 1rem;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        0.4rem;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        9px;
+
+    font-family:
+        "Rajdhani",
+        sans-serif;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+    white-space:
+        nowrap;
+
+    cursor:
+        pointer;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+.saved-confirm-cancel {
+    border:
+        1px solid rgba(255,
+            255,
+            255,
+            0.15);
+
+    background:
+        rgba(255,
+            255,
+            255,
+            0.06);
+
+    color:
+        #cbd5e1;
+}
+
+
+.saved-confirm-cancel:hover:not(:disabled) {
+    background:
+        rgba(255,
+            255,
+            255,
+            0.11);
+
+    color:
+        #ffffff;
+}
+
+
+.saved-confirm-delete {
+    border:
+        1px solid rgba(255,
+            80,
+            80,
+            0.38);
+
+    background:
+        linear-gradient(135deg,
+            #ef4444,
+            #b91c1c);
+
+    color:
+        #ffffff;
+}
+
+
+.saved-confirm-delete:hover:not(:disabled) {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(239,
+            68,
+            68,
+            0.3);
+}
+
+
+.saved-confirm-cancel:disabled,
+.saved-confirm-delete:disabled {
+    opacity:
+        0.5;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* ============================================================
+   CONFIRM BUTTON ICON
+============================================================ */
+
+.saved-confirm-actions button svg {
+    width:
+        17px !important;
+
+    height:
+        17px !important;
+
+    min-width:
+        17px !important;
+
+    min-height:
+        17px !important;
+
+    max-width:
+        17px !important;
+
+    max-height:
+        17px !important;
+
+    flex:
+        0 0 17px !important;
+}
+
+
+/* ============================================================
+   TABLET - LARGE
+============================================================ */
+
+@media (max-width: 1150px) {
 
     .saved-algorithms-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            repeat(3,
+                minmax(0,
+                    1fr));
     }
 
-    .saved-algo-card {
-        padding: 1.2rem;
+}
+
+
+/* ============================================================
+   TABLET
+============================================================ */
+
+@media (max-width: 850px) {
+
+    .saved-algorithms-grid {
+        grid-template-columns:
+            repeat(2,
+                minmax(0,
+                    1fr));
     }
+
+
+    .saved-algorithms-main {
+        padding-left:
+            1.25rem;
+
+        padding-right:
+            1.25rem;
+    }
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+    /* =====================================================
+       PAGE
+    ===================================================== */
+
+    .saved-algorithms-main {
+        width:
+            100%;
+
+        min-height:
+            100dvh;
+
+        padding:
+            5rem 1rem 4rem;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .saved-algorithms-header {
+        margin-bottom:
+            1.5rem;
+
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+
+        gap:
+            0.9rem;
+    }
+
+
+    .page-title {
+        font-size:
+            1.35rem;
+    }
+
+
+    .page-title svg {
+        width:
+            1.45rem;
+
+        height:
+            1.45rem;
+    }
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    .search-wrapper {
+        width:
+            100%;
+    }
+
+
+    /* =====================================================
+       TABS
+    ===================================================== */
+
+    .saved-tabs {
+        width:
+            100%;
+
+        flex-direction:
+            column;
+
+        gap:
+            0.55rem;
+    }
+
+
+    .saved-tab {
+        width:
+            100%;
+
+        min-width:
+            0;
+
+        min-height:
+            40px;
+
+        padding:
+            0.55rem 0.7rem;
+
+        font-size:
+            0.85rem;
+    }
+
+
+    .saved-tab-description {
+        margin-bottom:
+            1.5rem;
+
+        font-size:
+            0.88rem;
+    }
+
+
+    /* =====================================================
+       ONE CARD PER ROW
+    ===================================================== */
+
+    .saved-algorithms-grid {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            1rem;
+    }
+
+
+    .saved-algo-card {
+        width:
+            100%;
+
+        padding:
+            1.2rem;
+    }
+
+
+    .saved-algo-title {
+        font-size:
+            1rem;
+    }
+
+
+    /* =====================================================
+       REMOVE HOVER MOVEMENT ON TOUCH
+    ===================================================== */
+
+    .saved-algo-card:hover {
+        transform:
+            none;
+    }
+
+
+    /* =====================================================
+       DETAIL OVERLAY
+    ===================================================== */
+
+    .saved-algorithms-page .modal-overlay {
+        padding:
+            0.5rem;
+
+        align-items:
+            flex-start;
+    }
+
+
+    /* =====================================================
+       DETAIL MODAL
+    ===================================================== */
+
+    .saved-algorithms-page .modal-content,
+
+    .saved-algorithms-page .algo-modal {
+        width:
+            100% !important;
+
+        max-width:
+            100% !important;
+
+        max-height:
+            calc(100dvh - 1rem) !important;
+
+        margin:
+            0 auto;
+
+        padding:
+            1.2rem !important;
+
+        border-radius:
+            15px;
+    }
+
+
+    /* =====================================================
+       MODAL TITLE
+    ===================================================== */
+
+    .saved-algorithms-page .modal-title {
+        font-size:
+            1.15rem;
+    }
+
+
+    /* =====================================================
+       META
+    ===================================================== */
+
+    .saved-algorithms-page .algo-meta {
+        flex-direction:
+            column;
+
+        gap:
+            0.55rem;
+
+        font-size:
+            0.82rem;
+    }
+
+
+    /* =====================================================
+       CODE
+    ===================================================== */
+
+    .saved-algorithms-page .code-block {
+        padding:
+            0.8rem;
+    }
+
+
+    .saved-algorithms-page .code-block pre {
+        font-size:
+            0.78rem;
+
+        line-height:
+            1.55;
+    }
+
+
+    /* =====================================================
+       ACTIONS - ONE PER ROW
+    ===================================================== */
+
+    .saved-algorithms-page .saved-modal-actions,
+
+    .saved-algorithms-page .algo-modal .form-actions,
+
+    .saved-algorithms-page .algo-modal .modal-actions {
+        grid-template-columns:
+            1fr !important;
+
+        gap:
+            0.7rem !important;
+    }
+
+
+    /* =====================================================
+       RUN / DELETE / UNSAVE
+
+       NORMAL SIZE ON MOBILE
+    ===================================================== */
+
+    .saved-algorithms-page .algo-modal :is(.saved-run-btn,
+        .saved-remove-btn,
+        .save-btn,
+        .cancel-btn,
+        .modal-cancel-btn,
+        .modal-delete-btn,
+        .saved-delete-btn,
+        .saved-unsave-btn) {
+        width:
+            100% !important;
+
+        min-width:
+            0 !important;
+
+        height:
+            42px !important;
+
+        min-height:
+            42px !important;
+
+        max-height:
+            42px !important;
+
+        padding:
+            0 0.9rem !important;
+
+        font-size:
+            0.88rem !important;
+
+        overflow:
+            hidden !important;
+    }
+
+
+    /* =====================================================
+       CRITICAL MOBILE ICON FIX
+
+       No giant trash icon.
+    ===================================================== */
+
+    .saved-algorithms-page .algo-modal :is(.saved-run-btn,
+        .saved-remove-btn,
+        .save-btn,
+        .cancel-btn,
+        .modal-cancel-btn,
+        .modal-delete-btn,
+        .saved-delete-btn,
+        .saved-unsave-btn) svg {
+        width:
+            17px !important;
+
+        height:
+            17px !important;
+
+        min-width:
+            17px !important;
+
+        min-height:
+            17px !important;
+
+        max-width:
+            17px !important;
+
+        max-height:
+            17px !important;
+
+        flex:
+            0 0 17px !important;
+
+        display:
+            block !important;
+    }
+
+
+    /* Also protect direct saved buttons */
+
+    .saved-algorithms-page .saved-remove-btn svg,
+
+    .saved-algorithms-page .saved-run-btn svg {
+        width:
+            17px !important;
+
+        height:
+            17px !important;
+
+        min-width:
+            17px !important;
+
+        min-height:
+            17px !important;
+
+        max-width:
+            17px !important;
+
+        max-height:
+            17px !important;
+
+        flex:
+            0 0 17px !important;
+    }
+
+
+    /* =====================================================
+       CONFIRM POPUP
+    ===================================================== */
+
+    .saved-confirm-overlay {
+        padding:
+            0.65rem;
+
+        align-items:
+            center;
+    }
+
+
+    .saved-confirm-modal {
+        width:
+            100%;
+
+        padding:
+            1.5rem 1rem;
+
+        border-radius:
+            16px;
+    }
+
+
+    .saved-confirm-icon {
+        width:
+            50px;
+
+        height:
+            50px;
+    }
+
+
+    .saved-confirm-icon svg {
+        width:
+            24px !important;
+
+        height:
+            24px !important;
+
+        min-width:
+            24px !important;
+
+        min-height:
+            24px !important;
+
+        max-width:
+            24px !important;
+
+        max-height:
+            24px !important;
+    }
+
+
+    .saved-confirm-modal h2 {
+        font-size:
+            1.15rem;
+    }
+
+
+    .saved-confirm-modal p {
+        font-size:
+            0.9rem;
+    }
+
+
+    .saved-confirm-actions {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            0.65rem;
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL MOBILE
+============================================================ */
+
+@media (max-width: 380px) {
+
+    .saved-algorithms-main {
+        padding-left:
+            0.75rem;
+
+        padding-right:
+            0.75rem;
+    }
+
+
+    .saved-algo-card {
+        padding:
+            1rem;
+    }
+
+
+    .saved-algorithms-page .modal-content,
+
+    .saved-algorithms-page .algo-modal {
+        padding:
+            1rem !important;
+    }
+
+
+    .saved-algorithms-page .code-block {
+        padding:
+            0.65rem;
+    }
+
+
+    .saved-algorithms-page .code-block pre {
+        font-size:
+            0.72rem;
+    }
+
+}
+
+
+/* ============================================================
+   TOUCH DEVICES
+============================================================ */
+
+@media (hover: none) {
+
+    .saved-algo-card:hover {
+        transform:
+            none;
+    }
+
+
+    .saved-run-btn:hover:not(:disabled),
+    .saved-remove-btn:hover:not(:disabled) {
+        transform:
+            none;
+    }
+
 }

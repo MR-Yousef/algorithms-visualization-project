@@ -446,3 +446,65 @@
 .react-flow__node:has(.flow-node:focus-visible) {
     z-index: 1000 !important;
 }
+
+/* =========================================================
+   DECISION BRANCH LABELS
+========================================================= */
+
+.flow-node__branch-label {
+    position: absolute;
+    z-index: 20;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    background: #ffffff;
+
+    font-size: 20px;
+    font-weight: 900;
+
+    line-height: 1;
+
+    letter-spacing: 0.8px;
+
+    pointer-events: none;
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.18);
+}
+
+.flow-node__branch-label--left {
+    top: calc(50% - 27px);
+    left: -16px;
+
+    transform: translateX(-100%);
+
+    color: #dc2626;
+
+    border: 2px solid rgba(220, 38, 38, 0.4);
+}
+
+
+.flow-node__branch-label--right {
+    top: calc(50% - 27px);
+    right: -16px;
+
+    transform: translateX(100%);
+
+    color: #15803d;
+
+    border: 2px solid rgba(21, 128, 61, 0.4);
+}
+
+
+.flow-node__branch-label--bottom {
+    left: calc(50% + 28px);
+    bottom: -16px;
+
+    transform: translateY(100%);
+
+    color: #15803d;
+
+    border: 2px solid rgba(21, 128, 61, 0.4);
+}

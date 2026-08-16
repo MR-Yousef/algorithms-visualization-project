@@ -1,59 +1,97 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./CloudSavePopUp.css";
 
-/**
- * Multi‑step popup for saving an algorithm to the cloud.
- *
- * @param {object} props
- * @param {function} props.onClose   – close the popup
- * @param {function} props.onSubmit  – called with { title, description, code, topic }
- * @param {Array<object>} props.topics – list of available topics { id, name }
- * @param {string} props.code – the algorithm source code (optional)
- */
-export default function CloudSavePopup({ onClose, onSubmit, topics, code = "" }) {
+export default function CloudSavePopup({
+    onClose,
+    onSubmit,
+    topics = [],
+    topicsLoading = false,
+    topicsError = "",
+    code = "",
+}) {
     const [step, setStep] = useState(0);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [selectedTopic, setSelectedTopic] = useState(null);
+    const [selectedTopics, setSelectedTopics] = useState([]);
     const [error, setError] = useState("");
+    const [saving, setSaving] = useState(false);
+
+    const normalizedTopics = useMemo(() => {
+        return topics
+            .map((topic) => ({
+                id: topic?.id ?? topic?.pk,
+                name:
+                    topic?.name ??
+                    topic?.title ??
+                    topic?.topic_name ??
+                    topic?.label ??
+                    "Unnamed topic",
+            }))
+            .filter((topic) => topic.id !== undefined && topic.id !== null);
+    }, [topics]);
 
     const handleTopicToggle = (topic) => {
-        setSelectedTopic((prev) => (prev?.id === topic.id ? null : topic));
-        setError(""); // clear error when user interacts
+        setSelectedTopics((previous) => {
+            const exists = previous.some(
+                (selected) => String(selected.id) === String(topic.id)
+            );
+
+            if (exists) {
+                return previous.filter(
+                    (selected) => String(selected.id) !== String(topic.id)
+                );
+            }
+
+            return [...previous, topic];
+        });
+        setError("");
     };
 
     const handleNext = () => {
-        // Validate current step
         if (step === 0 && !title.trim()) {
             setError("Please enter an algorithm title.");
             return;
         }
+
         if (step === 1 && !description.trim()) {
             setError("Please enter a description.");
             return;
         }
-        // Clear any previous error and advance
+
         setError("");
-        setStep((s) => s + 1);
+        setStep((previous) => previous + 1);
     };
 
     const handleBack = () => {
         setError("");
-        setStep((s) => s - 1);
+        setStep((previous) => Math.max(0, previous - 1));
     };
 
-    const handleSubmit = () => {
-        if (!selectedTopic) {
-            setError("Please select a topic.");
+    const handleSubmit = async () => {
+        if (selectedTopics.length === 0) {
+            setError("Please select at least one topic.");
             return;
         }
-        onSubmit({
-            title,
-            description,
-            code,
-            topic: selectedTopic.id,
-        });
-        onClose();
+
+        setError("");
+        setSaving(true);
+
+        try {
+            const success = await onSubmit({
+                title: title.trim(),
+                description: description.trim(),
+                code,
+                topics: selectedTopics.map((topic) => topic.id),
+            });
+
+            if (success !== false) {
+                onClose();
+            }
+        } catch (submitError) {
+            setError(submitError.message || "Failed to save algorithm.");
+        } finally {
+            setSaving(false);
+        }
     };
 
     const steps = [
@@ -66,7 +104,10 @@ export default function CloudSavePopup({ onClose, onSubmit, topics, code = "" })
                     className="cloud-save-input"
                     placeholder="e.g., Bubble Sort"
                     value={title}
-                    onChange={(e) => { setTitle(e.target.value); setError(""); }}
+                    onChange={(event) => {
+                        setTitle(event.target.value);
+                        setError("");
+                    }}
                     autoFocus
                 />
             ),
@@ -77,60 +118,104 @@ export default function CloudSavePopup({ onClose, onSubmit, topics, code = "" })
             content: (
                 <textarea
                     className="cloud-save-input"
-                    placeholder="Explain what your algorithm does…"
+                    placeholder="Explain what your algorithm does..."
                     value={description}
-                    onChange={(e) => { setDescription(e.target.value); setError(""); }}
+                    onChange={(event) => {
+                        setDescription(event.target.value);
+                        setError("");
+                    }}
                     rows={5}
                 />
             ),
         },
         {
-            label: "Topic",
-            description: "Select one topic.",
+            label: "Topics",
+            description: "Select one or more topics.",
             content: (
-                <div className="cloud-save-pill-group">
-                    {topics.map((topic) => {
-                        const isSelected = selectedTopic?.id === topic.id;
-                        return (
-                            <button
-                                key={topic.id}
-                                type="button"
-                                className={`cloud-save-pill ${isSelected ? "cloud-save-pill--selected" : ""}`}
-                                onClick={() => handleTopicToggle(topic)}
-                            >
-                                {topic.name}
-                            </button>
-                        );
-                    })}
+                <div>
+                    {topicsLoading && (
+                        <p className="cloud-save-loading">Loading topics...</p>
+                    )}
+
+                    {!topicsLoading && topicsError && (
+                        <p className="cloud-save-error">{topicsError}</p>
+                    )}
+
+                    {!topicsLoading && !topicsError && normalizedTopics.length === 0 && (
+                        <p className="cloud-save-error">No topics are available.</p>
+                    )}
+
+                    {!topicsLoading && normalizedTopics.length > 0 && (
+                        <div className="cloud-save-pill-group">
+                            {normalizedTopics.map((topic) => {
+                                const selected = selectedTopics.some(
+                                    (item) => String(item.id) === String(topic.id)
+                                );
+
+                                return (
+                                    <button
+                                        key={topic.id}
+                                        type="button"
+                                        className={`cloud-save-pill ${selected ? "cloud-save-pill--selected" : ""}`}
+                                        onClick={() => handleTopicToggle(topic)}
+                                    >
+                                        {topic.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {selectedTopics.length > 0 && (
+                        <p className="cloud-save-selected-summary">
+                            Selected: {selectedTopics.map((topic) => topic.name).join(", ")}
+                        </p>
+                    )}
                 </div>
             ),
         },
     ];
 
     return (
-        <div className="cloud-save-backdrop" onClick={onClose}>
-            <div className="cloud-save-content" onClick={(e) => e.stopPropagation()}>
-                <button aria-label="Close" className="cloud-save-close-btn" onClick={onClose}>
+        <div className="cloud-save-backdrop" onClick={saving ? undefined : onClose}>
+            <div className="cloud-save-content" onClick={(event) => event.stopPropagation()}>
+                <button
+                    type="button"
+                    aria-label="Close"
+                    className="cloud-save-close-btn"
+                    onClick={onClose}
+                    disabled={saving}
+                >
                     ×
                 </button>
 
                 <h2 className="cloud-save-step-title">{steps[step].label}</h2>
                 <p className="cloud-save-step-desc">{steps[step].description}</p>
+                <p className="cloud-save-step-counter">Step {step + 1} of {steps.length}</p>
 
-                {/* Validation error */}
                 {error && <p className="cloud-save-error">{error}</p>}
 
-                <form className="cloud-save-form" onSubmit={(e) => e.preventDefault()}>
+                <form className="cloud-save-form" onSubmit={(event) => event.preventDefault()}>
                     {steps[step].content}
 
                     <div className="cloud-save-buttons">
                         {step > 0 && (
-                            <button type="button" className="cloud-save-btn cloud-save-btn--back" onClick={handleBack}>
+                            <button
+                                type="button"
+                                className="cloud-save-btn cloud-save-btn--back"
+                                onClick={handleBack}
+                                disabled={saving}
+                            >
                                 ← Back
                             </button>
                         )}
+
                         {step < steps.length - 1 ? (
-                            <button type="button" className="cloud-save-btn cloud-save-btn--next" onClick={handleNext}>
+                            <button
+                                type="button"
+                                className="cloud-save-btn cloud-save-btn--next"
+                                onClick={handleNext}
+                            >
                                 Next →
                             </button>
                         ) : (
@@ -138,9 +223,9 @@ export default function CloudSavePopup({ onClose, onSubmit, topics, code = "" })
                                 type="button"
                                 className="cloud-save-btn cloud-save-btn--submit"
                                 onClick={handleSubmit}
-                                disabled={!selectedTopic}
+                                disabled={saving || topicsLoading || selectedTopics.length === 0}
                             >
-                                Save Algorithm
+                                {saving ? "Saving..." : "Save Algorithm"}
                             </button>
                         )}
                     </div>

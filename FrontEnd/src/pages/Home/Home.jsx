@@ -3,19 +3,23 @@ import Header from "../../Component/Header/Header";
 import Background from "../../Component/Background/Background";
 import InfoCard from "../../Component/InfoCard/InfoCard";
 import { menuItems } from "../../assets/data/HomeCards";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { SparkleIcon } from "../../assets/Icons/Icon";
+import { ENDPOINTS } from "../../config/api.config";
+import { apiRequest, unwrapData } from "../../services/api.service";
 
-import { AddIcon, ShowIcon, HelpIcon, ArrowIcon, SparkleIcon } from "../../assets/Icons/Icon";
-import { NodesNetworkImg, BarChartImg, GraphImg, PlotChartImg, CubeOutlineImg } from "../../assets/Images/Images"
-
-// ─── Main Component ───────────────────────────────────────────
 export default function Home() {
     const { isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
 
-    // Redirect to login if not authenticated (after loading finishes)
+    const [statistics, setStatistics] = useState({
+        algorithms: 0,
+        users: 0,
+        visualizations: 0,
+    });
+    const [statisticsLoading, setStatisticsLoading] = useState(true);
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
@@ -23,24 +27,69 @@ export default function Home() {
         }
     }, [isAuthenticated, loading, navigate]);
 
+    useEffect(() => {
+        if (loading || !isAuthenticated) return;
+
+        let cancelled = false;
+
+        const loadStatistics = async () => {
+            setStatisticsLoading(true);
+
+            try {
+                const payload = await apiRequest(ENDPOINTS.STATISTICS);
+                const data = unwrapData(payload) ?? {};
+
+                const algorithms = data.published_algorithms ??
+                    0;
+
+                const users = data.total_users ??
+                    0;
+
+                const visualizations = data.total_algorithm_executions ??
+                    0;
+
+                if (!cancelled) {
+                    setStatistics({ algorithms, users, visualizations });
+                }
+            } catch (error) {
+                console.error("Failed to load Home statistics:", error);
+
+                if (!cancelled) {
+                    setStatistics({
+                        algorithms: 0,
+                        users: 0,
+                        visualizations: 0,
+                    });
+                }
+            } finally {
+                if (!cancelled) setStatisticsLoading(false);
+            }
+        };
+
+        loadStatistics();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [loading, isAuthenticated]);
+
+    const formatStat = (value) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? number.toLocaleString() : "0";
+    };
+
     if (loading) {
         return <div className="loading-container">Checking authentication...</div>;
     }
-    if (!isAuthenticated) {
-        return null;
-    }
 
-    // Navigation and hover state management
-    // Menu items configuration for the home page
+    if (!isAuthenticated) return null;
+
     return (
         <div className="home-page">
-            {/* ── Animated Background ── */}
             <Background />
-            {/*end of animated background*/}
             <Header />
-            {/* ── Main Content ── */}
+
             <main className="home-main">
-                {/* Welcome Section */}
                 <div className="welcome-section">
                     <h1 className="welcome-title">
                         <span className="title-icon"><SparkleIcon /></span>
@@ -50,11 +99,9 @@ export default function Home() {
                         Your platform for algorithm learning and visualization
                     </p>
                 </div>
-                {/*end of welcome section*/}
-                {/* Menu Cards Grid */}
+
                 <div className="menu-grid">
                     {menuItems.map((item) => (
-                        // Each menu card with hover effects and navigation
                         <InfoCard
                             key={item.id}
                             index={item.id}
@@ -68,26 +115,33 @@ export default function Home() {
                     ))}
                 </div>
 
-                {/* Quick Stats Section */}
                 <div className="stats-section">
                     <div className="stat-card">
-                        <span className="stat-number">150+</span>
+                        <span className="stat-number">
+                            {statisticsLoading ? "..." : formatStat(statistics.algorithms)}
+                        </span>
                         <span className="stat-label">Algorithms</span>
                     </div>
+
                     <div className="stat-card">
-                        <span className="stat-number">10K+</span>
+                        <span className="stat-number">
+                            {statisticsLoading ? "..." : formatStat(statistics.users)}
+                        </span>
                         <span className="stat-label">Users</span>
                     </div>
+
                     <div className="stat-card">
-                        <span className="stat-number">50K+</span>
+                        <span className="stat-number">
+                            {statisticsLoading ? "..." : formatStat(statistics.visualizations)}
+                        </span>
                         <span className="stat-label">Visualizations</span>
                     </div>
+
                     <div className="stat-card">
                         <span className="stat-number">24/7</span>
                         <span className="stat-label">Support</span>
                     </div>
                 </div>
-                {/*end of quick stats section*/}
             </main>
         </div>
     );
