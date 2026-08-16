@@ -8,6 +8,47 @@ from algorithms.models import (
 )
 
 
+# class AlgorithmSerializer(serializers.ModelSerializer):
+
+#     owner_username = serializers.CharField(
+#         source="owner.username",
+#         read_only=True
+#     )
+
+#     topics = serializers.PrimaryKeyRelatedField(
+#         many=True,
+#         queryset=Topic.objects.all()
+#     )
+
+#     class Meta:
+#         model = Algorithm
+
+#         fields = [
+#             "id",
+#             "title",
+#             "description",
+#             "code",
+#             "owner",
+#             "owner_username",
+#             "topics",
+#             "views_count",
+#             "is_archived",
+#             "status",
+#             "created_at",
+#             "updated_at",
+#         ]
+
+#         read_only_fields = [
+#             "id",
+#             "owner",
+#             "owner_username",
+#             "views_count",
+#             "is_archived",
+#             "status",
+#             "created_at",
+#             "updated_at",
+#         ]
+
 class AlgorithmSerializer(serializers.ModelSerializer):
 
     owner_username = serializers.CharField(
@@ -20,6 +61,13 @@ class AlgorithmSerializer(serializers.ModelSerializer):
         queryset=Topic.objects.all()
     )
 
+    topic_names = serializers.SlugRelatedField(
+        source="topics",
+        many=True,
+        read_only=True,
+        slug_field="name"
+    )
+
     class Meta:
         model = Algorithm
 
@@ -30,7 +78,10 @@ class AlgorithmSerializer(serializers.ModelSerializer):
             "code",
             "owner",
             "owner_username",
+
             "topics",
+            "topic_names",
+
             "views_count",
             "is_archived",
             "status",
@@ -42,6 +93,7 @@ class AlgorithmSerializer(serializers.ModelSerializer):
             "id",
             "owner",
             "owner_username",
+            "topic_names",
             "views_count",
             "is_archived",
             "status",

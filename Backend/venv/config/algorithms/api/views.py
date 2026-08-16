@@ -140,7 +140,7 @@ class MyPublishedAlgorithmsAPI(APIView):
     def get(self, request):
 
         algorithms = Algorithm.objects.filter(
-            owner=request.user,
+            saved_by__user=request.user,
             status="PUBLISHED",
             is_archived=False
         ).select_related(
