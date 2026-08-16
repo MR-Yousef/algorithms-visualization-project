@@ -1,34 +1,23 @@
 from django.urls import path
-
+from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     RegisterAPI,
     LoginAPI,
     MeAPI,
     LogoutAPI,
     DeleteMyAccountAPI,
-
     ForgotPasswordAPI,
     VerifyOTPAPI,
     ResetPasswordAPI,
     ChangePasswordAPI,
-
     LogoutAllDevicesAPI,
-
     UsersListAPI,
     DeleteUserAPI,
-
     VerifyEmailAPI,
     ResendVerificationOTPAPI,
 )
 
-from rest_framework_simplejwt.views import TokenRefreshView
-
-
 urlpatterns = [
-
-    # =========================
-    # Authentication
-    # =========================
 
     path(
         'register/',
@@ -60,11 +49,6 @@ urlpatterns = [
         name='logout-all'
     ),
 
-
-    # =========================
-    # Current User
-    # =========================
-
     path(
         'me/',
         MeAPI.as_view(),
@@ -82,11 +66,6 @@ urlpatterns = [
         DeleteMyAccountAPI.as_view(),
         name='delete-account'
     ),
-
-
-    # =========================
-    # Password Reset
-    # =========================
 
     path(
         'forgot-password/',
@@ -106,11 +85,6 @@ urlpatterns = [
         name='reset-password'
     ),
 
-
-    # =========================
-    # Email Verification
-    # =========================
-
     path(
         'verify-email/',
         VerifyEmailAPI.as_view(),
@@ -122,11 +96,6 @@ urlpatterns = [
         ResendVerificationOTPAPI.as_view(),
         name='resend-verification-otp'
     ),
-
-
-    # =========================
-    # User Management
-    # =========================
 
     path(
         'users/',
