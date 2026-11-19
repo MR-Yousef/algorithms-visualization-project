@@ -338,7 +338,7 @@ class ForgotPasswordAPI(APIView):
         email_message = EmailMultiAlternatives(
             subject="Reset your AlgoHub password",
             body=text_message,
-            from_email=None,
+            from_email=self.settings.EMAIL_HOST_USER,
             to=[user.email]
         )
 
