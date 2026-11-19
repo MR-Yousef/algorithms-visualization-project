@@ -4,10 +4,10 @@
 // This allows the compiler to create and manage error objects when it encounters issues in the source code being compiled.
 export class Error{
     // The constructor initializes the error object with default values for error type, error line, and error message.
-    constructor(errorType = "defaultError",errorLine = -1 ,errorMessage = "defaultErrorMessage"){
+    constructor(errorType = "defaultError",errorLine = -1 ,errorMessage="default message"){
         this.errorType = errorType ;
         this.errorLine = errorLine ;
-        this.errorMessage = errorMessage ;
+        this.errorMessage = `${errorType} error in line ${errorLine} : ${errorMessage}` ;
     }
     // The following methods are used to set the properties of the error object.
     setErrorType(errorType){

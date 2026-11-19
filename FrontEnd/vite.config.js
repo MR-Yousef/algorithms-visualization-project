@@ -1,10 +1,28 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    historyApiFallback: true,
+
+    host: '0.0.0.0',
+
+
+    allowedHosts: [
+      '725a5e72.r35.cpolar.top',
+      '192.168.1.106:5173',
+      '172.25.69.26:4173',
+    ],
+
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+      '/media': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
   },
-});
+})

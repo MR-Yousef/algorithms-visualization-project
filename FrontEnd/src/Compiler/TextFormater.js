@@ -1,4 +1,5 @@
 import { RegEx } from "./RegEx";
+
 // This class is responsible for formatting the text by adding spaces around operators and punctuation marks.
 export class TextFormater {
     // attributes
@@ -18,41 +19,60 @@ export class TextFormater {
     // The function iterates through each character in the input text .
     // checks if it matches any of the defined operator or punctuation patterns.
     static format() {
+        let inString = false;
         let tempFormatedText = "";
         let text = TextFormater.text;
         for (let i = 0; i < text.length; i++) {
-            let bool1 = text[i].match(RegEx.arithmeticOperatorRegex);
-            let bool2 = text[i].match(RegEx.logicalOperatorRegex);
-            let bool3 = text[i].match(RegEx.comparisonOperatorRegex);
-            let bool4 = text[i].match(RegEx.assignmentOperatorRegex);
-            let bool5 = text[i].match(RegEx.punctuationRegex);
-            if (bool1 || bool2 || bool3 || bool4 || bool5) {
-                if (i == 0 && text[1] != " ") {
-                    tempFormatedText = tempFormatedText + tempFormatedText[i] + " ";
-                } else if (i == text.length - 1 && text.length - 2 != " ") {
-                    tempFormatedText = tempFormatedText + " " + text[i];
-                } else {
-                    if (text[i - 1] != " " && text[i + 1] != " ")
-                        tempFormatedText = tempFormatedText + " " + text[i] + " ";
-                    else if (text[i - 1] != " " && text[i + 1] == " ")
-                        tempFormatedText = tempFormatedText + " " + text[i];
-                    else if (text[i - 1] == " " && text[i + 1] != " ")
-                        tempFormatedText = tempFormatedText + text[i] + " ";
-                    else tempFormatedText = tempFormatedText + text[i];
-                }
-            } else {
-                tempFormatedText = tempFormatedText + text[i];
+            //console.log(text[i])
+            if (text[i] == "\"") {
+                inString = !inString;
+                tempFormatedText += "\""
+                continue
             }
+            if (inString) {
+                tempFormatedText += text[i];
+                continue;
+            }
+            let bool1 = RegEx.checkType(text[i], "arithmeticOperator");
+            let bool2 = RegEx.checkType(text[i], "logicalOperator");
+            let bool3 = RegEx.checkType(text[i], "comparisonOperator");
+            let bool4 = RegEx.checkType(text[i], "assignmentOperator");
+            let bool5 = RegEx.checkType(text[i], "punctuation");
+            if (bool1 || bool2 || bool3 || bool4 || bool5) {
+                //console.log("WTF is : ",text[i])
+                if (i <= text.length - 1) {
+                    if (text[i + 1] == "=" && !bool5){
+                        tempFormatedText += ` ${text[i]}= `;
+                        i++;
+                    }
+                    else
+                        tempFormatedText += " " + text[i] + " ";
+                }
+            }
+            else if (i != text.length - 1 && text[i] == '\\') {
+                if (text[i + 1] == "n") {
+                    tempFormatedText += "\n";
+                    i += 1;
+                }
+                else
+                    tempFormatedText += "\\";
+            }
+            else {
+                tempFormatedText += text[i];
+            }
+
         }
+        tempFormatedText = tempFormatedText.replace(/ {2,}/g, " ").trim();
         TextFormater.formatedText = tempFormatedText;
         TextFormater.isFormated = true;
+
     }
     // this method :
     //  resets the text formater to its default state by setting the text to "defaultText",
     //  clearing the formatedText
     //  and setting isFormated to false.
     static reset() {
-        TextFormater.text = "defaultText";
+        TextFormater.text = "";
         TextFormater.formatedText = "";
         TextFormater.isFormated = false;
     }

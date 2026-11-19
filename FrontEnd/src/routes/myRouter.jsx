@@ -1,4 +1,3 @@
-// src/router.js
 import { createBrowserRouter } from "react-router-dom";
 import Welcome from "../pages/Welcome/Welcome";
 import Help from "../pages/Help/Help";
@@ -6,6 +5,14 @@ import Home from "../pages/Home/Home";
 import Signup from "../pages/Signup/Signup";
 import Login from "../pages/Login/Login";
 import Profile from "../pages/Profile/Profile";
+import ForgetPassword from "../pages/ForgetPassword/ForgetPassword";
+import PrivacyPolicy from "../pages/PrivacyPolicy/Privacy";
+import ShowAlgorithms from "../pages/ShowAlgo/ShowAlgorithms";
+import HelpDetail from "../pages/Help/HelpInfo";
+import InputAlgo from "../pages/InputAlgo/InputAlgo";
+import ResultPage from "../pages/ResultPage/ResultPage";
+import MyAlgo from "../pages/MyAlgo/MyAlgo";
+import SavedAlgo from "../pages/SavedAlgo/SavedAlgo";
 const myRouter = createBrowserRouter([
     {
         path: '/',
@@ -24,12 +31,44 @@ const myRouter = createBrowserRouter([
         element: <Login />
     },
     {
-        path:'/help',
-        element: <Help/>
+        path: '/help',
+        element: <Help />
     },
     {
-        path:'/profile',
-        element:<Profile/>
+        path: '/profile',
+        element: <Profile />
+    },
+    {
+        path: '/forget-password',
+        element: <ForgetPassword />
+    },
+    {
+        path: '/privacy-policy',
+        element: <PrivacyPolicy />
+    },
+    {
+        path: '/show-algorithms',
+        element: <ShowAlgorithms />
+    },
+    {
+        path: '/help/:type',
+        element: <HelpDetail />
+    },
+    {
+        path: '/InputAlgo',
+        element: <InputAlgo />
+    },
+    {
+        path: '/resultPage',
+        element: <ResultPage />
+    },
+    {
+        path: '/myAlgo',
+        element: <MyAlgo />
+    },
+    {
+        path: '/savedAlgo',
+        element: <SavedAlgo />
     }
 ]);
 

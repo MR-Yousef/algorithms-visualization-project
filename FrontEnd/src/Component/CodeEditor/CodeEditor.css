@@ -1,0 +1,11 @@
+.editor-container {
+    height:500px !important;
+}
+
+.editor-container .cm-editor{
+    height:100% !important;
+}
+
+.editor-container .cm-scroller{
+    height:100% !important;
+}

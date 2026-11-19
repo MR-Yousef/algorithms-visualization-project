@@ -1,5 +1,5 @@
 .home-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
@@ -11,7 +11,7 @@
     background: rgba(2, 13, 24, 0.8);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(0, 245, 228, 0.15);
-    ;
+    height: 10vh;
 }
 
 .header-left {
@@ -19,6 +19,12 @@
     align-items: center;
     gap: 0.8rem;
     cursor: pointer;
+}
+
+.header-middle {
+    color: white;
+    font-size: 25px;
+    margin-bottom: 10px;
 }
 
 .logo-icon {
@@ -90,4 +96,25 @@
     background: rgba(255, 68, 102, 0.15);
     border-color: #ff4466;
     box-shadow: 0 0 20px rgba(255, 68, 102, 0.2);
+}
+
+@media ((max-width: 480px)) {
+    .logo-text {
+        font-size: 15px;
+    }
+
+    .header-btn {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        background-color: transparent;
+        border-color: transparent;
+
+    }
+
+    .header-btn svg {
+        transform: translate(-12px, -5px);
+        width: 25px;
+        height: 25px;
+    }
 }

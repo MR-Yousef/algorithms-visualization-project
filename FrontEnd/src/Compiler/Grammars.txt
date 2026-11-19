@@ -1,0 +1,84 @@
+Program --> Statement
+
+Statement --> AssignmentStatement Statement
+            | InputStatement Statement
+            | OutputStatement Statement
+            | IfStatement Statement
+            | WhileStatement Statement
+            | ε 
+            
+
+AssignmentStatement --> IDENTIFIER ASSIGN Expression
+
+InputStatement --> INPUT IdentifierList
+
+IdentifierList --> IDENTIFIER
+                 | IDENTIFIER COMMA IdentifierList
+
+OutputStatement --> OUTPUT OutputList
+
+OutputList --> OutputItem
+             | OutputItem COMMA OutputList
+
+OutputItem --> Expression
+             | LITERAL
+
+IfStatement --> IF BooleanExpression Block ElseChain
+
+ElseChain --> ELSE Block | ε
+            | IFELSE BooleanExpression Block ElseChain
+
+WhileStatement --> WHILE BooleanExpression Block
+
+Block --> LEFT_BRACE Statement RIGHT_BRACE
+
+
+
+
+Expression --> BooleanExpression
+             | ArithmeticExpression
+
+ArithmeticExpression --> Additive
+
+Additive --> Multiplicative
+           | Additive PLUS Multiplicative
+           | Additive MINUS Multiplicative
+
+Multiplicative --> Power
+                 | Multiplicative MULTIPLY Power
+                 | Multiplicative DIVIDE Power
+                 | Multiplicative MODULO Power
+
+Power --> Factor
+        | Factor POWER Power
+
+Factor --> IDENTIFIER
+         | INTEGER
+         | FLOAT
+         | LEFT_PAREN ArithmeticExpression RIGHT_PAREN
+
+BooleanExpression --> LogicalOr
+
+LogicalOr --> LogicalAnd
+            | LogicalOr OR LogicalAnd
+
+LogicalAnd --> LogicalNot
+             | LogicalAnd AND LogicalNot
+
+LogicalNot --> Comparison
+             | NOT LogicalNot
+
+Comparison --> Constant
+             | IDENTIFIER
+             | ArithmeticExpression CompareOp ArithmeticExpression
+             | LEFT_PAREN BooleanExpression RIGHT_PAREN  
+
+Constant --> TRUE
+           | FALSE
+
+CompareOp --> EQUAL
+            | NOT_EQUAL
+            | LESS_THAN
+            | GREATER_THAN
+            | LESS_EQUAL
+            | GREATER_EQUAL
